@@ -30,6 +30,7 @@ jobs:
           PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
           PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
           R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+          PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL }}
 
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name simple-website --branch main --commit-dirty=true

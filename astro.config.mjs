@@ -12,7 +12,9 @@ const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 
 // Placeholder until a custom domain is attached — swap via PUBLIC_SITE_URL env var,
 // no code change needed. Drives canonical URLs, sitemap, and OG/Twitter tags.
-const SITE_URL = env.PUBLIC_SITE_URL || 'https://simple-website-khaki-three.vercel.app';
+// Migrated from Vercel to Cloudflare Pages 2026-09; update this fallback too if
+// the pages.dev URL ever changes before a custom domain is attached.
+const SITE_URL = env.PUBLIC_SITE_URL || 'https://simple-website-16a.pages.dev';
 
 // https://astro.build/config
 export default defineConfig({
