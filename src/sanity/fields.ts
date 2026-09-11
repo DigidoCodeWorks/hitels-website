@@ -49,3 +49,26 @@ export function linkField(name: string, title: string, opts: { required?: boolea
 export function stringListField(name: string, title: string) {
   return defineField({ name, title, type: 'array', of: [{ type: 'string' }] })
 }
+
+/**
+ * Per-document SEO override (title/description/OG image), always named
+ * "seo" so every page-builder-converted document type exposes it under the
+ * same field name for BaseLayout/page components to resolve consistently
+ * against src/sanity/schemaTypes/siteSettings.ts's site-wide defaults —
+ * `page.seo?.title ?? siteSettings.defaultSeoTitle`. Every field stays
+ * optional: a blank field means "fall back to the site default," not "this
+ * page has no SEO."
+ */
+export function seoField() {
+  return defineField({
+    name: 'seo',
+    title: 'SEO',
+    description: 'Overrides the Site Settings defaults for this page only. Leave a field blank to fall back to the site default.',
+    type: 'object',
+    fields: [
+      defineField({ name: 'title', title: 'SEO title', type: 'string' }),
+      defineField({ name: 'description', title: 'SEO description', type: 'text', rows: 3 }),
+      imageUrlField('ogImage', 'Social share image URL', { required: false, description: 'Hosted on R2, not a Sanity asset.' }),
+    ],
+  })
+}
