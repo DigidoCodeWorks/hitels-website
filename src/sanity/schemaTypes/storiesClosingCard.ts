@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { imageUrlField, altTextField, linkField } from '../fields'
 
 // Singleton: the fixed closing "bumper" slide shown after all customer
 // stories in the Instagram-style story viewer (Hero section, mobile). Not
@@ -14,17 +15,8 @@ export default defineType({
       type: 'string',
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'backgroundImageUrl',
-      title: 'Background image URL',
-      description: 'Hosted on R2, not a Sanity asset.',
-      type: 'url',
-    }),
-    defineField({
-      name: 'backgroundImageAlt',
-      title: 'Background image alt text',
-      type: 'string',
-    }),
+    imageUrlField('backgroundImageUrl', 'Background image URL', { required: false }),
+    altTextField('backgroundImageAlt', 'Background image alt text'),
     defineField({
       name: 'features',
       title: 'Features',
@@ -34,7 +26,7 @@ export default defineType({
           type: 'object',
           name: 'feature',
           fields: [
-            { name: 'iconUrl', title: 'Icon URL', type: 'url' },
+            imageUrlField('iconUrl', 'Icon URL', { required: false }),
             { name: 'text', title: 'Text', type: 'string' },
           ],
           preview: { select: { title: 'text' } },
@@ -46,10 +38,6 @@ export default defineType({
       title: 'Button text',
       type: 'string',
     }),
-    defineField({
-      name: 'buttonLink',
-      title: 'Button link (absolute or relative path)',
-      type: 'string',
-    }),
+    linkField('buttonLink', 'Button link (absolute or relative path)'),
   ],
 })

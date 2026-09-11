@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { imageUrlField, linkField, stringListField } from '../fields'
 
 // Page-builder section types for the `page` document's `sections` array.
 // Each is an inline object (not its own document) — the closed set an editor
@@ -29,9 +30,9 @@ export const heroSection = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({ name: 'primaryButtonLabel', title: 'Primary button label', type: 'string' }),
-    defineField({ name: 'primaryButtonHref', title: 'Primary button link', type: 'string' }),
+    linkField('primaryButtonHref', 'Primary button link'),
     defineField({ name: 'secondaryButtonLabel', title: 'Secondary button label', type: 'string' }),
-    defineField({ name: 'secondaryButtonHref', title: 'Secondary button link', type: 'string' }),
+    linkField('secondaryButtonHref', 'Secondary button link'),
   ],
   preview: { select: { title: 'headline' } },
 })
@@ -44,9 +45,9 @@ const offering = {
     defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule: any) => rule.required() }),
     defineField({ name: 'body', title: 'Body', type: 'text', rows: 3, validation: (rule: any) => rule.required() }),
     defineField({ name: 'ctaLabel', title: 'CTA label', type: 'string' }),
-    defineField({ name: 'ctaHref', title: 'CTA link', type: 'string' }),
-    defineField({ name: 'desktopImageUrl', title: 'Desktop/tablet image URL', type: 'url', validation: (rule: any) => rule.required() }),
-    defineField({ name: 'mobileImageUrl', title: 'Mobile image URL', type: 'url', validation: (rule: any) => rule.required() }),
+    linkField('ctaHref', 'CTA link'),
+    imageUrlField('desktopImageUrl', 'Desktop/tablet image URL'),
+    imageUrlField('mobileImageUrl', 'Mobile image URL'),
   ],
   preview: { select: { title: 'headline' } },
 }
@@ -67,10 +68,10 @@ const storyCard = {
   type: 'object',
   name: 'storyCard',
   fields: [
-    defineField({ name: 'logoUrl', title: 'Logo URL', type: 'url', validation: (rule: any) => rule.required() }),
-    defineField({ name: 'imageUrl', title: 'Image URL', type: 'url', validation: (rule: any) => rule.required() }),
+    imageUrlField('logoUrl', 'Logo URL'),
+    imageUrlField('imageUrl', 'Image URL'),
     defineField({ name: 'caption', title: 'Caption', type: 'string', validation: (rule: any) => rule.required() }),
-    defineField({ name: 'href', title: 'Link', type: 'string' }),
+    linkField('href', 'Link'),
   ],
   preview: { select: { title: 'caption' } },
 }
@@ -90,9 +91,9 @@ const addon = {
   fields: [
     defineField({ name: 'title', title: 'Title', type: 'string', validation: (rule: any) => rule.required() }),
     defineField({ name: 'description', title: 'Description', type: 'text', rows: 2, validation: (rule: any) => rule.required() }),
-    defineField({ name: 'iconUrl', title: 'Icon URL', type: 'url', validation: (rule: any) => rule.required() }),
+    imageUrlField('iconUrl', 'Icon URL'),
     defineField({ name: 'price', title: 'Price', type: 'string', validation: (rule: any) => rule.required() }),
-    defineField({ name: 'features', title: 'Features', type: 'array', of: [{ type: 'string' }] }),
+    stringListField('features', 'Features'),
   ],
   preview: { select: { title: 'title', subtitle: 'price' } },
 }

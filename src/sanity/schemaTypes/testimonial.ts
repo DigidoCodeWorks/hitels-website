@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { imageUrlField, altTextField } from '../fields'
 
 export default defineType({
   name: 'testimonial',
@@ -23,17 +24,8 @@ export default defineType({
       rows: 4,
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'imageUrl',
-      title: 'Photo URL',
-      description: 'Hosted on R2, not a Sanity asset — set by the import script.',
-      type: 'url',
-    }),
-    defineField({
-      name: 'imageAlt',
-      title: 'Photo alt text',
-      type: 'string',
-    }),
+    imageUrlField('imageUrl', 'Photo URL', { required: false }),
+    altTextField('imageAlt', 'Photo alt text'),
     defineField({
       name: 'order',
       title: 'Order',

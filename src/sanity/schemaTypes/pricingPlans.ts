@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { linkField, stringListField } from '../fields'
 
 // Site-wide singleton: the 3 pricing cards shown on Home, Pricing, About Us,
 // Custom Website, and Booking Engine (shared/Pricing.astro). Lives here
@@ -27,14 +28,11 @@ export default defineType({
             defineField({ name: 'description', title: 'Description', type: 'text', rows: 2, validation: (rule) => rule.required() }),
             defineField({ name: 'price', title: 'Price', type: 'string', validation: (rule) => rule.required() }),
             defineField({ name: 'priceSuffix', title: 'Price suffix', description: 'e.g. "/ month" — leave blank for none.', type: 'string' }),
-            defineField({ name: 'features', title: 'Features', type: 'array', of: [{ type: 'string' }] }),
+            stringListField('features', 'Features'),
             defineField({ name: 'ctaLabel', title: 'CTA label', type: 'string', validation: (rule) => rule.required() }),
-            defineField({
-              name: 'ctaHref',
-              title: 'CTA link',
+            linkField('ctaHref', 'CTA link', {
+              required: true,
               description: 'Explicit destination — not inferred from the label text (the original code matched on the literal string "Get a quote", which breaks if the label is edited).',
-              type: 'string',
-              validation: (rule) => rule.required(),
             }),
             defineField({
               name: 'theme',
