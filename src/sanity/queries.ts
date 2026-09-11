@@ -79,12 +79,12 @@ export const pageBySlugQuery = defineQuery(`
       _type == "simpleHeroSection" => { headline, subheading },
       _type == "productOfferingsSection" => { offerings },
       _type == "customerStoriesSection" => { cards },
-      _type == "addOnsSection" => { addons },
       _type == "featuresSection" => { features },
       _type == "statsIntroSection" => { headline, body, stats },
       _type == "teamSection" => { headline, body, members },
       _type == "beliefsSection" => { headline, beliefs },
-      _type == "whatIsHitelsSection" => { headline, body, features }
+      _type == "whatIsHitelsSection" => { headline, body, features },
+      _type == "comparisonTableSection" => { plans, rows }
     },
     seo
   }
@@ -97,3 +97,8 @@ export const pageBySlugQuery = defineQuery(`
 export const siteSettingsQuery = defineQuery(
   `*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }`
 )
+
+// Shared "Add-ons" singleton (src/sanity/schemaTypes/addOns.ts) — fetched
+// independently by both Home's and Pricing's AddOns.astro (different
+// layouts, same content), same pattern as siteSettingsQuery.
+export const addOnsQuery = defineQuery(`*[_type == "addOns"][0]{ addons }`)

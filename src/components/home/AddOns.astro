@@ -1,24 +1,18 @@
 ---
+import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import Button from '../shared/Button.astro';
+import { addOnsQuery } from '../../sanity/queries';
 
 // Confirmed hidden on Desktop and Tablet in Figma (hidden="true" on both
 // frames) but visible on Mobile -- not a mistake, a genuine per-breakpoint
 // content difference. Rendered only below the md breakpoint (<768px).
-
-interface Addon {
-  iconUrl: string;
-  title: string;
-  description: string;
-  price: string;
-  features: string[];
-}
-
-interface Props {
-  addons: Addon[];
-}
-
-const { addons } = Astro.props as Props;
+//
+// Self-fetches the shared "Add-Ons" singleton (src/sanity/schemaTypes/
+// addOns.ts) rather than taking it as a prop from the page-builder — same
+// content Pricing's AddOns.astro renders in its own (desktop) layout.
+const addOnsDoc = await sanityClient.fetch(addOnsQuery);
+const addons = addOnsDoc?.addons ?? [];
 ---
 
 <section class="hidden max-md:flex flex-col gap-8 items-center px-4 py-16 relative w-full max-w-[1440px] mx-auto bg-background">
@@ -45,7 +39,7 @@ const { addons } = Astro.props as Props;
             <p class="font-body font-normal text-body-md text-gray">/ month</p>
           </div>
           <div class="flex flex-col gap-4 items-start w-full">
-            {addon.features.map((feature) => (
+            {(addon.features ?? []).map((feature) => (
               <div class="flex gap-2 items-start w-full">
                 <img src={asset('images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
                 <p class="flex-1 font-body font-normal text-body-md text-navy">{feature}</p>

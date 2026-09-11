@@ -29,6 +29,7 @@ export default defineType({
         { type: 'teamSection' },
         { type: 'beliefsSection' },
         { type: 'whatIsHitelsSection' },
+        { type: 'comparisonTableSection' },
         { type: 'testimonialsSection' },
         { type: 'faqSection' },
       ],
