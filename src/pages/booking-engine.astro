@@ -1,62 +1,66 @@
 ---
+import { sanityClient } from 'sanity:client';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/booking-engine/Hero.astro';
 import FeatureSection from '../components/shared/FeatureSection.astro';
 import Pricing from '../components/shared/Pricing.astro';
 import Footer from '../components/shared/Footer.astro';
-import { asset } from '../lib/cdn';
+import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
+import type { PageBySlugQueryResult } from '../../sanity.types';
 
-// The label chip above each heading is a generic, uncustomized Figma component
-// ("Full name" placeholder) in every one of these sections — not real content.
-// Substituted a short topic label per section instead of shipping the placeholder.
-//
-// FeatureSection's `image` prop expects a resolved URL (not an asset()-relative
-// path) — resolved here since this page's content isn't Sanity-driven yet.
-const FEATURES = [
-  {
-    label: 'Design',
-    heading: 'Flawless brand integration',
-    description: "Most booking engines look like an afterthought. We go further than our competitor to ensure a seamless transition from your website to the checkout. We meticulously tailor the typography, colors, and components so the engine feels like a natural, premium extension of your brand.",
-    image: asset('images/booking-engine/features/brand-integration.webp'),
-    imageAlt: 'Booking engine UI matched to a hotel brand',
-    imageFirst: false,
-  },
-  {
-    label: 'Revenue',
-    heading: 'Maximize revenue with custom add-ons',
-    description: "Don't just sell a room, sell an experience. Our platform easily handles custom up-sells during the checkout flow. Whether it's adding a bottle of champagne, booking spa access, applying coupon codes, or reserving multiple rooms, we help you increase your average order value effortlessly.",
-    image: asset('images/booking-engine/features/addons.webp'),
-    imageAlt: 'Checkout flow showing a champagne bottle add-on',
-    imageFirst: true,
-  },
-  {
-    label: 'Analytics',
-    heading: 'Stop guessing what works',
-    description: 'Our booking engine comes with built-in, granular event tracking. Easily monitor every step of the checkout process, track your conversion rates, and measure the exact ROI of your marketing campaigns so you can scale your direct bookings with confidence.',
-    image: asset('images/booking-engine/features/analytics.webp'),
-    imageAlt: 'Checkout funnel chart showing drop-off at each step',
-    imageFirst: false,
-  },
-  {
-    label: 'Security',
-    heading: 'Powerful & secure foundation',
-    description: 'Built on top of the robust Godo property management system, our engine combines enterprise-grade reliability with top-tier security. Your guests enjoy a safe, secure payment process, and you get the peace of mind that your backend is rock solid.',
-    image: asset('images/booking-engine/features/security.webp'),
-    imageAlt: 'Diagram linking the website, a secure checkout, and Godo',
-    imageFirst: true,
-  },
-];
+// Third page converted to the Sanity page-builder pattern, after Home and
+// Custom Website — reuses the same productHeroSection/featuresSection
+// section types those introduced, no new schema needed. Pricing/Footer stay
+// fixed, not page-builder content, same reasoning as the other two.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'booking-engine' });
+
+if (!page) {
+  throw new Error('Missing "page" document with slug "booking-engine" in Sanity — run scripts/seed-booking-engine-page.mjs.');
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'productHeroSection' }> => s._type === 'productHeroSection');
+if (!heroSection) {
+  throw new Error('Booking Engine page document has no productHeroSection — Hero requires one.');
+}
+
+const featuresSection = page.sections.find((s): s is Extract<Section, { _type: 'featuresSection' }> => s._type === 'featuresSection');
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Hitels — A booking engine built to maximize direct revenue';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  'A modern booking engine built to maximize your direct revenue. Say goodbye to clunky, disconnected checkouts and hello to a seamless flow your guests will love.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 ---
 
-<BaseLayout
-	title="Hitels — A booking engine built to maximize direct revenue"
-	description="A modern booking engine built to maximize your direct revenue. Say goodbye to clunky, disconnected checkouts and hello to a seamless flow your guests will love."
->
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
 	<header>
-		<Hero />
+		<Hero
+			headline={heroSection.headline}
+			subheading={heroSection.subheading}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+		/>
 	</header>
 	<main>
-		{FEATURES.map((feature) => <FeatureSection {...feature} />)}
+		{featuresSection?.features.map((feature) => (
+			<FeatureSection
+				label={feature.label}
+				heading={feature.heading}
+				description={feature.description}
+				image={feature.imageUrl}
+				imageAlt={feature.imageAlt ?? ''}
+				imageFirst={feature.imageFirst}
+				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
+				variant="booking-engine"
+			/>
+		))}
 		<Pricing />
 	</main>
 	<Footer />
