@@ -3,24 +3,23 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './src/sanity/schemaTypes'
 
-// Pins direct shortcuts to the singleton-style documents (fixed _id, created
-// by scripts/seed-home-page.mjs / scripts/seed-site-settings.mjs) so editors
-// open them straight away instead of a generic list — then falls back to the
-// normal document-type list for everything else.
+// Pins direct shortcuts to the true singletons (fixed _id, created by
+// scripts/seed-site-settings.mjs) so editors open them straight away instead
+// of a generic list — then falls back to the normal document-type list for
+// everything else.
 //
 // "Pages" is its own list item (not part of the generic document-type
 // fallback below, which excludes 'page' entirely) so every page-builder
 // `page` document — Home, Custom Website, and any future conversion — is
-// reachable from one place, with Home also pinned above it for one-click
-// access to the page editors open most.
+// reachable from one place. No separate pinned shortcut for Home: unlike
+// pricingPlans/siteSettings, "page" isn't a singleton — it's a growing
+// collection Home just happens to be the first member of — so a dedicated
+// Home shortcut sitting next to a "Pages" list that already shows Home one
+// click away was pure redundancy, not a real navigation win.
 const structure = (S: any) =>
   S.list()
     .title('Content')
     .items([
-      S.listItem()
-        .id('homePage')
-        .title('Home Page')
-        .child(S.document().schemaType('page').documentId('homePage')),
       S.listItem()
         .id('pages')
         .title('Pages')
