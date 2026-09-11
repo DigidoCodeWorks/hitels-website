@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
+import type { StructureResolver } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './src/sanity/schemaTypes'
 
@@ -16,7 +17,7 @@ import { schemaTypes } from './src/sanity/schemaTypes'
 // collection Home just happens to be the first member of — so a dedicated
 // Home shortcut sitting next to a "Pages" list that already shows Home one
 // click away was pure redundancy, not a real navigation win.
-const structure = (S: any) =>
+const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
     .items([
@@ -38,7 +39,7 @@ const structure = (S: any) =>
         .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item: any) => !['page', 'pricingPlans', 'addOns', 'siteSettings'].includes(item.getId())
+        (item) => !['page', 'pricingPlans', 'addOns', 'siteSettings'].includes(item.getId() ?? '')
       ),
     ])
 

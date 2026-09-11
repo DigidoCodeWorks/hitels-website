@@ -13,9 +13,10 @@ export default tseslint.config(
   ...eslintPluginAstro.configs['flat/recommended'],
   {
     rules: {
-      // Astro components commonly use `any` for Sanity query results pending
-      // the TypeGen refactor — don't block on this yet.
-      '@typescript-eslint/no-explicit-any': 'warn',
+      // The TypeGen refactor removed every remaining `any` from the codebase
+      // (Sanity query results are properly typed now) — enforced as an error
+      // so the CI lint gate actually blocks new ones, not just warns.
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': 'warn',
     },
   }

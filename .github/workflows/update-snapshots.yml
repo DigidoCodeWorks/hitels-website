@@ -1,0 +1,66 @@
+name: Update Playwright Snapshots
+
+# Manual, one-off (and repeatable) helper: (re)generates the Playwright
+# screenshot baseline under tests/**/*-snapshots/ and commits it to whatever
+# branch this is run against, then pushes.
+#
+# Why this exists instead of just running `playwright test --update-snapshots`
+# locally and committing the result: Playwright names snapshot files with the
+# OS they were captured on (e.g. "home-chromium-darwin.png" on macOS,
+# "home-chromium-linux.png" on Ubuntu). ci.yml's e2e job runs on
+# ubuntu-latest, so a baseline captured on a non-Linux machine has the wrong
+# filename and CI would still report "no baseline to compare" despite a
+# baseline existing in the repo. Running this workflow (on ubuntu-latest, the
+# same image ci.yml uses) is the only way to produce a baseline CI will
+# actually match against, short of running Playwright's official Docker
+# image locally.
+#
+# Run it: Actions tab → "Update Playwright Snapshots" → Run workflow → pick
+# the branch. Re-run it any time real, intentional visual changes need a new
+# baseline (that's the normal workflow for this kind of test — never hand-edit
+# the .png files).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-snapshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run build
+        env:
+          PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
+          PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
+          PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+          PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL }}
+          PUBLIC_CF_BEACON_TOKEN: ${{ secrets.PUBLIC_CF_BEACON_TOKEN }}
+
+      - run: npx playwright test --update-snapshots
+        continue-on-error: true # a snapshot run "fails" any test whose only issue is a diff it just resolved by writing a new baseline — the write already happened, so there's nothing left to react to
+
+      - name: Commit updated snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add 'tests/**/*.png'
+          if git diff --staged --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            git commit -m "Update Playwright screenshot baselines"
+            git push origin HEAD:${{ github.ref_name }}
+          fi

@@ -42,7 +42,7 @@
   --color-brand-blue: #0C475C; /* Brand/Blue — secondary brand color */
 
   /* Typography */
-  --font-heading: "Garnett Medium", Georgia, serif;
+  --font-heading: "Garnett Medium", georgia, serif;
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /*
