@@ -25,6 +25,18 @@ export type TestimonialsSection = {
   note?: string;
 };
 
+export type ComparisonTableSection = {
+  _type: "comparisonTableSection";
+  plans: Array<string>;
+  rows: Array<{
+    label: string;
+    isGroupHeader: boolean;
+    values?: Array<string>;
+    _type: "comparisonRow";
+    _key: string;
+  }>;
+};
+
 export type WhatIsHitelsSection = {
   _type: "whatIsHitelsSection";
   headline: string;
@@ -91,15 +103,7 @@ export type FeaturesSection = {
 
 export type AddOnsSection = {
   _type: "addOnsSection";
-  addons: Array<{
-    title: string;
-    description: string;
-    iconUrl: string;
-    price: string;
-    features?: Array<string>;
-    _type: "addon";
-    _key: string;
-  }>;
+  note?: string;
 };
 
 export type CustomerStoriesSection = {
@@ -263,6 +267,23 @@ export type Post = {
   metaDescription?: string;
 };
 
+export type AddOns = {
+  _id: string;
+  _type: "addOns";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  addons: Array<{
+    title: string;
+    description: string;
+    iconUrl: string;
+    price: string;
+    features?: Array<string>;
+    _type: "addon";
+    _key: string;
+  }>;
+};
+
 export type Redirect = {
   _id: string;
   _type: "redirect";
@@ -351,6 +372,9 @@ export type Page = {
     | ({
         _key: string;
       } & WhatIsHitelsSection)
+    | ({
+        _key: string;
+      } & ComparisonTableSection)
     | ({
         _key: string;
       } & TestimonialsSection)
@@ -481,6 +505,7 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | FaqSection
   | TestimonialsSection
+  | ComparisonTableSection
   | WhatIsHitelsSection
   | BeliefsSection
   | TeamSection
@@ -498,6 +523,7 @@ export type AllSanitySchemaTypes =
   | Testimonial
   | Faq
   | Post
+  | AddOns
   | Redirect
   | SiteSettings
   | PricingPlans
@@ -636,21 +662,12 @@ export type PricingPlansQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: pageBySlugQuery
-// Query: *[_type == "page" && slug.current == $slug][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productHeroSection" => {        headline, subheading,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref,        imageUrl, imageAlt      },      _type == "simpleHeroSection" => { headline, subheading },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons },      _type == "featuresSection" => { features },      _type == "statsIntroSection" => { headline, body, stats },      _type == "teamSection" => { headline, body, members },      _type == "beliefsSection" => { headline, beliefs },      _type == "whatIsHitelsSection" => { headline, body, features }    },    seo  }
+// Query: *[_type == "page" && slug.current == $slug][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productHeroSection" => {        headline, subheading,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref,        imageUrl, imageAlt      },      _type == "simpleHeroSection" => { headline, subheading },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "featuresSection" => { features },      _type == "statsIntroSection" => { headline, body, stats },      _type == "teamSection" => { headline, body, members },      _type == "beliefsSection" => { headline, beliefs },      _type == "whatIsHitelsSection" => { headline, body, features },      _type == "comparisonTableSection" => { plans, rows }    },    seo  }
 export type PageBySlugQueryResult = {
   sections: Array<
     | {
         _key: string;
         _type: "addOnsSection";
-        addons: Array<{
-          title: string;
-          description: string;
-          iconUrl: string;
-          price: string;
-          features?: Array<string>;
-          _type: "addon";
-          _key: string;
-        }>;
       }
     | {
         _key: string;
@@ -660,6 +677,18 @@ export type PageBySlugQueryResult = {
           title: string;
           description: string;
           _type: "titledItem";
+          _key: string;
+        }>;
+      }
+    | {
+        _key: string;
+        _type: "comparisonTableSection";
+        plans: Array<string>;
+        rows: Array<{
+          label: string;
+          isGroupHeader: boolean;
+          values?: Array<string>;
+          _type: "comparisonRow";
           _key: string;
         }>;
       }
@@ -800,6 +829,21 @@ export type SiteSettingsQueryResult = {
   organizationLogoUrl: string;
 } | null;
 
+// Source: src/sanity/queries.ts
+// Variable: addOnsQuery
+// Query: *[_type == "addOns"][0]{ addons }
+export type AddOnsQueryResult = {
+  addons: Array<{
+    title: string;
+    description: string;
+    iconUrl: string;
+    price: string;
+    features?: Array<string>;
+    _type: "addon";
+    _key: string;
+  }>;
+} | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -812,7 +856,8 @@ declare module "@sanity/client" {
     '*[_type == "post" && defined(slug.current)]{ "slug": slug.current }': PostSlugsQueryResult;
     '*[_type == "post" && slug.current == $slug][0]{\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription\n}': PostBySlugQueryResult;
     '*[_type == "pricingPlans"][0]{ plans }': PricingPlansQueryResult;
-    '\n  *[_type == "page" && slug.current == $slug][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref,\n        imageUrl, imageAlt\n      },\n      _type == "simpleHeroSection" => { headline, subheading },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons },\n      _type == "featuresSection" => { features },\n      _type == "statsIntroSection" => { headline, body, stats },\n      _type == "teamSection" => { headline, body, members },\n      _type == "beliefsSection" => { headline, beliefs },\n      _type == "whatIsHitelsSection" => { headline, body, features }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
+    '\n  *[_type == "page" && slug.current == $slug][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref,\n        imageUrl, imageAlt\n      },\n      _type == "simpleHeroSection" => { headline, subheading },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "featuresSection" => { features },\n      _type == "statsIntroSection" => { headline, body, stats },\n      _type == "teamSection" => { headline, body, members },\n      _type == "beliefsSection" => { headline, beliefs },\n      _type == "whatIsHitelsSection" => { headline, body, features },\n      _type == "comparisonTableSection" => { plans, rows }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
     '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
+    '*[_type == "addOns"][0]{ addons }': AddOnsQueryResult;
   }
 }

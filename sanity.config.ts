@@ -29,12 +29,16 @@ const structure = (S: any) =>
         .title('Pricing Plans')
         .child(S.document().schemaType('pricingPlans').documentId('pricingPlans')),
       S.listItem()
+        .id('addOns')
+        .title('Add-Ons')
+        .child(S.document().schemaType('addOns').documentId('addOns')),
+      S.listItem()
         .id('siteSettings')
         .title('Site Settings')
         .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item: any) => !['page', 'pricingPlans', 'siteSettings'].includes(item.getId())
+        (item: any) => !['page', 'pricingPlans', 'addOns', 'siteSettings'].includes(item.getId())
       ),
     ])
 

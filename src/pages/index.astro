@@ -81,7 +81,7 @@ const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 		{page.sections.map((section) => {
 			switch (section._type) {
 				case 'addOnsSection':
-					return <AddOns addons={section.addons} />;
+					return <AddOns />;
 				case 'faqSection':
 					return <Faq />;
 				default:

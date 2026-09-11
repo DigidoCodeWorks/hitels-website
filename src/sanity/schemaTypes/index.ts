@@ -9,6 +9,7 @@ import page from './page'
 import pricingPlans from './pricingPlans'
 import siteSettings from './siteSettings'
 import redirect from './redirect'
+import addOns from './addOns'
 import {
   heroSection,
   productHeroSection,
@@ -21,6 +22,7 @@ import {
   teamSection,
   beliefsSection,
   whatIsHitelsSection,
+  comparisonTableSection,
   testimonialsSection,
   faqSection,
 } from './sections'
@@ -30,6 +32,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   pricingPlans,
   siteSettings,
   redirect,
+  addOns,
   post,
   faq,
   testimonial,
@@ -46,6 +49,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   teamSection,
   beliefsSection,
   whatIsHitelsSection,
+  comparisonTableSection,
   testimonialsSection,
   faqSection,
 ]

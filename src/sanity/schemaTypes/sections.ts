@@ -171,7 +171,13 @@ export const customerStoriesSection = defineType({
   ],
 })
 
-const addon = {
+// Exported (not a local const like the other per-section item shapes) since
+// it's also used by src/sanity/schemaTypes/addOns.ts, the shared "Add-ons"
+// singleton — the same 3 add-ons were previously duplicated verbatim across
+// Home's (mobile) and Pricing's (desktop) hardcoded components, so this
+// content now lives in one place both pages' AddOns.astro pull from
+// independently, instead of two copies that could silently drift apart.
+export const addon = {
   type: 'object',
   name: 'addon',
   fields: [
@@ -184,13 +190,16 @@ const addon = {
   preview: { select: { title: 'title', subtitle: 'price' } },
 }
 
+// Marker section (see testimonialsSection/faqSection below): tells the page
+// builder "render the Add-ons component here" — the component pulls the
+// actual content from the shared addOns singleton independently. Used by
+// both Home and Pricing.
 export const addOnsSection = defineType({
   name: 'addOnsSection',
-  title: 'Add-Ons',
+  title: 'Add-Ons (from Add-Ons collection)',
   type: 'object',
-  fields: [
-    defineField({ name: 'addons', title: 'Add-ons', type: 'array', validation: (rule) => rule.required().min(1), of: [addon] }),
-  ],
+  fields: [defineField({ name: 'note', title: 'Note', type: 'string', readOnly: true, initialValue: 'Pulls live from the Add-Ons collection — nothing to configure here.' })],
+  preview: { select: {}, prepare: () => ({ title: 'Add-Ons section' }) },
 })
 
 // Marker sections: no fields of their own. They tell the page builder "render
@@ -305,4 +314,51 @@ export const whatIsHitelsSection = defineType({
     defineField({ name: 'features', title: 'Features', type: 'array', validation: (rule) => rule.required().min(1), of: [titledItem] }),
   ],
   preview: { select: { title: 'headline' } },
+})
+
+// Each value is a plain string rather than a boolean/string union (Sanity
+// has no such field type): "true" renders a checkmark, "false" renders an
+// empty cell, anything else renders as literal text — documented in the
+// field description so editors don't need to read schema code to know the
+// convention. A group-header row (e.g. "Design", "Technical") sets
+// isGroupHeader and leaves values empty.
+const comparisonRow = {
+  type: 'object',
+  name: 'comparisonRow',
+  fields: [
+    defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule: any) => rule.required() }),
+    defineField({
+      name: 'isGroupHeader',
+      title: 'Group header row',
+      description: 'A section divider with no values (e.g. "Design", "Technical") — turn this on instead of filling in Values.',
+      type: 'boolean',
+      initialValue: false,
+      validation: (rule: any) => rule.required(),
+    }),
+    defineField({
+      name: 'values',
+      title: 'Values',
+      description: 'One value per plan column, in the same order as Plans below. Type "true" for a checkmark, "false" for an empty cell, or any other text to show it literally. Leave empty for a group header row.',
+      type: 'array',
+      of: [{ type: 'string' }],
+    }),
+  ],
+  preview: { select: { title: 'label' } },
+}
+
+export const comparisonTableSection = defineType({
+  name: 'comparisonTableSection',
+  title: 'Comparison Table',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'plans',
+      title: 'Plans',
+      description: 'Column headers — each row\'s Values line up with these in order.',
+      type: 'array',
+      validation: (rule) => rule.required().min(1),
+      of: [{ type: 'string' }],
+    }),
+    defineField({ name: 'rows', title: 'Rows', type: 'array', validation: (rule) => rule.required().min(1), of: [comparisonRow] }),
+  ],
 })

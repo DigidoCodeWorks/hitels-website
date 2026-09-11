@@ -1,30 +1,14 @@
 ---
+import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import Button from '../shared/Button.astro';
+import { addOnsQuery } from '../../sanity/queries';
 
-const ADDONS = [
-  {
-    icon: 'images/home/addons/icon-content.svg',
-    title: 'Content',
-    description: 'AI blog content engine based on relevant keywords and competitive analysis',
-    price: 'ISK 18.900',
-    features: ['16 articles per month', 'Automatic topic suggestions'],
-  },
-  {
-    icon: 'images/home/addons/icon-seo.svg',
-    title: 'SEO',
-    description: 'SEO optimization to rank higher in search results in partnership with Digido',
-    price: 'ISK 199.900',
-    features: ['SEO optimized content and structure', 'Analytics dashboard'],
-  },
-  {
-    icon: 'images/home/addons/icon-ads.svg',
-    title: 'Ads',
-    description: 'Ad designs for the most common social media platforms in partnership with Flóra',
-    price: 'ISK 30.000',
-    features: ['4 social media ad designs per month', '1080 × 1920 and 1920 × 1080'],
-  },
-];
+// Self-fetches the shared "Add-Ons" singleton (src/sanity/schemaTypes/
+// addOns.ts) rather than a hardcoded array — same content Home's
+// AddOns.astro renders in its own (mobile) layout.
+const addOnsDoc = await sanityClient.fetch(addOnsQuery);
+const ADDONS = addOnsDoc?.addons ?? [];
 ---
 
 <section class="max-md:hidden flex flex-col gap-12 items-center px-[100px] max-lg:px-10 py-16 max-lg:py-14 relative w-full max-w-[1440px] mx-auto bg-background">
@@ -41,7 +25,7 @@ const ADDONS = [
             <div class="flex items-start justify-between w-full">
               <h3 class="font-heading text-h5 text-navy whitespace-nowrap">{addon.title}</h3>
               <div class="flex items-center justify-center rounded-full size-8 bg-navy shrink-0">
-                <img src={asset(addon.icon)} alt="" class="size-5" />
+                <img src={addon.iconUrl} alt="" class="size-5" />
               </div>
             </div>
             <p class="font-body font-normal text-body-md text-gray w-full">{addon.description}</p>
@@ -51,7 +35,7 @@ const ADDONS = [
             <p class="font-body font-normal text-body-md text-gray">/ month</p>
           </div>
           <div class="flex flex-col gap-4 items-start w-full">
-            {addon.features.map((feature) => (
+            {(addon.features ?? []).map((feature) => (
               <div class="flex gap-2 items-start w-full">
                 <img src={asset('images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
                 <p class="flex-1 font-body font-normal text-body-md text-navy">{feature}</p>
