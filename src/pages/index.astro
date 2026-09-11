@@ -11,8 +11,8 @@ import Pricing from '../components/shared/Pricing.astro';
 import AddOns from '../components/home/AddOns.astro';
 import Faq from '../components/home/Faq.astro';
 import Footer from '../components/shared/Footer.astro';
-import { homePageQuery, siteSettingsQuery } from '../sanity/queries';
-import type { HomePageQueryResult } from '../../sanity.types';
+import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
+import type { PageBySlugQueryResult } from '../../sanity.types';
 
 // Home is the first page converted to the Sanity page-builder pattern (see
 // src/sanity/schemaTypes/page.ts). Benefits, Pricing, PartnerLogos, and
@@ -21,9 +21,9 @@ import type { HomePageQueryResult } from '../../sanity.types';
 // too much bespoke per-logo sizing to genericize safely, Benefits has heavy
 // bespoke interactivity tightly coupled to its exact 3-card layout, and
 // Pricing/Footer are global/shared across pages, not Home-specific content.
-type Section = NonNullable<HomePageQueryResult>['sections'][number];
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch(homePageQuery);
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'home' });
 
 if (!page) {
   throw new Error('Missing "page" document with slug "home" in Sanity — run scripts/seed-home-page.mjs.');

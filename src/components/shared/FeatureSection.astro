@@ -1,11 +1,11 @@
 ---
-import { asset } from '../../lib/cdn';
 import ArrowLink from './ArrowLink.astro';
 
 interface Props {
   label: string;
   heading: string;
   description: string;
+  /** A resolved image URL (R2 or otherwise) — callers resolve their own asset() paths, this component doesn't. */
   image: string;
   imageAlt: string;
   imageFirst?: boolean;
@@ -59,7 +59,7 @@ const sectionClass = variant === 'custom-website' && !imageFirst ? `${styles.sec
 <section class={sectionClass}>
   {domImageFirst && (
     <div data-reveal="fade" class={`${styles.imageWrapper} ${imageBg}`}>
-      <img src={asset(image)} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />
+      <img src={image} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />
     </div>
   )}
   <div data-reveal style="--reveal-delay: 120ms" class={styles.content}>
@@ -72,7 +72,7 @@ const sectionClass = variant === 'custom-website' && !imageFirst ? `${styles.sec
   </div>
   {!domImageFirst && (
     <div data-reveal="fade" style="--reveal-delay: 120ms" class={`${styles.imageWrapper} ${imageBg}`}>
-      <img src={asset(image)} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />
+      <img src={image} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />
     </div>
   )}
 </section>

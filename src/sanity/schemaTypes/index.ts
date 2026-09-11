@@ -11,9 +11,11 @@ import siteSettings from './siteSettings'
 import redirect from './redirect'
 import {
   heroSection,
+  productHeroSection,
   productOfferingsSection,
   customerStoriesSection,
   addOnsSection,
+  featuresSection,
   testimonialsSection,
   faqSection,
 } from './sections'
@@ -29,9 +31,11 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   story,
   storiesClosingCard,
   heroSection,
+  productHeroSection,
   productOfferingsSection,
   customerStoriesSection,
   addOnsSection,
+  featuresSection,
   testimonialsSection,
   faqSection,
 ]

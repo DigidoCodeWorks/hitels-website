@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { imageUrlField, linkField, stringListField } from '../fields'
+import { altTextField, imageUrlField, linkField, stringListField } from '../fields'
 
 // Page-builder section types for the `page` document's `sections` array.
 // Each is an inline object (not its own document) — the closed set an editor
@@ -35,6 +35,72 @@ export const heroSection = defineType({
     linkField('secondaryButtonHref', 'Secondary button link'),
   ],
   preview: { select: { title: 'headline' } },
+})
+
+// Generic product-landing-page hero: headline + one subheading paragraph +
+// two CTA buttons. Distinct from `heroSection` (Home's hero splits its
+// subheading into desktop/mobile variants and has no shared name with this
+// shape) — named generically rather than "customWebsiteHeroSection" since
+// Booking Engine's hero is the same shape and can reuse this type when it's
+// converted. The hero's collage images, decorative background, and button
+// icons stay hardcoded in the Astro component — bespoke per-page visual
+// treatment, not editable content (same reasoning as Home's PartnerLogos/
+// Benefits staying out of the page builder entirely).
+export const productHeroSection = defineType({
+  name: 'productHeroSection',
+  title: 'Product Hero',
+  type: 'object',
+  fields: [
+    defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'subheading', title: 'Subheading', type: 'text', rows: 2, validation: (rule) => rule.required() }),
+    defineField({ name: 'primaryButtonLabel', title: 'Primary button label', type: 'string' }),
+    linkField('primaryButtonHref', 'Primary button link'),
+    defineField({ name: 'secondaryButtonLabel', title: 'Secondary button label', type: 'string' }),
+    linkField('secondaryButtonHref', 'Secondary button link'),
+  ],
+  preview: { select: { title: 'headline' } },
+})
+
+const featureItem = {
+  type: 'object',
+  name: 'featureItem',
+  fields: [
+    defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule: any) => rule.required() }),
+    defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule: any) => rule.required() }),
+    defineField({ name: 'description', title: 'Description', type: 'text', rows: 3, validation: (rule: any) => rule.required() }),
+    imageUrlField('imageUrl', 'Image URL'),
+    altTextField('imageAlt', 'Image alt text'),
+    defineField({
+      name: 'imageFirst',
+      title: 'Image first',
+      description: 'Show the image before the text on desktop.',
+      type: 'boolean',
+      initialValue: false,
+      validation: (rule: any) => rule.required(),
+    }),
+    defineField({
+      name: 'imageHasLightBackground',
+      title: 'Light background behind image',
+      description: 'Turn on for images that need a light fill behind them (e.g. a screenshot with transparent padding).',
+      type: 'boolean',
+      initialValue: false,
+      validation: (rule: any) => rule.required(),
+    }),
+  ],
+  preview: { select: { title: 'heading', subtitle: 'label' } },
+}
+
+// Which of FeatureSection.astro's two layout variants renders this section
+// is a per-page visual choice (every feature on one page always shares one
+// variant), not per-feature content — so it's set once by the Astro page
+// that renders this section, not stored here.
+export const featuresSection = defineType({
+  name: 'featuresSection',
+  title: 'Features',
+  type: 'object',
+  fields: [
+    defineField({ name: 'features', title: 'Features', type: 'array', validation: (rule) => rule.required().min(1), of: [featureItem] }),
+  ],
 })
 
 const offering = {

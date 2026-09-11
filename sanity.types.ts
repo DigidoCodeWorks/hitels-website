@@ -25,6 +25,21 @@ export type TestimonialsSection = {
   note?: string;
 };
 
+export type FeaturesSection = {
+  _type: "featuresSection";
+  features: Array<{
+    label: string;
+    heading: string;
+    description: string;
+    imageUrl: string;
+    imageAlt?: string;
+    imageFirst: boolean;
+    imageHasLightBackground: boolean;
+    _type: "featureItem";
+    _key: string;
+  }>;
+};
+
 export type AddOnsSection = {
   _type: "addOnsSection";
   addons: Array<{
@@ -63,6 +78,16 @@ export type ProductOfferingsSection = {
     _type: "offering";
     _key: string;
   }>;
+};
+
+export type ProductHeroSection = {
+  _type: "productHeroSection";
+  headline: string;
+  subheading: string;
+  primaryButtonLabel?: string;
+  primaryButtonHref?: string;
+  secondaryButtonLabel?: string;
+  secondaryButtonHref?: string;
 };
 
 export type HeroSection = {
@@ -181,6 +206,17 @@ export type Post = {
   metaDescription?: string;
 };
 
+export type Redirect = {
+  _id: string;
+  _type: "redirect";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  source: string;
+  destination: string;
+  permanent: boolean;
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -230,6 +266,9 @@ export type Page = {
       } & HeroSection)
     | ({
         _key: string;
+      } & ProductHeroSection)
+    | ({
+        _key: string;
       } & ProductOfferingsSection)
     | ({
         _key: string;
@@ -237,6 +276,9 @@ export type Page = {
     | ({
         _key: string;
       } & AddOnsSection)
+    | ({
+        _key: string;
+      } & FeaturesSection)
     | ({
         _key: string;
       } & TestimonialsSection)
@@ -367,9 +409,11 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | FaqSection
   | TestimonialsSection
+  | FeaturesSection
   | AddOnsSection
   | CustomerStoriesSection
   | ProductOfferingsSection
+  | ProductHeroSection
   | HeroSection
   | StoriesClosingCard
   | Story
@@ -377,6 +421,7 @@ export type AllSanitySchemaTypes =
   | Testimonial
   | Faq
   | Post
+  | Redirect
   | SiteSettings
   | PricingPlans
   | Page
@@ -513,9 +558,9 @@ export type PricingPlansQueryResult = {
 } | null;
 
 // Source: src/sanity/queries.ts
-// Variable: homePageQuery
-// Query: *[_type == "page" && slug.current == "home"][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons }    },    seo  }
-export type HomePageQueryResult = {
+// Variable: pageBySlugQuery
+// Query: *[_type == "page" && slug.current == $slug][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productHeroSection" => {        headline, subheading,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons },      _type == "featuresSection" => { features }    },    seo  }
+export type PageBySlugQueryResult = {
   sections: Array<
     | {
         _key: string;
@@ -548,10 +593,35 @@ export type HomePageQueryResult = {
       }
     | {
         _key: string;
+        _type: "featuresSection";
+        features: Array<{
+          label: string;
+          heading: string;
+          description: string;
+          imageUrl: string;
+          imageAlt?: string;
+          imageFirst: boolean;
+          imageHasLightBackground: boolean;
+          _type: "featureItem";
+          _key: string;
+        }>;
+      }
+    | {
+        _key: string;
         _type: "heroSection";
         headline: string;
         subheadingDesktop: string;
         subheadingMobile: string;
+        primaryButtonLabel: string | null;
+        primaryButtonHref: string | null;
+        secondaryButtonLabel: string | null;
+        secondaryButtonHref: string | null;
+      }
+    | {
+        _key: string;
+        _type: "productHeroSection";
+        headline: string;
+        subheading: string;
         primaryButtonLabel: string | null;
         primaryButtonHref: string | null;
         secondaryButtonLabel: string | null;
@@ -608,7 +678,7 @@ declare module "@sanity/client" {
     '*[_type == "post" && defined(slug.current)]{ "slug": slug.current }': PostSlugsQueryResult;
     '*[_type == "post" && slug.current == $slug][0]{\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription\n}': PostBySlugQueryResult;
     '*[_type == "pricingPlans"][0]{ plans }': PricingPlansQueryResult;
-    '\n  *[_type == "page" && slug.current == "home"][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons }\n    },\n    seo\n  }\n': HomePageQueryResult;
+    '\n  *[_type == "page" && slug.current == $slug][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons },\n      _type == "featuresSection" => { features }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
     '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
   }
 }
