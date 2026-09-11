@@ -1,6 +1,8 @@
 ---
+import { sanityClient } from 'sanity:client';
 import '../styles/global.css';
 import { asset } from '../lib/cdn';
+import { siteSettingsQuery } from '../sanity/queries';
 
 interface Props {
   title: string;
@@ -10,22 +12,32 @@ interface Props {
   noindex?: boolean;
 }
 
+// Site-wide singleton (see src/sanity/schemaTypes/siteSettings.ts) — sources
+// the Organization JSON-LD and the OG image fallback below. title/description
+// stay required props (not sourced here) so every existing call site keeps
+// working unchanged; a page opts into the site default by passing its own
+// resolved `page.seo?.title ?? siteSettings.defaultSeoTitle`, not by this
+// layout reaching for it implicitly.
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+
 const {
   title,
   description,
-  ogImage = asset('images/home/hero/mockup-desktop.webp'),
+  ogImage = siteSettings?.defaultOgImage ?? asset('images/home/hero/mockup-desktop.webp'),
   ogType = 'website',
   noindex = false,
 } = Astro.props;
+
+const siteName = siteSettings?.siteName ?? 'Hitels';
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const organizationSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'Organization',
-	name: 'Hitels',
+	name: siteSettings?.organizationName ?? 'Hitels',
 	url: Astro.site?.toString(),
-	logo: asset('images/home/footer/hitels-logo.svg'),
+	logo: siteSettings?.organizationLogoUrl ?? asset('images/home/footer/hitels-logo.svg'),
 };
 ---
 
@@ -43,7 +55,7 @@ const organizationSchema = {
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 
 		<meta property="og:type" content={ogType} />
-		<meta property="og:site_name" content="Hitels" />
+		<meta property="og:site_name" content={siteName} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalURL} />

@@ -3,11 +3,11 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './src/sanity/schemaTypes'
 
-// Pins direct shortcuts to the two singleton-style documents (fixed _id,
-// created by scripts/seed-home-page.mjs) so editors open them straight away
-// instead of a generic list — then falls back to the normal document-type
-// list for everything else. No prior singleton/structure customization
-// existed in this project; this is the first.
+// Pins direct shortcuts to the singleton-style documents (fixed _id, created
+// by scripts/seed-home-page.mjs / scripts/seed-site-settings.mjs) so editors
+// open them straight away instead of a generic list — then falls back to the
+// normal document-type list for everything else. No prior singleton/
+// structure customization existed in this project; this is the first.
 const structure = (S: any) =>
   S.list()
     .title('Content')
@@ -20,9 +20,13 @@ const structure = (S: any) =>
         .id('pricingPlans')
         .title('Pricing Plans')
         .child(S.document().schemaType('pricingPlans').documentId('pricingPlans')),
+      S.listItem()
+        .id('siteSettings')
+        .title('Site Settings')
+        .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item: any) => !['page', 'pricingPlans'].includes(item.getId())
+        (item: any) => !['page', 'pricingPlans', 'siteSettings'].includes(item.getId())
       ),
     ])
 
