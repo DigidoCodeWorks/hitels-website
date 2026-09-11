@@ -18,7 +18,7 @@ interface Props {
   addons: Addon[];
 }
 
-const { addons } = Astro.props;
+const { addons } = Astro.props as Props;
 ---
 
 <section class="hidden max-md:flex flex-col gap-8 items-center px-4 py-16 relative w-full max-w-[1440px] mx-auto bg-background">

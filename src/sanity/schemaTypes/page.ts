@@ -15,6 +15,7 @@ export default defineType({
       name: 'sections',
       title: 'Sections',
       type: 'array',
+      validation: (rule) => rule.required().min(1),
       of: [
         { type: 'heroSection' },
         { type: 'productOfferingsSection' },

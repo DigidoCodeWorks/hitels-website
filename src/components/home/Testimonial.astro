@@ -1,18 +1,9 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
+import { testimonialsQuery } from '../../sanity/queries';
 
-interface SanityTestimonial {
-  name: string;
-  role?: string;
-  quote: string;
-  imageUrl?: string;
-  imageAlt?: string;
-}
-
-const rows = await sanityClient.fetch<SanityTestimonial[]>(
-  `*[_type == "testimonial"] | order(order asc){ name, role, quote, imageUrl, imageAlt }`
-);
+const rows = await sanityClient.fetch(testimonialsQuery);
 
 const testimonials = rows.map((t) => ({
   photo: t.imageUrl ?? asset('images/home/testimonial/photo.webp'),

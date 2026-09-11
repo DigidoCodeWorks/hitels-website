@@ -1,21 +1,20 @@
 ---
 import { sanityClient } from 'sanity:client';
+import type { PortableTextBlock } from '@portabletext/types';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/blog-detail/Hero.astro';
 import PostBody from '../../components/blog-detail/PostBody.astro';
 import Footer from '../../components/shared/Footer.astro';
+import { postSlugsQuery, postBySlugQuery } from '../../sanity/queries';
 
 export async function getStaticPaths() {
-  const posts = await sanityClient.fetch(`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`);
-  return posts.map((post: { slug: string }) => ({ params: { slug: post.slug } }));
+  const posts = await sanityClient.fetch(postSlugsQuery);
+  return posts.map((post) => ({ params: { slug: post.slug } }));
 }
 
 const { slug } = Astro.params;
 
-const post = await sanityClient.fetch(
-  `*[_type == "post" && slug.current == $slug][0]`,
-  { slug }
-);
+const post = await sanityClient.fetch(postBySlugQuery, { slug });
 
 if (!post) {
   return Astro.redirect('/blog');
@@ -34,18 +33,18 @@ const articleSchema = {
 
 <BaseLayout
 	title={`${post.metaTitle || post.title} — Hitels`}
-	description={post.metaDescription || post.shortDescription}
-	ogImage={post.imageUrl}
+	description={post.metaDescription || post.shortDescription || post.title}
+	ogImage={post.imageUrl ?? undefined}
 	ogType="article"
 >
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
 	</Fragment>
 	<header>
-		<Hero title={post.title} imageUrl={post.imageUrl} imageAlt={post.imageAlt} />
+		<Hero title={post.title} imageUrl={post.imageUrl ?? undefined} imageAlt={post.imageAlt ?? undefined} />
 	</header>
 	<main>
-		<PostBody body={post.body} />
+		<PostBody body={(post.body ?? []) as PortableTextBlock[]} />
 	</main>
 	<Footer />
 </BaseLayout>

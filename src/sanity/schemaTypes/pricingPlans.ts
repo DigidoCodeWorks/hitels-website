@@ -12,6 +12,9 @@ export default defineType({
   name: 'pricingPlans',
   title: 'Pricing Plans',
   type: 'document',
+  // @ts-expect-error — a real, supported Sanity Studio feature (locks
+  // create/delete for a singleton document) that isn't part of defineType's
+  // public TS surface.
   __experimental_actions: ['update', 'publish'],
   fields: [
     defineField({

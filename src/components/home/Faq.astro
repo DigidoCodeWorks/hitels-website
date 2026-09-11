@@ -1,14 +1,13 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
+import { faqsQuery } from '../../sanity/queries';
 
 // No "Plus"/collapsed-state icon asset exists in the source — only "Minus".
 // The plus is synthesized from two overlaid copies of minus.svg: one fixed
 // horizontal bar, one that rotates 90deg <-> 0deg to form/collapse the
 // vertical stroke of the "+".
-const faqs = await sanityClient.fetch<{ question: string; answer: string }[]>(
-  `*[_type == "faq"] | order(order asc){ question, answer }`
-);
+const faqs = await sanityClient.fetch(faqsQuery);
 const FAQS = faqs.map((f) => ({ q: f.question, a: f.answer }));
 
 const faqSchema = {

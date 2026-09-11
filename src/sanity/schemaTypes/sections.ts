@@ -57,7 +57,7 @@ export const productOfferingsSection = defineType({
   title: 'Product Offerings',
   type: 'object',
   fields: [
-    defineField({ name: 'offerings', title: 'Offerings', type: 'array', of: [offering] }),
+    defineField({ name: 'offerings', title: 'Offerings', type: 'array', validation: (rule) => rule.required().min(1), of: [offering] }),
   ],
 })
 // Astro-side alternates the background color behind each offering's image by
@@ -71,7 +71,7 @@ const storyCard = {
     imageUrlField('logoUrl', 'Logo URL'),
     imageUrlField('imageUrl', 'Image URL'),
     defineField({ name: 'caption', title: 'Caption', type: 'string', validation: (rule: any) => rule.required() }),
-    linkField('href', 'Link'),
+    linkField('href', 'Link', { required: true }),
   ],
   preview: { select: { title: 'caption' } },
 }
@@ -81,7 +81,7 @@ export const customerStoriesSection = defineType({
   title: 'Customer Stories',
   type: 'object',
   fields: [
-    defineField({ name: 'cards', title: 'Cards', type: 'array', of: [storyCard] }),
+    defineField({ name: 'cards', title: 'Cards', type: 'array', validation: (rule) => rule.required().min(1), of: [storyCard] }),
   ],
 })
 
@@ -103,7 +103,7 @@ export const addOnsSection = defineType({
   title: 'Add-Ons',
   type: 'object',
   fields: [
-    defineField({ name: 'addons', title: 'Add-ons', type: 'array', of: [addon] }),
+    defineField({ name: 'addons', title: 'Add-ons', type: 'array', validation: (rule) => rule.required().min(1), of: [addon] }),
   ],
 })
 

@@ -26,12 +26,20 @@ const structure = (S: any) =>
       ),
     ])
 
+// This file is loaded in two very different contexts: by Vite/Astro for the
+// embedded Studio (runs in the browser — needs import.meta.env.PUBLIC_*,
+// which Vite statically replaces at build time), and by the plain-Node
+// `sanity` CLI for schema extract/typegen (no Vite, so import.meta.env is
+// undefined there) — hence checking both rather than assuming either.
+const projectId = import.meta.env?.PUBLIC_SANITY_PROJECT_ID ?? process.env.PUBLIC_SANITY_PROJECT_ID
+const dataset = import.meta.env?.PUBLIC_SANITY_DATASET ?? process.env.PUBLIC_SANITY_DATASET ?? 'production'
+
 export default defineConfig({
   name: 'default',
   title: 'Simple Site',
 
-  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-  dataset: import.meta.env.PUBLIC_SANITY_DATASET || 'production',
+  projectId,
+  dataset,
 
   plugins: [structureTool({ structure }), visionTool()],
 
