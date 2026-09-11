@@ -6,8 +6,13 @@ import { schemaTypes } from './src/sanity/schemaTypes'
 // Pins direct shortcuts to the singleton-style documents (fixed _id, created
 // by scripts/seed-home-page.mjs / scripts/seed-site-settings.mjs) so editors
 // open them straight away instead of a generic list — then falls back to the
-// normal document-type list for everything else. No prior singleton/
-// structure customization existed in this project; this is the first.
+// normal document-type list for everything else.
+//
+// "Pages" is its own list item (not part of the generic document-type
+// fallback below, which excludes 'page' entirely) so every page-builder
+// `page` document — Home, Custom Website, and any future conversion — is
+// reachable from one place, with Home also pinned above it for one-click
+// access to the page editors open most.
 const structure = (S: any) =>
   S.list()
     .title('Content')
@@ -16,6 +21,10 @@ const structure = (S: any) =>
         .id('homePage')
         .title('Home Page')
         .child(S.document().schemaType('page').documentId('homePage')),
+      S.listItem()
+        .id('pages')
+        .title('Pages')
+        .child(S.documentTypeList('page').title('Pages')),
       S.listItem()
         .id('pricingPlans')
         .title('Pricing Plans')
