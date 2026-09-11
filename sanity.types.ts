@@ -181,6 +181,17 @@ export type Post = {
   metaDescription?: string;
 };
 
+export type Redirect = {
+  _id: string;
+  _type: "redirect";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  source: string;
+  destination: string;
+  permanent: boolean;
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -377,6 +388,7 @@ export type AllSanitySchemaTypes =
   | Testimonial
   | Faq
   | Post
+  | Redirect
   | SiteSettings
   | PricingPlans
   | Page
