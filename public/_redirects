@@ -1,23 +1,18 @@
-# Cloudflare Pages redirect rules — mirrors the "redirects" block in vercel.json,
-# ported here since Cloudflare Pages doesn't read vercel.json. Keep both files
-# in sync if either changes, until Vercel is fully decommissioned.
-#
-# NOTE: vercel.json's "/cookie-policy -> /" rule was intentionally dropped here.
-# It predates the real /cookie-policy page (src/pages/cookie-policy.astro) and
-# currently shadows it on the live Vercel site — the footer's "Cookie Settings"
-# link 308-redirects to the homepage instead of the actual page. Not carried
-# forward; worth removing from vercel.json too if Vercel stays in use.
+# Cloudflare Pages redirect rules — generated from Sanity "redirect" documents
+# by scripts/generate-redirects.mjs. Do not hand-edit; manage redirects in
+# Studio instead and rebuild (this runs as a prebuild step).
+
 /course-en /about-us 301
 /course-is /about-us 301
 /direct-booking /about-us 301
 /godo /booking-engine 301
 /godo-updated /booking-engine 301
 /hotelmanagers / 301
-/showroom /custom-website 301
-/skilmalar-is / 301
-/new/custom-website /custom-website 301
-/new/blog/master-direct-bookins-with-hitels /blog/master-direct-bookins-with-hitels 301
 /new/blog/how-a-great-hotel-website-builds-trust-before-check-in /blog/how-a-great-hotel-website-builds-trust-before-check-in 301
 /new/blog/how-to-respond-to-negative-hotel-reviews /blog/how-to-respond-to-negative-hotel-reviews 301
-/new/pricing /pricing 301
+/new/blog/master-direct-bookins-with-hitels /blog/master-direct-bookins-with-hitels 301
+/new/custom-website /custom-website 301
 /new/home / 301
+/new/pricing /pricing 301
+/showroom /custom-website 301
+/skilmalar-is / 301

@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node --env-file-if-exists=.env scripts/generate-redirects.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
