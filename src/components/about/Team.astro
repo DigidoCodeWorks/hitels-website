@@ -1,6 +1,21 @@
 ---
 import { asset } from '../../lib/cdn';
 
+interface TeamMember {
+  name: string;
+  role: string;
+  email: string;
+  photoUrl: string;
+}
+
+interface Props {
+  headline: string;
+  body: string;
+  members: TeamMember[];
+}
+
+const { headline, body, members: TEAM } = Astro.props;
+
 // Cards intentionally overflow their container (1558px of cards in a 1240px
 // content area, confirmed via real pixel widths in the source) -- a
 // horizontal-scroll row like Stories.astro, not a stack. The row also bleeds
@@ -10,48 +25,15 @@ import { asset } from '../../lib/cdn';
 // set boundary, so scrolling or clicking past either end wraps around
 // instead of stopping. The prev/next buttons are a progressive-enhancement
 // nudge on top of native touch/trackpad scroll.
-const TEAM = [
-  {
-    name: 'Arnar Hinriksson',
-    role: 'Growth and Success',
-    email: 'arnar@hitels.is',
-    photo: 'images/about/team/arnar.webp',
-  },
-  {
-    name: 'Þórdís',
-    role: 'Technology and Customer Success',
-    email: 'thordis@hitels.is',
-    photo: 'images/about/team/thordis.webp',
-  },
-  {
-    name: 'Birgir',
-    role: 'Strategy and Consultation',
-    email: 'birgir@hitels.is',
-    photo: 'images/about/team/birgir.webp',
-  },
-  {
-    name: 'Salome',
-    role: 'Customer Success & QA',
-    email: 'hi@hitels.is',
-    photo: 'images/about/team/salome.webp',
-  },
-  {
-    name: 'Bjarki',
-    role: 'Designer',
-    email: 'hi@hitels.is',
-    photo: 'images/about/team/bjarki.webp',
-  },
-];
-
 const LOOP = [...TEAM, ...TEAM, ...TEAM];
 ---
 
 <section class="flex flex-col gap-[72px] max-lg:gap-10 max-md:gap-8 items-start py-[100px] max-lg:py-10 max-md:py-10 relative w-full bg-background">
   <div class="w-full max-w-[1440px] mx-auto px-[100px] max-lg:px-10 max-md:px-4">
     <div data-reveal class="flex flex-col gap-8 items-center text-center px-[211px] max-lg:px-0 relative w-full">
-      <h2 class="font-heading text-h3 text-navy w-full">People behind smarter hotel websites</h2>
+      <h2 class="font-heading text-h3 text-navy w-full">{headline}</h2>
       <p class="font-body font-normal text-body-md text-gray w-full">
-        Most booking engines look like an afterthought. We go further than any competitor to ensure a seamless transition from your website to the checkout. Starting in Figma, we meticulously tailor the typography, colors, and UI components so the engine feels like a natural, premium extension of your brand.
+        {body}
       </p>
     </div>
   </div>
@@ -67,7 +49,7 @@ const LOOP = [...TEAM, ...TEAM, ...TEAM];
         >
           <div class="h-[352px] relative rounded-lg shrink-0 w-full overflow-hidden bg-[linear-gradient(171deg,#33258c_1.7%,#654aff_37.3%,#eae8ff_94.3%)]">
             <img
-              src={asset(member.photo)}
+              src={member.photoUrl}
               alt={member.name}
               class="absolute inset-0 w-full h-full object-cover object-bottom transition-transform duration-300 ease-out group-hover:scale-105"
             />

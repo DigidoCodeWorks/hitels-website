@@ -45,7 +45,10 @@ export const heroSection = defineType({
 // converted. The hero's collage images, decorative background, and button
 // icons stay hardcoded in the Astro component — bespoke per-page visual
 // treatment, not editable content (same reasoning as Home's PartnerLogos/
-// Benefits staying out of the page builder entirely).
+// Benefits staying out of the page builder entirely). imageUrl/imageAlt are
+// optional and only consumed by About Us's Hero (a single photo, unlike
+// Custom Website/Booking Engine's hardcoded multi-breakpoint collages) —
+// harmless unused fields on the other two pages' documents.
 export const productHeroSection = defineType({
   name: 'productHeroSection',
   title: 'Product Hero',
@@ -57,6 +60,8 @@ export const productHeroSection = defineType({
     linkField('primaryButtonHref', 'Primary button link'),
     defineField({ name: 'secondaryButtonLabel', title: 'Secondary button label', type: 'string' }),
     linkField('secondaryButtonHref', 'Secondary button link'),
+    imageUrlField('imageUrl', 'Image URL', { required: false }),
+    altTextField('imageAlt', 'Image alt text'),
   ],
   preview: { select: { title: 'headline' } },
 })
@@ -206,4 +211,98 @@ export const faqSection = defineType({
   type: 'object',
   fields: [defineField({ name: 'note', title: 'Note', type: 'string', readOnly: true, initialValue: 'Pulls live from the FAQ collection — nothing to configure here.' })],
   preview: { select: {}, prepare: () => ({ title: 'FAQ section' }) },
+})
+
+const stat = {
+  type: 'object',
+  name: 'stat',
+  fields: [
+    defineField({
+      name: 'value',
+      title: 'Value',
+      description: 'A leading number, optionally followed by a suffix, e.g. "15", "4", "19+" — parsed for the count-up animation.',
+      type: 'string',
+      validation: (rule: any) => rule.required(),
+    }),
+    defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule: any) => rule.required() }),
+  ],
+  preview: { select: { title: 'label', subtitle: 'value' } },
+}
+
+export const statsIntroSection = defineType({
+  name: 'statsIntroSection',
+  title: 'Stats Intro',
+  type: 'object',
+  fields: [
+    defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'body', title: 'Body', type: 'text', rows: 3, validation: (rule) => rule.required() }),
+    defineField({ name: 'stats', title: 'Stats', type: 'array', validation: (rule) => rule.required().min(1), of: [stat] }),
+  ],
+  preview: { select: { title: 'headline' } },
+})
+
+const teamMember = {
+  type: 'object',
+  name: 'teamMember',
+  fields: [
+    defineField({ name: 'name', title: 'Name', type: 'string', validation: (rule: any) => rule.required() }),
+    defineField({ name: 'role', title: 'Role', type: 'string', validation: (rule: any) => rule.required() }),
+    defineField({ name: 'email', title: 'Email', type: 'string', validation: (rule: any) => rule.required() }),
+    imageUrlField('photoUrl', 'Photo URL'),
+  ],
+  preview: { select: { title: 'name', subtitle: 'role' } },
+}
+
+export const teamSection = defineType({
+  name: 'teamSection',
+  title: 'Team',
+  type: 'object',
+  fields: [
+    defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'body', title: 'Body', type: 'text', rows: 3, validation: (rule) => rule.required() }),
+    defineField({ name: 'members', title: 'Members', type: 'array', validation: (rule) => rule.required().min(1), of: [teamMember] }),
+  ],
+  preview: { select: { title: 'headline' } },
+})
+
+// Shared by beliefsSection and whatIsHitelsSection — both are just a
+// headline/intro plus a list of {title, description} pairs, rendered by two
+// visually distinct Astro components (a 3-column row vs. a checklist next
+// to a fixed decorative graphic), so they stay separate section types, but
+// the repeated item shape is factored out once here.
+const titledItem = {
+  type: 'object',
+  name: 'titledItem',
+  fields: [
+    defineField({ name: 'title', title: 'Title', type: 'string', validation: (rule: any) => rule.required() }),
+    defineField({ name: 'description', title: 'Description', type: 'text', rows: 2, validation: (rule: any) => rule.required() }),
+  ],
+  preview: { select: { title: 'title', subtitle: 'description' } },
+}
+
+export const beliefsSection = defineType({
+  name: 'beliefsSection',
+  title: 'Beliefs',
+  type: 'object',
+  fields: [
+    defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'beliefs', title: 'Beliefs', type: 'array', validation: (rule) => rule.required().min(1), of: [titledItem] }),
+  ],
+  preview: { select: { title: 'headline' } },
+})
+
+// The "Booking Recap" decorative graphic (fake pie chart + stat callouts)
+// that sits alongside this section's headline/features stays entirely
+// hardcoded in WhatIsHitels.astro — an illustrative widget, not real
+// per-editor content (same reasoning as Home's Benefits/PartnerLogos).
+export const whatIsHitelsSection = defineType({
+  name: 'whatIsHitelsSection',
+  title: 'What Is Hitels',
+  type: 'object',
+  fields: [
+    defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'body', title: 'Body', type: 'text', rows: 3, validation: (rule) => rule.required() }),
+    defineField({ name: 'features', title: 'Features', type: 'array', validation: (rule) => rule.required().min(1), of: [titledItem] }),
+  ],
+  preview: { select: { title: 'headline' } },
 })

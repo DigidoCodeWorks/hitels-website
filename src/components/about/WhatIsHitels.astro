@@ -1,16 +1,26 @@
 ---
 import { asset } from '../../lib/cdn';
 
+interface Feature {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  headline: string;
+  body: string;
+  features: Feature[];
+}
+
+const { headline, body, features: FEATURES } = Astro.props;
+
+// The "Booking Recap" card below (including its 40%/60% split and the two
+// STATS callouts) is a fixed illustrative graphic, not real per-editor
+// content — same reasoning as Home's Benefits/PartnerLogos staying out of
+// the page builder entirely.
 const STATS = [
   { color: 'bg-brand', label: 'Direct bookings', value: '120', unit: 'bookings' },
   { color: 'bg-border', label: 'Booking platform', value: '80', unit: 'bookings' },
-];
-
-const FEATURES = [
-  { title: 'Custom Websites', description: "Unique designs showcasing your hotel's charm" },
-  { title: 'Direct Bookings', description: 'Increase revenue through direct reservations' },
-  { title: 'Guest Experience', description: 'Seamless, secure booking process' },
-  { title: 'Analytics', description: 'Track key metrics for better decisions' },
 ];
 ---
 
@@ -43,9 +53,9 @@ const FEATURES = [
 
   <div data-reveal style="--reveal-delay: 120ms" class="flex flex-col gap-8 items-start w-[498px] max-lg:w-full shrink-0">
     <div class="flex flex-col gap-8 items-start w-full">
-      <h2 class="font-heading text-h3 text-navy w-full">What is Hitels?</h2>
+      <h2 class="font-heading text-h3 text-navy w-full">{headline}</h2>
       <p class="font-body font-normal text-body-md text-gray w-full">
-        Hitels is a specialized platform designed to help hotels increase direct bookings by creating custom, scalable websites that enhance guest experiences.
+        {body}
       </p>
     </div>
     <div class="flex flex-col gap-6 items-start w-full">
