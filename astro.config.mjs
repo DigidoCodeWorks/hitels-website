@@ -25,7 +25,12 @@ export default defineConfig({
     sanity({
       projectId: env.PUBLIC_SANITY_PROJECT_ID,
       dataset: env.PUBLIC_SANITY_DATASET || 'production',
-      useCdn: true,
+      // false, not true: every Sanity query in this project runs at build time
+      // (static output, no per-request server), so there's no runtime traffic
+      // to offload onto the CDN — its only effect here was propagation lag
+      // (~30-60s) racing the publish-webhook's near-instant rebuild trigger,
+      // causing builds to occasionally bake in stale pre-publish content.
+      useCdn: false,
       studioBasePath: '/studio',
     }),
     sitemap({
