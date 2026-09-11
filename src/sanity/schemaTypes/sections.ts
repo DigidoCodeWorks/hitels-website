@@ -61,6 +61,21 @@ export const productHeroSection = defineType({
   preview: { select: { title: 'headline' } },
 })
 
+// The minimal hero shape: just a headline and one subheading paragraph, no
+// buttons or image. Distinct from `productHeroSection` (which always has
+// two CTA buttons) rather than reusing it with blank button fields — Studio
+// shouldn't offer button fields on a hero that never renders any.
+export const simpleHeroSection = defineType({
+  name: 'simpleHeroSection',
+  title: 'Simple Hero',
+  type: 'object',
+  fields: [
+    defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'subheading', title: 'Subheading', type: 'text', rows: 2, validation: (rule) => rule.required() }),
+  ],
+  preview: { select: { title: 'headline' } },
+})
+
 const featureItem = {
   type: 'object',
   name: 'featureItem',

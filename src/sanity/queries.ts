@@ -75,6 +75,7 @@ export const pageBySlugQuery = defineQuery(`
         primaryButtonLabel, primaryButtonHref,
         secondaryButtonLabel, secondaryButtonHref
       },
+      _type == "simpleHeroSection" => { headline, subheading },
       _type == "productOfferingsSection" => { offerings },
       _type == "customerStoriesSection" => { cards },
       _type == "addOnsSection" => { addons },
