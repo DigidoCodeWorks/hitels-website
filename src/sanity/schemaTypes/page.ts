@@ -25,6 +25,17 @@ export default defineType({
         { type: 'faqSection' },
       ],
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      description: 'Overrides the Site Settings defaults for this page only. Leave a field blank to fall back to the site default.',
+      type: 'object',
+      fields: [
+        defineField({ name: 'title', title: 'SEO title', type: 'string' }),
+        defineField({ name: 'description', title: 'SEO description', type: 'text', rows: 3 }),
+        defineField({ name: 'ogImage', title: 'Social share image URL', description: 'Hosted on R2, not a Sanity asset.', type: 'url' }),
+      ],
+    }),
   ],
   preview: {
     select: { title: 'title', slug: 'slug.current' },

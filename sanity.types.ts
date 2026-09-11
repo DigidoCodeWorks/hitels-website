@@ -181,6 +181,20 @@ export type Post = {
   metaDescription?: string;
 };
 
+export type SiteSettings = {
+  _id: string;
+  _type: "siteSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  siteName: string;
+  defaultSeoTitle: string;
+  defaultSeoDescription: string;
+  defaultOgImage: string;
+  organizationName: string;
+  organizationLogoUrl: string;
+};
+
 export type PricingPlans = {
   _id: string;
   _type: "pricingPlans";
@@ -230,6 +244,11 @@ export type Page = {
         _key: string;
       } & FaqSection)
   >;
+  seo?: {
+    title?: string;
+    description?: string;
+    ogImage?: string;
+  };
 };
 
 export type SanityImagePaletteSwatch = {
@@ -358,6 +377,7 @@ export type AllSanitySchemaTypes =
   | Testimonial
   | Faq
   | Post
+  | SiteSettings
   | PricingPlans
   | Page
   | SanityImagePaletteSwatch
@@ -494,7 +514,7 @@ export type PricingPlansQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: homePageQuery
-// Query: *[_type == "page" && slug.current == "home"][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons }    }  }
+// Query: *[_type == "page" && slug.current == "home"][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons }    },    seo  }
 export type HomePageQueryResult = {
   sections: Array<
     | {
@@ -557,6 +577,23 @@ export type HomePageQueryResult = {
         _type: "testimonialsSection";
       }
   >;
+  seo: {
+    title?: string;
+    description?: string;
+    ogImage?: string;
+  } | null;
+} | null;
+
+// Source: src/sanity/queries.ts
+// Variable: siteSettingsQuery
+// Query: *[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }
+export type SiteSettingsQueryResult = {
+  siteName: string;
+  defaultSeoTitle: string;
+  defaultSeoDescription: string;
+  defaultOgImage: string;
+  organizationName: string;
+  organizationLogoUrl: string;
 } | null;
 
 // Query TypeMap
@@ -571,6 +608,7 @@ declare module "@sanity/client" {
     '*[_type == "post" && defined(slug.current)]{ "slug": slug.current }': PostSlugsQueryResult;
     '*[_type == "post" && slug.current == $slug][0]{\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription\n}': PostBySlugQueryResult;
     '*[_type == "pricingPlans"][0]{ plans }': PricingPlansQueryResult;
-    '\n  *[_type == "page" && slug.current == "home"][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons }\n    }\n  }\n': HomePageQueryResult;
+    '\n  *[_type == "page" && slug.current == "home"][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons }\n    },\n    seo\n  }\n': HomePageQueryResult;
+    '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
   }
 }

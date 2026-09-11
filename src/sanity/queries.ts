@@ -69,6 +69,15 @@ export const homePageQuery = defineQuery(`
       _type == "productOfferingsSection" => { offerings },
       _type == "customerStoriesSection" => { cards },
       _type == "addOnsSection" => { addons }
-    }
+    },
+    seo
   }
 `)
+
+// Site-wide singleton (src/sanity/schemaTypes/siteSettings.ts) — fetched by
+// both BaseLayout.astro (Organization JSON-LD + OG image fallback) and any
+// page resolving its own SEO fields against the site defaults, so this is
+// the one shared projection both call sites narrow down to what they need.
+export const siteSettingsQuery = defineQuery(
+  `*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }`
+)
