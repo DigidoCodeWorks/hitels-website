@@ -1,4 +1,5 @@
 ---
+import { sanityClient } from 'sanity:client';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
 import PartnerLogos from '../components/home/PartnerLogos.astro';
@@ -10,6 +11,47 @@ import Pricing from '../components/shared/Pricing.astro';
 import AddOns from '../components/home/AddOns.astro';
 import Faq from '../components/home/Faq.astro';
 import Footer from '../components/shared/Footer.astro';
+
+// Home is the first page converted to the Sanity page-builder pattern (see
+// src/sanity/schemaTypes/page.ts). Benefits, Pricing, PartnerLogos, and
+// Footer stay as fixed, directly-imported sections — not page-builder
+// content — see the plan's "explicitly out of scope" notes: PartnerLogos has
+// too much bespoke per-logo sizing to genericize safely, Benefits has heavy
+// bespoke interactivity tightly coupled to its exact 3-card layout, and
+// Pricing/Footer are global/shared across pages, not Home-specific content.
+type Section =
+  | { _type: 'heroSection'; _key: string; headline: string; subheadingDesktop: string; subheadingMobile: string; primaryButtonLabel?: string; primaryButtonHref?: string; secondaryButtonLabel?: string; secondaryButtonHref?: string }
+  | { _type: 'productOfferingsSection'; _key: string; offerings: any[] }
+  | { _type: 'customerStoriesSection'; _key: string; cards: any[] }
+  | { _type: 'addOnsSection'; _key: string; addons: any[] }
+  | { _type: 'testimonialsSection'; _key: string }
+  | { _type: 'faqSection'; _key: string };
+
+const page = await sanityClient.fetch<{ sections: Section[] } | null>(`
+  *[_type == "page" && slug.current == "home"][0]{
+    sections[]{
+      _key,
+      _type,
+      _type == "heroSection" => {
+        headline, subheadingDesktop, subheadingMobile,
+        primaryButtonLabel, primaryButtonHref,
+        secondaryButtonLabel, secondaryButtonHref
+      },
+      _type == "productOfferingsSection" => { offerings },
+      _type == "customerStoriesSection" => { cards },
+      _type == "addOnsSection" => { addons }
+    }
+  }
+`);
+
+if (!page) {
+  throw new Error('Missing "page" document with slug "home" in Sanity — run scripts/seed-home-page.mjs.');
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'heroSection' }> => s._type === 'heroSection');
+if (!heroSection) {
+  throw new Error('Home page document has no heroSection — Hero requires one.');
+}
 ---
 
 <BaseLayout
@@ -17,17 +59,46 @@ import Footer from '../components/shared/Footer.astro';
 	description="We build award-winning, bespoke hotel websites and seamless booking engines. No templates, no DIY builders — just a premium digital presence done for you from start to finish."
 >
 	<header>
-		<Hero />
+		<Hero
+			headline={heroSection.headline}
+			subheadingDesktop={heroSection.subheadingDesktop}
+			subheadingMobile={heroSection.subheadingMobile}
+			primaryButtonLabel={heroSection.primaryButtonLabel}
+			primaryButtonHref={heroSection.primaryButtonHref}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel}
+			secondaryButtonHref={heroSection.secondaryButtonHref}
+		/>
 	</header>
 	<main>
 		<PartnerLogos />
-		<ProductOfferings />
-		<Testimonial />
-		<Stories />
+		{page.sections.map((section) => {
+			switch (section._type) {
+				case 'productOfferingsSection':
+					return <ProductOfferings offerings={section.offerings} />;
+				case 'testimonialsSection':
+					return <Testimonial />;
+				case 'customerStoriesSection':
+					return <Stories cards={section.cards} />;
+				default:
+					return null;
+			}
+		})}
+		{/* Benefits/Pricing are fixed, not page-builder content (see the top-of-file
+		    note), but they sit in the *middle* of the original section order — between
+		    Stories and AddOns/Faq — so the dynamic loop is split around them rather
+		    than dumping both fixed sections after every dynamic one. */}
 		<Benefits />
 		<Pricing />
-		<AddOns />
-		<Faq />
+		{page.sections.map((section) => {
+			switch (section._type) {
+				case 'addOnsSection':
+					return <AddOns addons={section.addons} />;
+				case 'faqSection':
+					return <Faq />;
+				default:
+					return null;
+			}
+		})}
 	</main>
 	<Footer />
 </BaseLayout>

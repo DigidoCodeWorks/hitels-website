@@ -3,6 +3,26 @@ import Navigation from '../Navigation';
 import Button from '../shared/Button.astro';
 import HeroStories from './HeroStories.astro';
 import { asset } from '../../lib/cdn';
+
+interface Props {
+  headline: string;
+  subheadingDesktop: string;
+  subheadingMobile: string;
+  primaryButtonLabel?: string;
+  primaryButtonHref?: string;
+  secondaryButtonLabel?: string;
+  secondaryButtonHref?: string;
+}
+
+const {
+  headline,
+  subheadingDesktop,
+  subheadingMobile,
+  primaryButtonLabel = 'Book a demo',
+  primaryButtonHref = '/contact-us',
+  secondaryButtonLabel = 'Contact us',
+  secondaryButtonHref = '/contact-us',
+} = Astro.props;
 ---
 
 <div data-hero class="flex flex-col gap-[72px] max-lg:gap-12 h-[85vh] min-h-[700px] max-h-[900px] max-lg:h-auto max-lg:pb-12 items-center overflow-clip relative w-full bg-navy">
@@ -50,19 +70,19 @@ import { asset } from '../../lib/cdn';
   <div class="flex items-center justify-between px-[100px] max-lg:flex-col max-lg:px-10 max-md:px-4 max-lg:text-center relative w-full max-w-[1440px] mx-auto">
     <div class="flex flex-col gap-8 items-start max-lg:items-center w-[604px] max-lg:w-full mr-[-16px] max-lg:mr-0">
       <div data-reveal class="flex flex-col gap-4 items-center text-background w-full">
-        <p class="font-heading text-h1 w-full">Turn website visitors into direct bookings</p>
+        <p class="font-heading text-h1 w-full">{headline}</p>
         {/* Desktop/Tablet use the full copy; Mobile uses shorter copy — confirmed
             distinct wording per breakpoint in the source, not a truncation */}
         <p class="hidden max-md:block font-body font-normal text-body-lg w-full">
-          We build award-winning, bespoke hotel websites and seamless booking engines.
+          {subheadingMobile}
         </p>
         <p class="max-md:hidden font-body font-normal text-body-lg w-full">
-          We build award-winning, bespoke hotel websites and seamless booking engines. No templates. No DIY builders. Just a premium digital presence "done-for-you" from start to finish.
+          {subheadingDesktop}
         </p>
       </div>
       <div data-reveal style="--reveal-delay: 150ms" class="flex gap-4 items-start justify-center max-md:w-full">
-        <Button href="/contact-us" label="Book a demo" icon="images/home/hero/icon-calendar-cta.svg" variant="primary" padding="px-4 py-3" class="max-md:flex-1" />
-        <Button href="/contact-us" label="Contact us" icon="images/home/hero/icon-chat.svg" variant="secondary" padding="pl-4 pr-5 py-3 max-md:pl-3" class="max-md:flex-1" />
+        <Button href={primaryButtonHref} label={primaryButtonLabel} icon="images/home/hero/icon-calendar-cta.svg" variant="primary" padding="px-4 py-3" class="max-md:flex-1" />
+        <Button href={secondaryButtonHref} label={secondaryButtonLabel} icon="images/home/hero/icon-chat.svg" variant="secondary" padding="pl-4 pr-5 py-3 max-md:pl-3" class="max-md:flex-1" />
       </div>
     </div>
 

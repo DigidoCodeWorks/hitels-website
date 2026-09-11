@@ -4,10 +4,18 @@ name: Deploy to Cloudflare Pages
 # (that requires an interactive dashboard OAuth step) — this workflow is the
 # auto-deploy substitute: build locally in CI, then push the static output
 # with wrangler, same as the manual `vercel deploy --prod` step this replaces.
+#
+# repository_dispatch: fired directly by a Sanity webhook on publish (Sanity's
+# webhook config supports custom headers + a GROQ-shaped body, so it calls
+# GitHub's /dispatches API with no intermediate serverless function) — this
+# is what makes "publish in Sanity" actually update the live site without a
+# manual redeploy, since the site builds statically at CI time, not per-request.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  repository_dispatch:
+    types: [sanity-publish]
 
 jobs:
   deploy:
