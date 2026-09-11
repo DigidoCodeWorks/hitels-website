@@ -80,6 +80,12 @@ export type ProductOfferingsSection = {
   }>;
 };
 
+export type SimpleHeroSection = {
+  _type: "simpleHeroSection";
+  headline: string;
+  subheading: string;
+};
+
 export type ProductHeroSection = {
   _type: "productHeroSection";
   headline: string;
@@ -269,6 +275,9 @@ export type Page = {
       } & ProductHeroSection)
     | ({
         _key: string;
+      } & SimpleHeroSection)
+    | ({
+        _key: string;
       } & ProductOfferingsSection)
     | ({
         _key: string;
@@ -413,6 +422,7 @@ export type AllSanitySchemaTypes =
   | AddOnsSection
   | CustomerStoriesSection
   | ProductOfferingsSection
+  | SimpleHeroSection
   | ProductHeroSection
   | HeroSection
   | StoriesClosingCard
@@ -559,7 +569,7 @@ export type PricingPlansQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: pageBySlugQuery
-// Query: *[_type == "page" && slug.current == $slug][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productHeroSection" => {        headline, subheading,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons },      _type == "featuresSection" => { features }    },    seo  }
+// Query: *[_type == "page" && slug.current == $slug][0]{    sections[]{      _key,      _type,      _type == "heroSection" => {        headline, subheadingDesktop, subheadingMobile,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "productHeroSection" => {        headline, subheading,        primaryButtonLabel, primaryButtonHref,        secondaryButtonLabel, secondaryButtonHref      },      _type == "simpleHeroSection" => { headline, subheading },      _type == "productOfferingsSection" => { offerings },      _type == "customerStoriesSection" => { cards },      _type == "addOnsSection" => { addons },      _type == "featuresSection" => { features }    },    seo  }
 export type PageBySlugQueryResult = {
   sections: Array<
     | {
@@ -644,6 +654,12 @@ export type PageBySlugQueryResult = {
       }
     | {
         _key: string;
+        _type: "simpleHeroSection";
+        headline: string;
+        subheading: string;
+      }
+    | {
+        _key: string;
         _type: "testimonialsSection";
       }
   >;
@@ -678,7 +694,7 @@ declare module "@sanity/client" {
     '*[_type == "post" && defined(slug.current)]{ "slug": slug.current }': PostSlugsQueryResult;
     '*[_type == "post" && slug.current == $slug][0]{\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription\n}': PostBySlugQueryResult;
     '*[_type == "pricingPlans"][0]{ plans }': PricingPlansQueryResult;
-    '\n  *[_type == "page" && slug.current == $slug][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons },\n      _type == "featuresSection" => { features }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
+    '\n  *[_type == "page" && slug.current == $slug][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "simpleHeroSection" => { headline, subheading },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "addOnsSection" => { addons },\n      _type == "featuresSection" => { features }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
     '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
   }
 }

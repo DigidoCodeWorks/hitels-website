@@ -20,6 +20,7 @@ export default defineType({
       of: [
         { type: 'heroSection' },
         { type: 'productHeroSection' },
+        { type: 'simpleHeroSection' },
         { type: 'productOfferingsSection' },
         { type: 'customerStoriesSection' },
         { type: 'addOnsSection' },

@@ -12,6 +12,7 @@ import redirect from './redirect'
 import {
   heroSection,
   productHeroSection,
+  simpleHeroSection,
   productOfferingsSection,
   customerStoriesSection,
   addOnsSection,
@@ -32,6 +33,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   storiesClosingCard,
   heroSection,
   productHeroSection,
+  simpleHeroSection,
   productOfferingsSection,
   customerStoriesSection,
   addOnsSection,
