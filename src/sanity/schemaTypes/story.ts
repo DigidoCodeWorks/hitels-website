@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { imageUrlField, altTextField, linkField } from '../fields'
 
 export default defineType({
   name: 'story',
@@ -34,38 +35,16 @@ export default defineType({
       type: 'text',
       rows: 3,
     }),
-    defineField({
-      name: 'backgroundImageUrl',
-      title: 'Background image URL',
-      description: 'Hosted on R2, not a Sanity asset — set by the import script.',
-      type: 'url',
-    }),
-    defineField({
-      name: 'backgroundImageAlt',
-      title: 'Background image alt text',
-      type: 'string',
-    }),
-    defineField({
-      name: 'websitePreviewUrl',
-      title: 'Website preview image URL',
-      description: 'Hosted on R2, not a Sanity asset — set by the import script.',
-      type: 'url',
-    }),
-    defineField({
-      name: 'websitePreviewAlt',
-      title: 'Website preview image alt text',
-      type: 'string',
-    }),
+    imageUrlField('backgroundImageUrl', 'Background image URL', { required: false }),
+    altTextField('backgroundImageAlt', 'Background image alt text'),
+    imageUrlField('websitePreviewUrl', 'Website preview image URL', { required: false }),
+    altTextField('websitePreviewAlt', 'Website preview image alt text'),
     defineField({
       name: 'buttonText',
       title: 'Button text',
       type: 'string',
     }),
-    defineField({
-      name: 'buttonLink',
-      title: 'Button link (absolute or relative path)',
-      type: 'string',
-    }),
+    linkField('buttonLink', 'Button link (absolute or relative path)'),
   ],
   orderings: [
     {

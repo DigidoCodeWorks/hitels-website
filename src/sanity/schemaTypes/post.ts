@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { imageUrlField, altTextField, linkField } from '../fields'
 
 export default defineType({
   name: 'post',
@@ -18,17 +19,8 @@ export default defineType({
       options: { source: 'title' },
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: 'imageUrl',
-      title: 'Image URL',
-      description: 'Hosted on R2, not a Sanity asset — set by the import script.',
-      type: 'url',
-    }),
-    defineField({
-      name: 'imageAlt',
-      title: 'Image alt text',
-      type: 'string',
-    }),
+    imageUrlField('imageUrl', 'Image URL', { required: false }),
+    altTextField('imageAlt', 'Image alt text'),
     defineField({
       name: 'publishedAt',
       title: 'Published at',
@@ -40,11 +32,7 @@ export default defineType({
       description: 'e.g. "Hitels" or "News"',
       type: 'string',
     }),
-    defineField({
-      name: 'externalLink',
-      title: 'External / CTA link',
-      type: 'string',
-    }),
+    linkField('externalLink', 'External / CTA link'),
     defineField({
       name: 'shortDescription',
       title: 'Short description',
