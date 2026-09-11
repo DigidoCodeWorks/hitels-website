@@ -1,0 +1,108 @@
+name: CI
+
+# Quality gates only — typecheck, lint (JS/TS + CSS), build, Lighthouse CI,
+# Playwright (console errors, <h1> count, broken internal links, screenshot
+# regression). Deliberately doesn't deploy anything: this project is on
+# Cloudflare Pages (not a Worker), and deploys are already handled by the
+# separate deploy-cloudflare.yml (build + `wrangler pages deploy`, triggered
+# on push to main and on the Sanity publish webhook) — duplicating that here
+# would just be two workflows racing to deploy the same thing. Runs on every
+# PR so these gates actually block merges (requires "Require status checks
+# to pass" enabled in the repo's branch protection settings for main).
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# The build needs the same Sanity/R2/site-config secrets deploy-cloudflare.yml
+# already uses (see that file) — no new secrets beyond what's already set
+# there. Cloudflare API credentials are NOT needed here since this workflow
+# never deploys.
+env:
+  PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
+  PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
+  PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
+  R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+  PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL }}
+  PUBLIC_CF_BEACON_TOKEN: ${{ secrets.PUBLIC_CF_BEACON_TOKEN }}
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run lint:css
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 1
+
+  lighthouse:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - run: npx lhci autorun --config=lighthouserc.json
+        env:
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+
+  e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
