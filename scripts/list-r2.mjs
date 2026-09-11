@@ -5,6 +5,13 @@ import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
 const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME } = process.env;
 
+for (const [name, value] of Object.entries({ R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME })) {
+  if (!value) {
+    console.error(`Missing required env var: ${name} (load .env first, e.g. run with --env-file=.env)`);
+    process.exit(1);
+  }
+}
+
 const client = new S3Client({
   region: 'auto',
   endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,

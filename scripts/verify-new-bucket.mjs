@@ -3,6 +3,15 @@
 // actually landed everything. Not part of the regular asset-upload workflow.
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
+const { R2_ACCOUNT_ID_NEW, R2_ACCESS_KEY_ID_NEW, R2_SECRET_ACCESS_KEY_NEW, R2_BUCKET_NAME_NEW } = process.env;
+
+for (const [name, value] of Object.entries({ R2_ACCOUNT_ID_NEW, R2_ACCESS_KEY_ID_NEW, R2_SECRET_ACCESS_KEY_NEW, R2_BUCKET_NAME_NEW })) {
+  if (!value) {
+    console.error(`Missing required env var: ${name} (load .env first, e.g. run with --env-file=.env)`);
+    process.exit(1);
+  }
+}
+
 const client = new S3Client({
   region: 'auto',
   endpoint: `https://${process.env.R2_ACCOUNT_ID_NEW}.r2.cloudflarestorage.com`,
