@@ -10,7 +10,15 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "import:framer": "node --env-file=.env scripts/framer-import/import.mjs"
+    "lint": "eslint .",
+    "import:framer": "node --env-file=.env scripts/framer-import/import.mjs",
+    "postinstall": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,mjs,ts,tsx,astro}": "eslint --fix"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",
@@ -38,7 +46,12 @@
     "@portabletext/block-tools": "^6.0.0",
     "@sanity/schema": "^6.11.0",
     "csv-parse": "^7.0.2",
+    "eslint": "^10.10.0",
+    "eslint-plugin-astro": "^3.1.0",
     "jsdom": "^25.0.1",
-    "typescript": "^6.0.3"
+    "lint-staged": "^17.5.1",
+    "simple-git-hooks": "^2.14.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0"
   }
 }
