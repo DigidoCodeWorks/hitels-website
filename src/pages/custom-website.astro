@@ -1,65 +1,66 @@
 ---
+import { sanityClient } from 'sanity:client';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/custom-website/Hero.astro';
 import FeatureSection from '../components/shared/FeatureSection.astro';
 import Pricing from '../components/shared/Pricing.astro';
 import Footer from '../components/shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
+import type { PageBySlugQueryResult } from '../../sanity.types';
 
-// Source Figma asset for this card is an unrelated typography style-guide
-// screenshot (H1-H6 Lorem ipsum) — looks like a placeholder left behind by
-// the designer rather than the intended "Custom Design" screenshot. Reproduced
-// as exported; flag for a real asset swap once confirmed.
-const FEATURES = [
-  {
-    label: 'Design',
-    heading: 'Tailored to your identity',
-    description: "We don't do generic. Leveraging the power of Framer, we build everything custom from scratch based on your specific brand guidelines. Your digital presence will be entirely unique, setting you miles apart from competitors relying on rigid WordPress themes.",
-    image: 'images/custom-website/feature-custom-design.webp',
-    imageAlt: 'Placeholder typography style guide graphic (pending real asset from design)',
-    imageFirst: false,
-    variant: 'custom-website',
-  },
-  {
-    label: 'Conversion',
-    heading: 'Engineered to sell',
-    description: "A beautiful website is useless if it doesn't convert. With vast experience in the hospitality sector, we use data and proven user-behavior insights to craft layouts specifically designed to guide visitors smoothly toward the \"Book Now\" button.",
-    image: 'images/custom-website/feature-data-driven.webp',
-    imageAlt: 'Heatmap overlay on a hotel website mockup showing where visitors click and scroll',
-    imageFirst: true,
-    variant: 'custom-website',
-  },
-  {
-    label: 'Experience',
-    heading: 'Immersive Guest Experiences',
-    description: 'The guest experience starts long before they arrive at the lobby. Through engaging animations, blazing-fast load times, and compelling visual storytelling, we capture the unique atmosphere of your property and make guests fall in love with your hotel instantly.',
-    image: 'images/custom-website/feature-visual-storytelling.webp',
-    imageAlt: "An 'Offers: Midweek Escape' promo card animation on a hotel website",
-    imageFirst: false,
-    imageBg: 'bg-light-gray',
-    variant: 'custom-website',
-  },
-  {
-    label: 'Partnership',
-    heading: 'A true digital partnership',
-    description: 'We act as your dedicated digital team. From an initial deep-dive discovery workshop and comprehensive research to regular progress meetings and direct Slack communication, we handle the heavy lifting while keeping you completely in the loop.',
-    image: 'images/custom-website/feature-support.webp',
-    imageAlt: 'Slack conversation between the client and the Hitels team about a new page request',
-    imageFirst: true,
-    imageBg: 'bg-light-gray',
-    variant: 'custom-website',
-  },
-];
+// Second page converted to the Sanity page-builder pattern (see
+// src/sanity/schemaTypes/page.ts), after Home. Pricing/Footer stay fixed,
+// not page-builder content — same reasoning as Home: shared/global across
+// pages, not specific to this one.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-website' });
+
+if (!page) {
+  throw new Error('Missing "page" document with slug "custom-website" in Sanity — run scripts/seed-custom-website-page.mjs.');
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'productHeroSection' }> => s._type === 'productHeroSection');
+if (!heroSection) {
+  throw new Error('Custom Website page document has no productHeroSection — Hero requires one.');
+}
+
+const featuresSection = page.sections.find((s): s is Extract<Section, { _type: 'featuresSection' }> => s._type === 'featuresSection');
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Custom Website Design — Hitels';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  'We design and build award-winning hotel websites from scratch. No templates — just bespoke, data-driven design engineered to bypass OTAs and capture direct bookings.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 ---
 
-<BaseLayout
-	title="Custom Website Design — Hitels"
-	description="We design and build award-winning hotel websites from scratch. No templates — just bespoke, data-driven design engineered to bypass OTAs and capture direct bookings."
->
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
 	<header>
-		<Hero />
+		<Hero
+			headline={heroSection.headline}
+			subheading={heroSection.subheading}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+		/>
 	</header>
 	<main>
-		{FEATURES.map((feature) => <FeatureSection {...feature} />)}
+		{featuresSection?.features.map((feature) => (
+			<FeatureSection
+				label={feature.label}
+				heading={feature.heading}
+				description={feature.description}
+				image={feature.imageUrl}
+				imageAlt={feature.imageAlt ?? ''}
+				imageFirst={feature.imageFirst}
+				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
+				variant="custom-website"
+			/>
+		))}
 		<Pricing />
 	</main>
 	<Footer />

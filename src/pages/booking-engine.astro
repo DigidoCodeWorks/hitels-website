@@ -4,16 +4,20 @@ import Hero from '../components/booking-engine/Hero.astro';
 import FeatureSection from '../components/shared/FeatureSection.astro';
 import Pricing from '../components/shared/Pricing.astro';
 import Footer from '../components/shared/Footer.astro';
+import { asset } from '../lib/cdn';
 
 // The label chip above each heading is a generic, uncustomized Figma component
 // ("Full name" placeholder) in every one of these sections — not real content.
 // Substituted a short topic label per section instead of shipping the placeholder.
+//
+// FeatureSection's `image` prop expects a resolved URL (not an asset()-relative
+// path) — resolved here since this page's content isn't Sanity-driven yet.
 const FEATURES = [
   {
     label: 'Design',
     heading: 'Flawless brand integration',
     description: "Most booking engines look like an afterthought. We go further than our competitor to ensure a seamless transition from your website to the checkout. We meticulously tailor the typography, colors, and components so the engine feels like a natural, premium extension of your brand.",
-    image: 'images/booking-engine/features/brand-integration.webp',
+    image: asset('images/booking-engine/features/brand-integration.webp'),
     imageAlt: 'Booking engine UI matched to a hotel brand',
     imageFirst: false,
   },
@@ -21,7 +25,7 @@ const FEATURES = [
     label: 'Revenue',
     heading: 'Maximize revenue with custom add-ons',
     description: "Don't just sell a room, sell an experience. Our platform easily handles custom up-sells during the checkout flow. Whether it's adding a bottle of champagne, booking spa access, applying coupon codes, or reserving multiple rooms, we help you increase your average order value effortlessly.",
-    image: 'images/booking-engine/features/addons.webp',
+    image: asset('images/booking-engine/features/addons.webp'),
     imageAlt: 'Checkout flow showing a champagne bottle add-on',
     imageFirst: true,
   },
@@ -29,7 +33,7 @@ const FEATURES = [
     label: 'Analytics',
     heading: 'Stop guessing what works',
     description: 'Our booking engine comes with built-in, granular event tracking. Easily monitor every step of the checkout process, track your conversion rates, and measure the exact ROI of your marketing campaigns so you can scale your direct bookings with confidence.',
-    image: 'images/booking-engine/features/analytics.webp',
+    image: asset('images/booking-engine/features/analytics.webp'),
     imageAlt: 'Checkout funnel chart showing drop-off at each step',
     imageFirst: false,
   },
@@ -37,7 +41,7 @@ const FEATURES = [
     label: 'Security',
     heading: 'Powerful & secure foundation',
     description: 'Built on top of the robust Godo property management system, our engine combines enterprise-grade reliability with top-tier security. Your guests enjoy a safe, secure payment process, and you get the peace of mind that your backend is rock solid.',
-    image: 'images/booking-engine/features/security.webp',
+    image: asset('images/booking-engine/features/security.webp'),
     imageAlt: 'Diagram linking the website, a secure checkout, and Godo',
     imageFirst: true,
   },

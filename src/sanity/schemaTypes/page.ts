@@ -19,9 +19,11 @@ export default defineType({
       validation: (rule) => rule.required().min(1),
       of: [
         { type: 'heroSection' },
+        { type: 'productHeroSection' },
         { type: 'productOfferingsSection' },
         { type: 'customerStoriesSection' },
         { type: 'addOnsSection' },
+        { type: 'featuresSection' },
         { type: 'testimonialsSection' },
         { type: 'faqSection' },
       ],

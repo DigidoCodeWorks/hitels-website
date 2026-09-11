@@ -56,8 +56,12 @@ export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current ==
 
 export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans"][0]{ plans }`)
 
-export const homePageQuery = defineQuery(`
-  *[_type == "page" && slug.current == "home"][0]{
+// Generic — fetches any `page` document by its slug, with every page-builder
+// section type's projection. One query for every page-builder page (Home,
+// Custom Website, and any future conversion) rather than one hand-copied
+// per-page query, so a new section type only needs adding here once.
+export const pageBySlugQuery = defineQuery(`
+  *[_type == "page" && slug.current == $slug][0]{
     sections[]{
       _key,
       _type,
@@ -66,9 +70,15 @@ export const homePageQuery = defineQuery(`
         primaryButtonLabel, primaryButtonHref,
         secondaryButtonLabel, secondaryButtonHref
       },
+      _type == "productHeroSection" => {
+        headline, subheading,
+        primaryButtonLabel, primaryButtonHref,
+        secondaryButtonLabel, secondaryButtonHref
+      },
       _type == "productOfferingsSection" => { offerings },
       _type == "customerStoriesSection" => { cards },
-      _type == "addOnsSection" => { addons }
+      _type == "addOnsSection" => { addons },
+      _type == "featuresSection" => { features }
     },
     seo
   }
