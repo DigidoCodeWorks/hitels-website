@@ -32,6 +32,9 @@ jobs:
 
       - run: npm ci
 
+      # npm's "prebuild" lifecycle script runs scripts/generate-redirects.mjs
+      # before "build" automatically — it needs the same Sanity env vars, so
+      # they're set on this step rather than a separate one.
       - run: npm run build
         env:
           PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
