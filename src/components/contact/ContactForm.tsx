@@ -47,10 +47,21 @@ export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const [company, setCompany] = useState('');
   const [status, setStatus] = useState<Status>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Honeypot: real visitors never see or fill this field (see the input's
+    // own styling below). A bot that auto-fills every field in the form will
+    // populate it, so a non-empty value here means silently drop the
+    // submission instead of sending it — no error shown, so the bot gets no
+    // signal that it was caught.
+    if (company) {
+      setStatus('success');
+      return;
+    }
 
     if (!ENDPOINT) {
       setStatus('error');
@@ -78,6 +89,7 @@ export default function ContactForm() {
       setEmail('');
       setPhone('');
       setMessage('');
+      setCompany('');
     } catch {
       setStatus('error');
     }
@@ -97,6 +109,22 @@ export default function ContactForm() {
   return (
     <section className="flex justify-center px-[100px] max-lg:px-10 max-md:px-4 pt-20 max-lg:pt-14 max-md:pt-10 pb-[112px] max-lg:pb-14 max-md:pb-16 w-full bg-background">
       <form onSubmit={handleSubmit} className="flex flex-col gap-8 items-start w-full max-w-[816px]">
+        {/* Honeypot — clipped to 1px (Tailwind's sr-only, chosen over an
+            off-screen offset so it can't affect page layout/scroll), not in
+            tab order, hidden from screen readers, and left unlabeled so a
+            browser autofill won't touch it either. Bots that fill every
+            field in a form will fill this one; handleSubmit silently drops
+            the submission when it's non-empty. */}
+        <input
+          type="text"
+          name="company"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="sr-only"
+        />
         <div className="flex gap-8 max-md:flex-col items-start w-full">
           <Field id="name" label="Name" placeholder="Full name" required value={name} onChange={setName} />
           <Field id="hotelName" label="Hotel name" placeholder="Hotel name" value={hotelName} onChange={setHotelName} />

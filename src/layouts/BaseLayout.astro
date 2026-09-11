@@ -2,6 +2,13 @@
 import '../styles/global.css';
 import { asset } from '../lib/cdn';
 
+// Cloudflare Web Analytics — no cookies, so no consent banner needed. Empty
+// by default (schema-validated in astro.config.mjs) so local/preview builds
+// don't send real traffic to the production analytics account; set once the
+// beacon token exists (Cloudflare dashboard → Analytics → Web Analytics →
+// add site → copy the token).
+const CF_BEACON_TOKEN = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
+
 interface Props {
   title: string;
   description: string;
@@ -55,6 +62,15 @@ const organizationSchema = {
 		<meta name="twitter:image" content={ogImage} />
 
 		<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} is:inline />
+
+		{CF_BEACON_TOKEN && (
+			<script
+				defer
+				src="https://static.cloudflareinsights.com/beacon.min.js"
+				data-cf-beacon={`{"token": "${CF_BEACON_TOKEN}"}`}
+				is:inline
+			/>
+		)}
 
 		<slot name="head" />
 	</head>
