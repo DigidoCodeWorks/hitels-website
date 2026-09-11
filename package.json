@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
+    "typegen": "sanity schema extract --path=schema.json --enforce-required-fields --force && sanity typegen generate",
     "import:framer": "node --env-file=.env scripts/framer-import/import.mjs",
     "postinstall": "simple-git-hooks"
   },
@@ -32,6 +33,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "astro": "^7.2.8",
+    "groq": "^6.11.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "sanity": "^6.11.0",

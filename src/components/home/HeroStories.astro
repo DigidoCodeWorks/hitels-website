@@ -1,6 +1,7 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
+import { storiesQuery, storiesClosingCardQuery } from '../../sanity/queries';
 
 // Instagram-style stories: a tappable avatar tray (mobile hero only) that
 // opens a full-screen, auto-advancing viewer. Figma: node 6:1534 (tray
@@ -14,46 +15,21 @@ import { asset } from '../../lib/cdn';
 // A final, non-CMS "closing" slide (storiesClosingCard singleton) always
 // plays last as a bumper.
 
-interface Story {
-  projectName: string;
-  storyTitle?: string;
-  description?: string;
-  backgroundImageUrl?: string;
-  backgroundImageAlt?: string;
-  websitePreviewUrl?: string;
-  websitePreviewAlt?: string;
-  buttonText?: string;
-  buttonLink?: string;
-}
-
-interface ClosingCard {
-  heading: string;
-  backgroundImageUrl?: string;
-  backgroundImageAlt?: string;
-  features?: { iconUrl?: string; text?: string }[];
-  buttonText?: string;
-  buttonLink?: string;
-}
-
-const stories = await sanityClient.fetch<Story[]>(
-  `*[_type == "story"] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
-);
-const closingCard = await sanityClient.fetch<ClosingCard | null>(
-  `*[_type == "storiesClosingCard"][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }`
-);
+const stories = await sanityClient.fetch(storiesQuery);
+const closingCard = await sanityClient.fetch(storiesClosingCardQuery);
 
 // Bare CSV domains (e.g. "aurorafarmhotel.is") have no scheme; internal paths
 // ("/contact-us", "#") are left as-is.
-function resolveLink(link?: string): string | undefined {
+function resolveLink(link?: string | null): string | undefined {
   if (!link) return undefined;
   if (link.startsWith('/') || link.startsWith('#') || link.startsWith('http://') || link.startsWith('https://')) return link;
   return `https://${link}`;
 }
 
 type Slide =
-  | { kind: 'intro'; name: string; backgroundImageUrl?: string; backgroundImageAlt?: string; heading: string; description?: string; buttonText?: string; buttonLink?: string }
-  | { kind: 'case-study'; name: string; backgroundImageUrl?: string; backgroundImageAlt?: string; websitePreviewUrl?: string; websitePreviewAlt?: string; description?: string; buttonText?: string; buttonLink?: string }
-  | { kind: 'closing'; name: string; backgroundImageUrl?: string; backgroundImageAlt?: string; heading: string; features: { iconUrl?: string; text?: string }[]; buttonText?: string; buttonLink?: string };
+  | { kind: 'intro'; name: string; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; heading: string; description?: string | null; buttonText?: string | null; buttonLink?: string }
+  | { kind: 'case-study'; name: string; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; websitePreviewUrl?: string | null; websitePreviewAlt?: string | null; description?: string | null; buttonText?: string | null; buttonLink?: string }
+  | { kind: 'closing'; name: string; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; heading: string; features: { iconUrl?: string; text?: string }[]; buttonText?: string | null; buttonLink?: string };
 
 const slides: Slide[] = stories.map((story) =>
   story.storyTitle

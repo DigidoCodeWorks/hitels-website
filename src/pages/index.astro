@@ -11,6 +11,8 @@ import Pricing from '../components/shared/Pricing.astro';
 import AddOns from '../components/home/AddOns.astro';
 import Faq from '../components/home/Faq.astro';
 import Footer from '../components/shared/Footer.astro';
+import { homePageQuery } from '../sanity/queries';
+import type { HomePageQueryResult } from '../../sanity.types';
 
 // Home is the first page converted to the Sanity page-builder pattern (see
 // src/sanity/schemaTypes/page.ts). Benefits, Pricing, PartnerLogos, and
@@ -19,30 +21,9 @@ import Footer from '../components/shared/Footer.astro';
 // too much bespoke per-logo sizing to genericize safely, Benefits has heavy
 // bespoke interactivity tightly coupled to its exact 3-card layout, and
 // Pricing/Footer are global/shared across pages, not Home-specific content.
-type Section =
-  | { _type: 'heroSection'; _key: string; headline: string; subheadingDesktop: string; subheadingMobile: string; primaryButtonLabel?: string; primaryButtonHref?: string; secondaryButtonLabel?: string; secondaryButtonHref?: string }
-  | { _type: 'productOfferingsSection'; _key: string; offerings: any[] }
-  | { _type: 'customerStoriesSection'; _key: string; cards: any[] }
-  | { _type: 'addOnsSection'; _key: string; addons: any[] }
-  | { _type: 'testimonialsSection'; _key: string }
-  | { _type: 'faqSection'; _key: string };
+type Section = NonNullable<HomePageQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch<{ sections: Section[] } | null>(`
-  *[_type == "page" && slug.current == "home"][0]{
-    sections[]{
-      _key,
-      _type,
-      _type == "heroSection" => {
-        headline, subheadingDesktop, subheadingMobile,
-        primaryButtonLabel, primaryButtonHref,
-        secondaryButtonLabel, secondaryButtonHref
-      },
-      _type == "productOfferingsSection" => { offerings },
-      _type == "customerStoriesSection" => { cards },
-      _type == "addOnsSection" => { addons }
-    }
-  }
-`);
+const page = await sanityClient.fetch(homePageQuery);
 
 if (!page) {
   throw new Error('Missing "page" document with slug "home" in Sanity — run scripts/seed-home-page.mjs.');
@@ -63,10 +44,10 @@ if (!heroSection) {
 			headline={heroSection.headline}
 			subheadingDesktop={heroSection.subheadingDesktop}
 			subheadingMobile={heroSection.subheadingMobile}
-			primaryButtonLabel={heroSection.primaryButtonLabel}
-			primaryButtonHref={heroSection.primaryButtonHref}
-			secondaryButtonLabel={heroSection.secondaryButtonLabel}
-			secondaryButtonHref={heroSection.secondaryButtonHref}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
 		/>
 	</header>
 	<main>
