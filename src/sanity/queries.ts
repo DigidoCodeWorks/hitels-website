@@ -73,13 +73,18 @@ export const pageBySlugQuery = defineQuery(`
       _type == "productHeroSection" => {
         headline, subheading,
         primaryButtonLabel, primaryButtonHref,
-        secondaryButtonLabel, secondaryButtonHref
+        secondaryButtonLabel, secondaryButtonHref,
+        imageUrl, imageAlt
       },
       _type == "simpleHeroSection" => { headline, subheading },
       _type == "productOfferingsSection" => { offerings },
       _type == "customerStoriesSection" => { cards },
       _type == "addOnsSection" => { addons },
-      _type == "featuresSection" => { features }
+      _type == "featuresSection" => { features },
+      _type == "statsIntroSection" => { headline, body, stats },
+      _type == "teamSection" => { headline, body, members },
+      _type == "beliefsSection" => { headline, beliefs },
+      _type == "whatIsHitelsSection" => { headline, body, features }
     },
     seo
   }

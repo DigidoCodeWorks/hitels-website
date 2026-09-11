@@ -17,6 +17,10 @@ import {
   customerStoriesSection,
   addOnsSection,
   featuresSection,
+  statsIntroSection,
+  teamSection,
+  beliefsSection,
+  whatIsHitelsSection,
   testimonialsSection,
   faqSection,
 } from './sections'
@@ -38,6 +42,10 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   customerStoriesSection,
   addOnsSection,
   featuresSection,
+  statsIntroSection,
+  teamSection,
+  beliefsSection,
+  whatIsHitelsSection,
   testimonialsSection,
   faqSection,
 ]
