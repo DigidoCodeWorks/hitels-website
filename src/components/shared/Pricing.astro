@@ -1,4 +1,5 @@
 ---
+import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import Button from './Button.astro';
 import ArrowLink from './ArrowLink.astro';
@@ -14,59 +15,29 @@ interface Props {
 // carries the "Pricing" heading and linking to itself would be circular.
 const { showHeading = true, showDetailsLink = true } = Astro.props;
 
-const CARDS = [
-  {
-    title: 'Custom website',
-    description: 'A stunning, high-converting digital presence built from scratch to elevate your brand.',
-    price: 'ISK 199.900',
-    priceSuffix: '/ month',
-    features: [
-      'Access to web specialists',
-      'Custom design',
-      'Analytics dashboard',
-      'CMS access (2 seats)',
-      'External link to booking engine like GODO',
-      'Up to 20 beautifully crafted pages',
-    ],
-    cta: 'Subscribe today',
-    theme: 'light',
-    icons: ['images/home/pricing/icon-globe.svg'],
-  },
-  {
-    title: 'Booking Engine',
-    description: 'Integrate a seamless booking engine into your existing website to maximize revenue.',
-    price: '1,8%',
-    priceSuffix: '/ direct booking',
-    features: [
-      'UI matched perfectly to your brand',
-      'Frictionless booking flow',
-      'Custom add-ons and up-selling',
-      'Precision event tracking',
-      'Secure backend',
-      'Web hosting',
-    ],
-    cta: 'Get a quote',
-    theme: 'light',
-    icons: ['images/home/pricing/icon-calendar.svg'],
-  },
-  {
-    title: 'Booking Engine',
-    description: 'Combine custom website with a frictionless booking flow to obliterate OTA fees.',
-    price: '179.900 + 1,5%',
-    priceSuffix: '',
-    features: [
-      'Everything in Custom website',
-      'Everything in Booking engine',
-      'Content engine starter pack',
-      'Ongoing conversion optimization',
-      'Web hosting',
-      'Onboarding and setup',
-    ],
-    cta: 'Get a quote',
-    theme: 'dark',
-    icons: ['images/home/pricing/icon-globe-card3.svg', 'images/home/pricing/icon-calendar-card3.svg'],
-  },
-];
+// Site-wide singleton (see src/sanity/schemaTypes/pricingPlans.ts) — the same
+// 3 cards shown on every page that renders this component, edited in one
+// place in Studio instead of duplicated per page.
+interface Plan {
+  title: string;
+  description: string;
+  price: string;
+  priceSuffix?: string;
+  features: string[];
+  ctaLabel: string;
+  theme: 'light' | 'dark';
+  iconUrls?: string[];
+}
+
+const pricingPlans = await sanityClient.fetch<{ plans: Plan[] } | null>(
+  `*[_type == "pricingPlans"][0]{ plans }`
+);
+
+if (!pricingPlans) {
+  throw new Error('Missing "pricingPlans" document in Sanity — run scripts/seed-home-page.mjs.');
+}
+
+const CARDS = pricingPlans.plans;
 ---
 
 <section id="pricing" class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
@@ -95,9 +66,9 @@ const CARDS = [
             <div class="flex items-start justify-between w-full">
               <h3 class="font-heading text-h5 whitespace-nowrap">{card.title}</h3>
               <div class="flex items-center shrink-0">
-                {card.icons.map((icon) => (
+                {(card.iconUrls ?? []).map((icon) => (
                   <div class={`flex items-center justify-center rounded-full size-8 p-2 ${card.theme === 'dark' ? 'bg-light-gray border-2 border-[#1e1261] -mr-2 last:mr-0' : 'bg-navy'}`}>
-                    <img src={asset(icon)} alt="" class="size-full" />
+                    <img src={icon} alt="" class="size-full" />
                   </div>
                 ))}
               </div>
@@ -117,7 +88,7 @@ const CARDS = [
             ))}
           </div>
         </div>
-        <Button href={card.cta === 'Get a quote' ? '/contact-us' : '#'} label={card.cta} variant={card.theme === 'dark' ? 'secondary' : 'dark'} class="w-full" />
+        <Button href={card.ctaHref} label={card.ctaLabel} variant={card.theme === 'dark' ? 'secondary' : 'dark'} class="w-full" />
       </div>
     ))}
   </div>

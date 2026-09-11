@@ -1,30 +1,20 @@
 ---
-import { asset } from '../../lib/cdn';
+interface Card {
+  logoUrl: string;
+  imageUrl: string;
+  caption: string;
+  href: string;
+}
+
+interface Props {
+  cards: Card[];
+}
+
+const { cards } = Astro.props;
 
 // Equal-width fill cards (no horizontal scroll): each card grows on hover
 // and its siblings shrink to make room, since flex-grow only controls how
 // leftover space is distributed among items sharing the same flex-basis.
-
-const CARDS = [
-  {
-    logo: 'images/home/stories/logo-exeter.svg',
-    image: 'images/home/stories/exeter-desktop.webp',
-    caption: 'Exeter increases direct bookings by 23%',
-    link: 'https://exeterhotel.is/',
-  },
-  {
-    logo: 'images/home/stories/logo-oddsson.svg',
-    image: 'images/home/stories/oddsson-desktop.webp',
-    caption: 'Oddsson increases organic traffic by 76%',
-    link: 'https://oddsson.is/',
-  },
-  {
-    logo: 'images/home/stories/logo-aurora.svg',
-    image: 'images/home/stories/aurora-desktop.webp',
-    caption: 'Aurora Farm increases direct bookings by 20%',
-    link: 'https://www.aurorafarmhotel.com/',
-  },
-];
 ---
 
 <section class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-start px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
@@ -34,9 +24,9 @@ const CARDS = [
   </div>
 
   <div class="flex gap-8 max-md:gap-4 items-stretch max-md:flex-col w-full">
-    {CARDS.map((card, i) => (
+    {cards.map((card, i) => (
       <a
-        href={card.link}
+        href={card.href}
         target="_blank"
         rel="noopener noreferrer"
         data-reveal
@@ -44,8 +34,8 @@ const CARDS = [
         style={`--reveal-delay: ${i * 120}ms`}
       >
         <div class="flex flex-col h-[440px] max-lg:h-[440px] max-md:h-80 items-start p-8 max-md:p-6 relative rounded-2xl shrink-0 w-full overflow-hidden">
-          <img src={asset(card.image)} alt="" class="absolute inset-0 w-full h-full object-cover" />
-          <img src={asset(card.logo)} alt="" class="relative h-5 max-w-full" />
+          <img src={card.imageUrl} alt="" class="absolute inset-0 w-full h-full object-cover" />
+          <img src={card.logoUrl} alt="" class="relative h-5 max-w-full" />
         </div>
         <p class="font-body font-normal text-body-md text-navy w-full md:truncate">{card.caption}</p>
       </a>
