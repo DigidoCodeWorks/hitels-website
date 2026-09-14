@@ -1,11 +1,13 @@
 name: Deploy Staging to Cloudflare Pages
 
 # Persistent staging environment: every push to `staging` builds and deploys
-# to a fixed Cloudflare Pages URL (https://staging.simple-website.pages.dev),
-# separate from deploy-cloudflare.yml which only ever deploys `main` to
-# production. Workflow: feature branch -> PR into `staging` -> merge (deploys
-# here) -> review on the staging URL -> PR `staging` into `main` -> merge
-# (deploys via deploy-cloudflare.yml) -> production.
+# to a fixed Cloudflare Pages URL (https://staging.simple-website-16a.pages.dev
+# — note the "-16a" suffix Cloudflare assigned this project's pages.dev
+# subdomain, same one astro.config.mjs falls back to), separate from
+# deploy-cloudflare.yml which only ever deploys `main` to production.
+# Workflow: feature branch -> PR into `staging` -> merge (deploys here) ->
+# review on the staging URL -> PR `staging` into `main` -> merge (deploys via
+# deploy-cloudflare.yml) -> production.
 on:
   push:
     branches: [staging]
@@ -49,7 +51,7 @@ jobs:
             --commit-dirty=true | tee /tmp/wrangler-deploy.log
           {
             echo "### Staging deploy"
-            echo "https://staging.simple-website.pages.dev"
+            echo "https://staging.simple-website-16a.pages.dev"
           } >> "$GITHUB_STEP_SUMMARY"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
