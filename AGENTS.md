@@ -40,6 +40,26 @@ seeing it live both take the same ~1 minute round-trip through this
 pipeline. Adding real live preview would require switching at least one
 route to SSR, a deliberate architecture change not currently justified.
 
+## Staging branch and previews
+
+`staging` is a persistent branch with its own fixed Cloudflare Pages URL
+(`https://staging.simple-website.pages.dev`), separate from production:
+
+1. New work happens on a feature branch, opened as a PR **into `staging`**
+   (not `main`) — same branch-and-PR discipline as production work, just
+   retargeted.
+2. Merging into `staging` triggers `.github/workflows/deploy-staging-cloudflare.yml`,
+   which builds and runs `wrangler pages deploy --branch staging`, updating
+   the fixed staging URL in place.
+3. Once staging looks good, open a PR from `staging` into `main`. Merging
+   that triggers `deploy-cloudflare.yml` as usual, deploying to production.
+
+Staging builds against the same live Sanity content as production — there's
+no separate staging dataset — so staging only isolates *code* changes, not
+content changes. Staging builds also omit `PUBLIC_SITE_URL`, so canonical/OG
+tags fall back to the `pages.dev` placeholder instead of pointing at the
+production domain.
+
 ## Environment variables
 
 See `.env.example` for the full annotated list. Summary:
