@@ -40,6 +40,16 @@ seeing it live both take the same ~1 minute round-trip through this
 pipeline. Adding real live preview would require switching at least one
 route to SSR, a deliberate architecture change not currently justified.
 
+## Pull request previews
+
+`.github/workflows/preview-cloudflare.yml` builds every same-repo PR (against
+the dataset content already live in Sanity — there's no separate staging
+dataset) and runs `wrangler pages deploy` under the PR's branch name instead
+of `main`, giving each PR its own Cloudflare Pages preview URL. A bot comment
+on the PR is created/updated with the link. Fork PRs are skipped (no access
+to repo secrets). This is separate from `deploy-cloudflare.yml`, which only
+ever deploys `main`.
+
 ## Environment variables
 
 See `.env.example` for the full annotated list. Summary:

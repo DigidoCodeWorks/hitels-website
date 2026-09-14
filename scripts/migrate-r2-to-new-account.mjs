@@ -1,7 +1,7 @@
 // One-off migration: copies every object from the old R2 bucket (personal
-// Cloudflare account) to the new R2 bucket (dev@revera.is account), as part
-// of the Vercel -> Cloudflare Pages migration. Streams each object
-// (GetObject -> PutObject) since R2 doesn't support cross-account CopyObject.
+// Cloudflare account) to the new R2 bucket (dev@revera.is account). Streams
+// each object (GetObject -> PutObject) since R2 doesn't support cross-account
+// CopyObject.
 // Idempotent/resumable: skips objects already present in the new bucket with
 // a matching size.
 //

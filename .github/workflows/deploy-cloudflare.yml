@@ -2,8 +2,8 @@ name: Deploy to Cloudflare Pages
 
 # Cloudflare Pages isn't connected to this repo via its own Git integration
 # (that requires an interactive dashboard OAuth step) — this workflow is the
-# auto-deploy substitute: build locally in CI, then push the static output
-# with wrangler, same as the manual `vercel deploy --prod` step this replaces.
+# auto-deploy substitute: build in CI, then push the static output with
+# wrangler.
 #
 # repository_dispatch: fired directly by a Sanity webhook on publish (Sanity's
 # webhook config supports custom headers + a GROQ-shaped body, so it calls
