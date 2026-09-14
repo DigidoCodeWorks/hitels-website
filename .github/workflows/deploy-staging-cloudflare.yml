@@ -1,0 +1,56 @@
+name: Deploy Staging to Cloudflare Pages
+
+# Persistent staging environment: every push to `staging` builds and deploys
+# to a fixed Cloudflare Pages URL (https://staging.simple-website.pages.dev),
+# separate from deploy-cloudflare.yml which only ever deploys `main` to
+# production. Workflow: feature branch -> PR into `staging` -> merge (deploys
+# here) -> review on the staging URL -> PR `staging` into `main` -> merge
+# (deploys via deploy-cloudflare.yml) -> production.
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+
+      - run: npm ci
+
+      # No PUBLIC_SITE_URL here on purpose: falling back to astro.config.mjs's
+      # pages.dev placeholder keeps canonical/OG tags from pointing at the
+      # production domain from a staging build.
+      - run: npm run build
+        env:
+          PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
+          PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
+          PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+          PUBLIC_CF_BEACON_TOKEN: ${{ secrets.PUBLIC_CF_BEACON_TOKEN }}
+
+      - name: Deploy to Cloudflare Pages
+        run: |
+          npx wrangler pages deploy dist \
+            --project-name simple-website \
+            --branch staging \
+            --commit-dirty=true | tee /tmp/wrangler-deploy.log
+          {
+            echo "### Staging deploy"
+            echo "https://staging.simple-website.pages.dev"
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
