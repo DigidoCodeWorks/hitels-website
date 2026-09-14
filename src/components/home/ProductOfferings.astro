@@ -1,5 +1,5 @@
 ---
-import { asset } from '../../lib/cdn';
+import IconArrowRight from '../icons/IconArrowRight.astro';
 
 interface Offering {
   eyebrow: string;
@@ -91,7 +91,7 @@ function isVideoUrl(url: string) {
             class="bg-navy text-background hover:bg-background hover:text-navy flex gap-2 items-center justify-center rounded border-2 border-transparent hover:border-navy transition-colors duration-300 px-3 py-2"
           >
             <span class="font-body font-medium text-body-sm whitespace-nowrap">{offering.ctaLabel}</span>
-            <img src={asset('images/home/product-offerings/icon-arrow-right.svg')} alt="" class="size-4" />
+            <IconArrowRight class="size-4" />
           </a>
         </div>
       </div>
