@@ -19,10 +19,46 @@ const VARIANT_STYLES = {
   dark: 'bg-navy text-background hover:bg-background hover:text-navy hover:border-navy',
 };
 
+// Inline (not R2-hosted) so stroke="currentColor" can follow the pill's own
+// text color -- matches the desktop persistent CTA's smaller icon geometry
+// (previously two separate pre-baked files, icon-calendar-nav.svg /
+// icon-calendar-nav-white.svg, one per isLight state; that pair never
+// followed the pill's *hover* color, only the isLight swap).
+function IconCalendarNav({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M13 2.5H3C2.72386 2.5 2.5 2.72386 2.5 3V13C2.5 13.2761 2.72386 13.5 3 13.5H13C13.2761 13.5 13.5 13.2761 13.5 13V3C13.5 2.72386 13.2761 2.5 13 2.5Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M11 1.5V3.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 1.5V3.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2.5 5.5H13.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Same glyph as shared/icons/IconCalendar.astro (used by Button.astro), kept
+// as its own local copy for the same reason as IconCalendarNav above -- this
+// is the mobile drawer's larger CTA icon (previously icon-calendar-cta.svg).
+function IconCalendarCta({ className = '' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M16.25 3.125H3.75C3.40482 3.125 3.125 3.40482 3.125 3.75V16.25C3.125 16.5952 3.40482 16.875 3.75 16.875H16.25C16.5952 16.875 16.875 16.5952 16.875 16.25V3.75C16.875 3.40482 16.5952 3.125 16.25 3.125Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M13.75 1.875V4.375" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6.25 1.875V4.375" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3.125 6.875H16.875" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function CtaPill({
   href,
   label,
-  icon,
+  icon: Icon,
   variant,
   padding = 'pl-4 pr-5 py-3',
   gap = 'gap-3',
@@ -32,7 +68,7 @@ function CtaPill({
 }: {
   href: string;
   label: string;
-  icon?: string;
+  icon?: (props: { className?: string }) => React.JSX.Element;
   variant: 'primary' | 'secondary' | 'dark';
   padding?: string;
   gap?: string;
@@ -45,7 +81,7 @@ function CtaPill({
       href={href}
       className={`${VARIANT_STYLES[variant]} flex ${gap} items-center justify-center rounded-lg border-2 border-transparent transition-colors duration-300 ${padding} ${className}`}
     >
-      {icon && <img src={asset(icon)} alt="" className={iconSize} />}
+      {Icon && <Icon className={iconSize} />}
       <span className={`font-body font-medium ${textSize} whitespace-nowrap`}>{label}</span>
     </a>
   );
@@ -140,7 +176,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
             <CtaPill
               href="/contact-us"
               label="Book a demo"
-              icon={isLight ? 'images/home/hero/icon-calendar-nav-white.svg' : 'images/home/hero/icon-calendar-nav.svg'}
+              icon={IconCalendarNav}
               variant={isLight ? 'dark' : 'secondary'}
               padding="pl-3 pr-4 py-2"
               gap="gap-2"
@@ -216,7 +252,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
             <CtaPill
               href="/contact-us"
               label="Book a demo"
-              icon="images/home/hero/icon-calendar-cta.svg"
+              icon={IconCalendarCta}
               variant="primary"
               padding="px-4 py-3"
               className="w-full"
