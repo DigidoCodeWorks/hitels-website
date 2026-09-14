@@ -37,9 +37,13 @@ const structure: StructureResolver = (S) =>
         .id('siteSettings')
         .title('Site Settings')
         .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+      S.listItem()
+        .id('footerSettings')
+        .title('Footer Settings')
+        .child(S.document().schemaType('footerSettings').documentId('footerSettings')),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => !['page', 'pricingPlans', 'addOns', 'siteSettings'].includes(item.getId() ?? '')
+        (item) => !['page', 'pricingPlans', 'addOns', 'siteSettings', 'footerSettings'].includes(item.getId() ?? '')
       ),
     ])
 

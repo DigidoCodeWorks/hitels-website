@@ -1,11 +1,24 @@
 ---
+import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import Button from './Button.astro';
+import { footerSettingsQuery, siteSettingsQuery } from '../../sanity/queries';
 // Footer link columns ("Product" / "Company") are the same on every
 // breakpoint. The Figma mobile spec originally had a different, larger set
 // of links here (an extra "Resources" column, several placeholder "#"
 // links) — dropped per 2026-08-28 request as outdated; mobile now just
 // reuses the desktop link set.
+//
+// Content (CTA copy, contact info, link columns, social hrefs, copyright)
+// comes from the footerSettings singleton — see its schema for what's
+// deliberately excluded (logo, "by Revera" credit, decorative video/blob,
+// Cookie Settings/Privacy Policy links) and why.
+const footer = await sanityClient.fetch(footerSettingsQuery);
+if (!footer) {
+  throw new Error('Missing "footerSettings" document in Sanity — run scripts/seed-footer-settings.mjs.');
+}
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
 ---
 
 <footer class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center overflow-hidden pt-[416px] max-lg:pt-60 max-md:pt-40 pb-12 px-[100px] max-lg:px-10 max-md:px-4 relative w-full bg-navy">
@@ -43,21 +56,21 @@ import Button from './Button.astro';
 
   <div class="flex flex-col gap-10 items-center px-[212px] max-lg:px-0 relative w-full max-w-[1016px]">
     <div class="flex flex-col gap-6 items-center text-center text-background w-full">
-      <h2 data-reveal class="font-heading text-h2 w-full">Ready to turn your website into your most profitable booking channel?</h2>
+      <h2 data-reveal class="font-heading text-h2 w-full">{footer.ctaHeadline}</h2>
       <p data-reveal style="--reveal-delay: 100ms" class="font-body font-normal text-body-lg w-full">
-        Let's discuss how a bespoke digital presence can increase your direct bookings and save you thousands in commissions.
+        {footer.ctaBody}
       </p>
     </div>
     <div class="flex gap-4 items-start justify-center">
-      <Button href="/contact-us" label="Book a demo" icon="calendar" variant="primary" />
-      <Button href="/contact-us" label="Contact us" icon="chat" variant="secondary" />
+      <Button href={footer.primaryButtonHref} label={footer.primaryButtonLabel} icon="calendar" variant="primary" />
+      <Button href={footer.secondaryButtonHref} label={footer.secondaryButtonLabel} icon="chat" variant="secondary" />
     </div>
   </div>
 
   <div class="flex flex-col gap-[72px] max-lg:gap-14 max-md:gap-8 items-start relative w-full max-w-[1440px] mx-auto">
     <div class="flex flex-col gap-5 items-start w-full">
       <div class="flex flex-col gap-0.5 items-end w-[111px]">
-        <img src={asset('images/home/footer/hitels-logo.svg')} alt="Hitels" class="w-full aspect-[113/30.91]" />
+        <img src={asset('images/home/footer/hitels-logo.svg')} alt={siteSettings?.organizationName ?? 'Hitels'} class="w-full aspect-[113/30.91]" />
         <div class="flex gap-1 items-center">
           <span class="font-body text-background text-[0.53125rem]">by</span>
           <img src={asset('images/home/footer/by-revera.svg')} alt="Revera" class="h-[7.8px]" />
@@ -66,15 +79,15 @@ import Button from './Button.astro';
 
       <div class="flex gap-8 items-start w-full max-lg:flex-col">
         <div class="flex flex-col justify-between items-start self-stretch shrink-0 w-[604px] max-lg:w-full">
-          <p class="font-heading text-h6 text-background w-full">Say hi to your new hotel platform</p>
+          <p class="font-heading text-h6 text-background w-full">{footer.contactHeadline}</p>
           <div class="flex flex-col gap-3 items-start w-full">
-            <a href="#" class="flex gap-3 items-center w-full text-background hover:underline">
+            <a href={footer.phoneHref ?? '#'} class="flex gap-3 items-center w-full text-background hover:underline">
               <img src={asset('images/home/footer/icon-phone.svg')} alt="" class="size-5" />
-              <p class="flex-1 font-body font-normal text-body-md">+354 5478001</p>
+              <p class="flex-1 font-body font-normal text-body-md">{footer.phoneLabel}</p>
             </a>
-            <a href="#" class="flex gap-3 items-center w-full text-background hover:underline">
+            <a href={footer.mailingListHref ?? '#'} class="flex gap-3 items-center w-full text-background hover:underline">
               <img src={asset('images/home/footer/icon-envelope.svg')} alt="" class="size-5" />
-              <p class="flex-1 font-body font-normal text-body-md">Join our mailing list</p>
+              <p class="flex-1 font-body font-normal text-body-md">{footer.mailingListLabel}</p>
             </a>
           </div>
         </div>
@@ -86,17 +99,17 @@ import Button from './Button.astro';
           <div class="flex flex-1 flex-col gap-4 items-start text-background">
             <p class="font-body font-medium text-body-md w-full">Product</p>
             <div class="flex flex-col gap-3 items-start font-body font-normal text-body-md w-full">
-              <a href="/booking-engine" class="w-full hover:underline">Booking Engine</a>
-              <a href="/custom-website" class="w-full hover:underline">Custom Website</a>
-              <a href="/pricing" class="w-full hover:underline">Pricing</a>
+              {footer.productLinks.map((link) => (
+                <a href={link.href} class="w-full hover:underline">{link.label}</a>
+              ))}
             </div>
           </div>
           <div class="flex flex-1 flex-col gap-4 items-start text-background">
             <p class="font-body font-medium text-body-md w-full">Company</p>
             <div class="flex flex-col gap-3 items-start font-body font-normal text-body-md w-full">
-              <a href="/about-us" class="w-full hover:underline">About us</a>
-              <a href="/contact-us" class="w-full hover:underline">Contact us</a>
-              <a href="/blog" class="w-full hover:underline">Resources</a>
+              {footer.companyLinks.map((link) => (
+                <a href={link.href} class="w-full hover:underline">{link.label}</a>
+              ))}
             </div>
           </div>
         </div>
@@ -105,12 +118,18 @@ import Button from './Button.astro';
 
     <div class="flex items-center justify-between max-lg:flex-col max-lg:gap-8 max-lg:items-start w-full">
       <div class="flex gap-6 items-center shrink-0">
-        <a href="#" aria-label="Instagram"><img src={asset('images/home/footer/icon-instagram.svg')} alt="" class="size-6" /></a>
-        <a href="#" aria-label="Facebook"><img src={asset('images/home/footer/icon-facebook.svg')} alt="" class="size-[22px]" /></a>
-        <a href="#" aria-label="LinkedIn"><img src={asset('images/home/footer/icon-linkedin.svg')} alt="" class="size-6" /></a>
+        {footer.instagramHref && (
+          <a href={footer.instagramHref} aria-label="Instagram"><img src={asset('images/home/footer/icon-instagram.svg')} alt="" class="size-6" /></a>
+        )}
+        {footer.facebookHref && (
+          <a href={footer.facebookHref} aria-label="Facebook"><img src={asset('images/home/footer/icon-facebook.svg')} alt="" class="size-[22px]" /></a>
+        )}
+        {footer.linkedinHref && (
+          <a href={footer.linkedinHref} aria-label="LinkedIn"><img src={asset('images/home/footer/icon-linkedin.svg')} alt="" class="size-6" /></a>
+        )}
       </div>
       <div class="flex items-center justify-between max-lg:flex-wrap gap-4 font-body font-normal text-body-md text-background w-[604px] max-lg:w-full whitespace-nowrap">
-        <p>© 2024 Hitels. All rights reserved.</p>
+        <p>{footer.copyrightText}</p>
         <a href="/cookie-policy" class="hover:underline">Cookie Settings</a>
         <a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
       </div>

@@ -295,6 +295,41 @@ export type Redirect = {
   permanent: boolean;
 };
 
+export type FooterSettings = {
+  _id: string;
+  _type: "footerSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  ctaHeadline: string;
+  ctaBody: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  contactHeadline: string;
+  phoneLabel: string;
+  phoneHref?: string;
+  mailingListLabel: string;
+  mailingListHref?: string;
+  productLinks: Array<{
+    label: string;
+    href: string;
+    _type: "footerLink";
+    _key: string;
+  }>;
+  companyLinks: Array<{
+    label: string;
+    href: string;
+    _type: "footerLink";
+    _key: string;
+  }>;
+  instagramHref?: string;
+  facebookHref?: string;
+  linkedinHref?: string;
+  copyrightText: string;
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -525,6 +560,7 @@ export type AllSanitySchemaTypes =
   | Post
   | AddOns
   | Redirect
+  | FooterSettings
   | SiteSettings
   | PricingPlans
   | Page
@@ -844,6 +880,35 @@ export type AddOnsQueryResult = {
   }>;
 } | null;
 
+// Source: src/sanity/queries.ts
+// Variable: footerSettingsQuery
+// Query: *[_type == "footerSettings"][0]{  ctaHeadline, ctaBody,  primaryButtonLabel, primaryButtonHref,  secondaryButtonLabel, secondaryButtonHref,  contactHeadline,  phoneLabel, phoneHref,  mailingListLabel, mailingListHref,  productLinks[]{ label, href },  companyLinks[]{ label, href },  instagramHref, facebookHref, linkedinHref,  copyrightText}
+export type FooterSettingsQueryResult = {
+  ctaHeadline: string;
+  ctaBody: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  contactHeadline: string;
+  phoneLabel: string;
+  phoneHref: string | null;
+  mailingListLabel: string;
+  mailingListHref: string | null;
+  productLinks: Array<{
+    label: string;
+    href: string;
+  }>;
+  companyLinks: Array<{
+    label: string;
+    href: string;
+  }>;
+  instagramHref: string | null;
+  facebookHref: string | null;
+  linkedinHref: string | null;
+  copyrightText: string;
+} | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -859,5 +924,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "page" && slug.current == $slug][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref,\n        imageUrl, imageAlt\n      },\n      _type == "simpleHeroSection" => { headline, subheading },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "featuresSection" => { features },\n      _type == "statsIntroSection" => { headline, body, stats },\n      _type == "teamSection" => { headline, body, members },\n      _type == "beliefsSection" => { headline, beliefs },\n      _type == "whatIsHitelsSection" => { headline, body, features },\n      _type == "comparisonTableSection" => { plans, rows }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
     '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
     '*[_type == "addOns"][0]{ addons }': AddOnsQueryResult;
+    '*[_type == "footerSettings"][0]{\n  ctaHeadline, ctaBody,\n  primaryButtonLabel, primaryButtonHref,\n  secondaryButtonLabel, secondaryButtonHref,\n  contactHeadline,\n  phoneLabel, phoneHref,\n  mailingListLabel, mailingListHref,\n  productLinks[]{ label, href },\n  companyLinks[]{ label, href },\n  instagramHref, facebookHref, linkedinHref,\n  copyrightText\n}': FooterSettingsQueryResult;
   }
 }

@@ -102,3 +102,18 @@ export const siteSettingsQuery = defineQuery(
 // independently by both Home's and Pricing's AddOns.astro (different
 // layouts, same content), same pattern as siteSettingsQuery.
 export const addOnsQuery = defineQuery(`*[_type == "addOns"][0]{ addons }`)
+
+// Site-wide singleton (src/sanity/schemaTypes/footerSettings.ts) — fetched
+// by Footer.astro, the one component every page includes.
+export const footerSettingsQuery = defineQuery(`*[_type == "footerSettings"][0]{
+  ctaHeadline, ctaBody,
+  primaryButtonLabel, primaryButtonHref,
+  secondaryButtonLabel, secondaryButtonHref,
+  contactHeadline,
+  phoneLabel, phoneHref,
+  mailingListLabel, mailingListHref,
+  productLinks[]{ label, href },
+  companyLinks[]{ label, href },
+  instagramHref, facebookHref, linkedinHref,
+  copyrightText
+}`)
