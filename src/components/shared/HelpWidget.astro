@@ -35,10 +35,10 @@ const BUBBLE_GRADIENT = 'linear-gradient(173deg, #33258C 1.71%, #654AFF 37.31%, 
         <div class="flex items-center">
           {MEMBERS.map((member, i) => (
             <div
-              class={`size-14 shrink-0 rounded-full border-[1.5px] border-background overflow-hidden ${i > 0 ? '-ml-3' : ''}`}
-              style={{ zIndex: MEMBERS.length - i }}
+              class={`size-14 shrink-0 rounded-full border-[1.5px] border-background overflow-hidden p-[3px] ${i > 0 ? '-ml-3' : ''}`}
+              style={{ zIndex: MEMBERS.length - i, backgroundImage: BUBBLE_GRADIENT }}
             >
-              <img src={member.photoUrl} alt={member.name} class="size-full object-cover" />
+              <img src={member.photoUrl} alt={member.name} class="size-full rounded-full object-cover" />
             </div>
           ))}
         </div>
@@ -76,12 +76,13 @@ const BUBBLE_GRADIENT = 'linear-gradient(173deg, #33258C 1.71%, #654AFF 37.31%, 
     data-help-toggle
     class="relative cursor-pointer size-[72px] shrink-0 rounded-full border border-background overflow-hidden"
   >
-    <img
-      src={MEMBERS[0].photoUrl}
-      alt=""
+    <div
       data-help-avatar
-      class="absolute inset-0 size-full object-cover transition-transform duration-300 ease-out"
-    />
+      class="absolute inset-0 flex items-center justify-center p-[3px] transition-transform duration-300 ease-out"
+      style={{ backgroundImage: BUBBLE_GRADIENT }}
+    >
+      <img src={MEMBERS[0].photoUrl} alt="" class="size-full rounded-full object-cover" />
+    </div>
     <span
       data-help-arrow
       class="absolute inset-0 flex items-center justify-center -translate-y-full transition-transform duration-300 ease-out"
