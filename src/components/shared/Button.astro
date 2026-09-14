@@ -1,10 +1,24 @@
 ---
-import { asset } from '../../lib/cdn';
+import IconCalendar from '../icons/IconCalendar.astro';
+import IconChat from '../icons/IconChat.astro';
+import IconTag from '../icons/IconTag.astro';
+
+// Inline components, not R2-hosted asset() URLs like most icons in this
+// project: this button's variants change text color on hover
+// (VARIANT_STYLES below), and an <img src="..."> reference to an SVG is
+// opaque to CSS — it can't follow that color change the way an inline
+// <svg stroke="currentColor"> can. See src/components/icons/ for why each
+// one is inlined instead of just this file.
+const ICONS = {
+  calendar: IconCalendar,
+  chat: IconChat,
+  tag: IconTag,
+};
 
 interface Props {
   href: string;
   label: string;
-  icon?: string;
+  icon?: keyof typeof ICONS;
   variant: 'primary' | 'secondary' | 'dark';
   padding?: string;
   gap?: string;
@@ -30,12 +44,14 @@ const VARIANT_STYLES = {
   secondary: 'bg-background text-navy hover:bg-navy hover:text-background',
   dark: 'bg-navy text-background hover:bg-background hover:text-navy hover:border-navy',
 };
+
+const Icon = icon ? ICONS[icon] : null;
 ---
 
 <a
   href={href}
   class={`${VARIANT_STYLES[variant]} flex ${gap} items-center justify-center rounded-lg border-2 border-transparent transition-colors duration-300 ${padding} ${className}`}
 >
-  {icon && <img src={asset(icon)} alt="" class={iconSize} />}
+  {Icon && <Icon class={iconSize} />}
   <span class={`font-body font-medium ${textSize} whitespace-nowrap`}>{label}</span>
 </a>

@@ -1,0 +1,29 @@
+---
+// Inline (see IconCalendar.astro for why). The small dot's fill was
+// hardcoded to a separate near-black color (#343330, distinct from the
+// outline's #130C3C navy) in the source export — switched to currentColor
+// too, not just the outline: on this icon's dark hover state (Button.astro's
+// "secondary" variant flips to a navy background), a dot left fixed at
+// #343330 would sit almost invisibly close in value to that background.
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path
+    d="M3.30781 10.8078C3.19082 10.6907 3.12508 10.5319 3.125 10.3664V3.125H10.3664C10.5319 3.12508 10.6907 3.19082 10.8078 3.30781L18.5672 11.0672C18.6843 11.1844 18.7501 11.3433 18.7501 11.509C18.7501 11.6747 18.6843 11.8336 18.5672 11.9508L11.9531 18.5672C11.8359 18.6843 11.677 18.7501 11.5113 18.7501C11.3456 18.7501 11.1867 18.6843 11.0695 18.5672L3.30781 10.8078Z"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M6.5625 5.84375C6.95945 5.84375 7.28125 6.16555 7.28125 6.5625C7.28125 6.95945 6.95945 7.28125 6.5625 7.28125C6.16555 7.28125 5.84375 6.95945 5.84375 6.5625C5.84375 6.16555 6.16555 5.84375 6.5625 5.84375Z"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="0.125"
+  />
+</svg>
