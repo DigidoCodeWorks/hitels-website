@@ -2,6 +2,8 @@
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import { testimonialsQuery } from '../../sanity/queries';
+import IconCarouselArrowLeft from '../icons/IconCarouselArrowLeft.astro';
+import IconCarouselArrowRight from '../icons/IconCarouselArrowRight.astro';
 
 const rows = await sanityClient.fetch(testimonialsQuery);
 
@@ -42,11 +44,11 @@ const testimonials = rows.map((t) => ({
         </div>
       </div>
       <div class="flex gap-2.5 items-center shrink-0">
-        <button type="button" aria-label="Previous testimonial" data-direction="-1" class="bg-light-gray flex items-center justify-center rounded-full p-3.5 size-12">
-          <img src={asset('images/home/testimonial/arrow-left.svg')} alt="" class="size-5" />
+        <button type="button" aria-label="Previous testimonial" data-direction="-1" class="group bg-light-gray hover:bg-navy flex items-center justify-center rounded-full p-3.5 size-12 transition-colors duration-300">
+          <IconCarouselArrowLeft class="size-5 text-navy group-hover:text-background transition-colors duration-300" />
         </button>
-        <button type="button" aria-label="Next testimonial" data-direction="1" class="bg-light-gray flex items-center justify-center rounded-full p-3.5 size-12">
-          <img src={asset('images/home/testimonial/arrow-right.svg')} alt="" class="size-5" />
+        <button type="button" aria-label="Next testimonial" data-direction="1" class="group bg-light-gray hover:bg-navy flex items-center justify-center rounded-full p-3.5 size-12 transition-colors duration-300">
+          <IconCarouselArrowRight class="size-5 text-navy group-hover:text-background transition-colors duration-300" />
         </button>
       </div>
     </div>
