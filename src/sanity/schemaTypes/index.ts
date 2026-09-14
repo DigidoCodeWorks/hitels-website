@@ -8,6 +8,7 @@ import storiesClosingCard from './storiesClosingCard'
 import page from './page'
 import pricingPlans from './pricingPlans'
 import siteSettings from './siteSettings'
+import footerSettings from './footerSettings'
 import redirect from './redirect'
 import addOns from './addOns'
 import {
@@ -31,6 +32,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   page,
   pricingPlans,
   siteSettings,
+  footerSettings,
   redirect,
   addOns,
   post,
