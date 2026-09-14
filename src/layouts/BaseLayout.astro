@@ -3,6 +3,7 @@ import { sanityClient } from 'sanity:client';
 import '../styles/global.css';
 import { asset } from '../lib/cdn';
 import { siteSettingsQuery } from '../sanity/queries';
+import HelpWidget from '../components/shared/HelpWidget.astro';
 
 // Cloudflare Web Analytics — no cookies, so no consent banner needed. Empty
 // by default (schema-validated in astro.config.mjs) so local/preview builds
@@ -88,5 +89,6 @@ const organizationSchema = {
 	</head>
 	<body class="bg-background">
 		<slot />
+		<HelpWidget />
 	</body>
 </html>
