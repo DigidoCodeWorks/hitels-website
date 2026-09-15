@@ -8,10 +8,19 @@ name: Deploy Staging to Cloudflare Pages
 # Workflow: feature branch -> PR into `staging` -> merge (deploys here) ->
 # review on the staging URL -> PR `staging` into `main` -> merge (deploys via
 # deploy-cloudflare.yml) -> production.
+#
+# repository_dispatch: same Sanity publish webhook that triggers
+# deploy-cloudflare.yml also fires this, so publishing content rebuilds
+# staging too — not just pushes to the branch. repository_dispatch runs
+# against the repo's default branch by default, so checkout below pins
+# `ref: staging` explicitly to make sure a content-only rebuild still
+# deploys the staging branch's code, not main's.
 on:
   push:
     branches: [staging]
   workflow_dispatch:
+  repository_dispatch:
+    types: [sanity-publish]
 
 concurrency:
   group: deploy-staging
@@ -24,6 +33,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: staging
 
       - uses: actions/setup-node@v4
         with:
