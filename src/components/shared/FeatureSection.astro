@@ -1,6 +1,4 @@
 ---
-import ArrowLink from './ArrowLink.astro';
-
 interface Props {
   label: string;
   heading: string;
@@ -14,7 +12,6 @@ interface Props {
 }
 
 const {
-  label,
   heading,
   description,
   image,
@@ -64,11 +61,9 @@ const sectionClass = variant === 'custom-website' && !imageFirst ? `${styles.sec
   )}
   <div data-reveal style="--reveal-delay: 120ms" class={styles.content}>
     <div class="flex flex-col gap-6 items-start w-full">
-      <span class="border border-gray font-body font-medium text-body-sm text-gray rounded px-2.5 pt-0.5 pb-1">{label}</span>
       <h2 class="font-heading text-h3 text-navy w-full">{heading}</h2>
     </div>
     <p class="font-body font-normal text-body-md text-gray w-full">{description}</p>
-    <ArrowLink href="#" label="Learn more" />
   </div>
   {!domImageFirst && (
     <div data-reveal="fade" style="--reveal-delay: 120ms" class={`${styles.imageWrapper} ${imageBg}`}>
