@@ -24,7 +24,7 @@ const { plans: PLANS, rows: ROWS } = Astro.props;
     <table class="w-full min-w-[720px] border-collapse">
       <thead>
         <tr class="bg-light-gray">
-          <th class="border border-border p-6 text-left font-body font-medium text-body-sm text-navy">Feature</th>
+          <th class="sticky left-0 z-10 border border-border p-6 text-left font-body font-medium text-body-sm text-navy bg-light-gray">Feature</th>
           {PLANS.map((plan) => (
             <th class="border border-border p-6 text-center font-body font-medium text-body-sm text-navy whitespace-nowrap">{plan}</th>
           ))}
@@ -33,7 +33,7 @@ const { plans: PLANS, rows: ROWS } = Astro.props;
       <tbody>
         {ROWS.map((row) => (
           <tr>
-            <td class={`border border-border p-6 text-left font-body ${row.isGroupHeader ? 'font-medium' : 'font-normal'} text-body-sm text-navy whitespace-nowrap`}>
+            <td class={`sticky left-0 z-10 border border-border p-6 text-left font-body ${row.isGroupHeader ? 'font-medium' : 'font-normal'} text-body-sm text-navy whitespace-nowrap bg-background`}>
               {row.label}
             </td>
             {row.isGroupHeader
