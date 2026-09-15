@@ -54,12 +54,15 @@ const aboutUsPage = {
       _type: 'teamSection',
       headline: 'People behind smarter hotel websites',
       body: 'Most booking engines look like an afterthought. We go further than any competitor to ensure a seamless transition from your website to the checkout. Starting in Figma, we meticulously tailor the typography, colors, and UI components so the engine feels like a natural, premium extension of your brand.',
+      // Head-to-chest crops with consistent headroom -- see
+      // scripts/update-team-photo-crops.mjs for why these live under a
+      // headshot/ subpath instead of images/about/team/ directly.
       members: [
-        { _key: 'arnar', name: 'Arnar Hinriksson', role: 'Growth and Success', email: 'arnar@hitels.is', photoUrl: r2('images/about/team/arnar.webp') },
-        { _key: 'thordis', name: 'Þórdís', role: 'Technology and Customer Success', email: 'thordis@hitels.is', photoUrl: r2('images/about/team/thordis.webp') },
-        { _key: 'birgir', name: 'Birgir', role: 'Strategy and Consultation', email: 'birgir@hitels.is', photoUrl: r2('images/about/team/birgir.webp') },
-        { _key: 'salome', name: 'Salome', role: 'Customer Success & QA', email: 'hi@hitels.is', photoUrl: r2('images/about/team/salome.webp') },
-        { _key: 'bjarki', name: 'Bjarki', role: 'Designer', email: 'hi@hitels.is', photoUrl: r2('images/about/team/bjarki.webp') },
+        { _key: 'arnar', name: 'Arnar Hinriksson', role: 'Growth and Success', email: 'arnar@hitels.is', photoUrl: r2('images/about/team/headshot/arnar.webp') },
+        { _key: 'thordis', name: 'Þórdís', role: 'Technology and Customer Success', email: 'thordis@hitels.is', photoUrl: r2('images/about/team/headshot/thordis.webp') },
+        { _key: 'birgir', name: 'Birgir', role: 'Strategy and Consultation', email: 'birgir@hitels.is', photoUrl: r2('images/about/team/headshot/birgir.webp') },
+        { _key: 'salome', name: 'Salome', role: 'Customer Success & QA', email: 'hi@hitels.is', photoUrl: r2('images/about/team/headshot/salome.webp') },
+        { _key: 'bjarki', name: 'Bjarki', role: 'Designer', email: 'hi@hitels.is', photoUrl: r2('images/about/team/headshot/bjarki.webp') },
       ],
     },
     {
