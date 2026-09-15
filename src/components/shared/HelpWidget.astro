@@ -6,15 +6,17 @@ import IconCalendar from '../icons/IconCalendar.astro';
 import IconClose from '../icons/IconClose.astro';
 import IconChevronDown from '../icons/IconChevronDown.astro';
 
-// Same 4 team photos already seeded for the About page team section
-// (scripts/seed-about-us-page.mjs) — reused here as static avatars rather
-// than a live Sanity fetch, since this widget is sitewide chrome (like
-// Footer.astro) rather than page content.
+// Head-to-neck crops of the same 4 team members photographed for the About
+// page team section (scripts/seed-about-us-page.mjs) — cropped separately
+// for this widget since the About page photos are upper-body shots, which
+// left too much shoulder/torso visible in these small circular avatars.
+// Static rather than a live Sanity fetch, since this widget is sitewide
+// chrome (like Footer.astro) rather than page content.
 const MEMBERS = [
-  { name: 'Bjarki', photoUrl: asset('images/about/team/bjarki.webp') },
-  { name: 'Þórdís', photoUrl: asset('images/about/team/thordis.webp') },
-  { name: 'Birgir', photoUrl: asset('images/about/team/birgir.webp') },
-  { name: 'Salome', photoUrl: asset('images/about/team/salome.webp') },
+  { name: 'Bjarki', photoUrl: asset('images/help-widget/avatars/bjarki.webp') },
+  { name: 'Þórdís', photoUrl: asset('images/help-widget/avatars/thordis.webp') },
+  { name: 'Birgir', photoUrl: asset('images/help-widget/avatars/birgir.webp') },
+  { name: 'Salome', photoUrl: asset('images/help-widget/avatars/salome.webp') },
 ];
 
 // Every menu item points at the same destination — this widget isn't a
