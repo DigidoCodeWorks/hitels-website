@@ -1,8 +1,9 @@
 // One-off: repoints the About page team section's photoUrl fields at the
-// half-body crops uploaded to images/about/team/halfbody/ (the originals at
-// images/about/team/ were full upper-body shots with inconsistent headroom
-// per photo -- see Team.astro). Patches only photoUrl on each member by
-// _key, leaving name/role/email untouched. Safe to re-run.
+// head-to-chest crops uploaded to images/about/team/headshot/ (the
+// originals at images/about/team/ were full upper-body shots with
+// inconsistent headroom per photo -- see Team.astro). Patches only
+// photoUrl on each member by _key, leaving name/role/email untouched.
+// Safe to re-run.
 //
 // Usage: node --env-file=.env scripts/update-team-photo-crops.mjs
 
@@ -24,7 +25,7 @@ const patches = MEMBER_KEYS.map((key) => ({
   patch: {
     id: 'aboutUsPage',
     set: {
-      [`sections[_key=="team"].members[_key=="${key}"].photoUrl`]: r2(`images/about/team/halfbody/${key}.webp`),
+      [`sections[_key=="team"].members[_key=="${key}"].photoUrl`]: r2(`images/about/team/headshot/${key}.webp`),
     },
   },
 }));
