@@ -81,7 +81,13 @@ export default function ContactForm() {
       // Apps Script web apps don't reliably send CORS headers for
       // non-form-encoded bodies, so this is submitted as FormData (a
       // CORS-safelisted content type) to avoid a failing preflight request.
-      await fetch(ENDPOINT, { method: 'POST', body });
+      // mode: 'no-cors' is required too -- Apps Script never sends
+      // Access-Control-Allow-Origin on the response, so without it the
+      // browser blocks fetch() from reading the response and this always
+      // throws even when the submission actually went through. The
+      // tradeoff: the response becomes opaque, so a real backend failure
+      // can no longer be distinguished from success client-side.
+      await fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body });
 
       setStatus('success');
       setName('');
