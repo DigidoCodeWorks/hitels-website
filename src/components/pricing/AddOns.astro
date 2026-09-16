@@ -1,7 +1,6 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
-import Button from '../shared/Button.astro';
 import { addOnsQuery } from '../../sanity/queries';
 
 // Self-fetches the shared "Add-Ons" singleton (src/sanity/schemaTypes/
@@ -43,7 +42,6 @@ const ADDONS = addOnsDoc?.addons ?? [];
             ))}
           </div>
         </div>
-        <Button href="/contact-us" label="Get a quote" variant="dark" class="w-full" />
       </div>
     ))}
   </div>
