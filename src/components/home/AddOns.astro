@@ -1,7 +1,6 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
-import Button from '../shared/Button.astro';
 import { addOnsQuery } from '../../sanity/queries';
 
 // Confirmed hidden on Desktop and Tablet in Figma (hidden="true" on both
@@ -47,7 +46,6 @@ const addons = addOnsDoc?.addons ?? [];
             ))}
           </div>
         </div>
-        <Button href="/contact-us" label="Get a quote" variant="dark" class="w-full" />
       </div>
     ))}
   </div>
