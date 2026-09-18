@@ -5,7 +5,7 @@
 // Message blank and fill in Plan instead, and vice versa) AND email
 // LEAD_NOTIFICATION_EMAIL via Resend (resend.com), with their own
 // subject/body below:
-// https://docs.google.com/spreadsheets/d/1oHJ8HCt-xcARWKVPB8piC1EVBB0ETGMJ_1mEufVEHuU
+// https://docs.google.com/spreadsheets/d/1-R6FaPLGuE355EEsPv-k_hkbMv9WiELmimgMYOKsOSI
 // The site is a static Astro build with no server, so form submissions are
 // sent straight to this Google Apps Script Web App.
 //
@@ -29,7 +29,7 @@
 //    deployment until you do.
 
 const SHEET_NAME = 'Sheet1';
-const LEAD_NOTIFICATION_EMAIL = 'dev@revera.is';
+const LEAD_NOTIFICATION_EMAIL = 'hi@hitels.is';
 const FROM_EMAIL = 'Hitels Website <notifications@hitels.is>';
 
 function sendViaResend({ to, subject, text }) {
