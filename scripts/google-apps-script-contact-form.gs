@@ -32,6 +32,15 @@ const SHEET_NAME = 'Sheet1';
 const LEAD_NOTIFICATION_EMAIL = 'hi@hitels.is';
 const FROM_EMAIL = 'Hitels Website <notifications@hitels.is>';
 
+// ContactForm.tsx sends the dial code as its own field (phone-country-code)
+// rather than concatenated onto phone -- combine them here so the sheet row
+// and email both show a single, complete number.
+function formatPhone(data) {
+  if (!data.phone) return '';
+  const code = data['phone-country-code'];
+  return code ? `${code} ${data.phone}` : data.phone;
+}
+
 function sendViaResend({ to, subject, text }) {
   const apiKey = PropertiesService.getScriptProperties().getProperty('RESEND_API_KEY');
   if (!apiKey) {
@@ -76,7 +85,7 @@ function doPost(e) {
     data.name || '',
     data.hotelName || '',
     data.email || '',
-    data.phone || '',
+    formatPhone(data),
     data.message || '',
     data.plan || '',
   ]);
@@ -101,7 +110,7 @@ function doPost(e) {
           `Name: ${data.name || ''}`,
           `Hotel name: ${data.hotelName || ''}`,
           `Email: ${data.email || ''}`,
-          `Phone: ${data.phone || ''}`,
+          `Phone: ${formatPhone(data)}`,
           '',
           data.message || '',
         ].join('\n'),
