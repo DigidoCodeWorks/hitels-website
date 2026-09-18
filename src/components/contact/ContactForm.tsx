@@ -27,6 +27,12 @@ function Field({
     <div className="flex flex-1 flex-col gap-2 items-start w-full">
       <label htmlFor={id} className="font-body font-medium text-body-sm text-navy">
         {label}
+        {required && (
+          <>
+            <span className="text-red-600" aria-hidden="true"> *</span>
+            <span className="sr-only"> (required)</span>
+          </>
+        )}
       </label>
       <input
         id={id}
@@ -149,6 +155,7 @@ export default function ContactForm() {
             id="phone"
             label="Phone number"
             placeholder="Phone number"
+            required
             value={phone}
             onChange={setPhone}
             country={phoneCountry}
@@ -158,6 +165,8 @@ export default function ContactForm() {
         <div className="flex flex-col gap-2 items-start w-full">
           <label htmlFor="message" className="font-body font-medium text-body-sm text-navy">
             Message
+            <span className="text-red-600" aria-hidden="true"> *</span>
+            <span className="sr-only"> (required)</span>
           </label>
           <div className="relative w-full">
             <textarea
