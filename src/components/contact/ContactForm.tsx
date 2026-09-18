@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { asset } from '../../lib/cdn';
+import PhoneNumberField, { DEFAULT_COUNTRY, type Country } from './PhoneNumberField';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -46,6 +47,7 @@ export default function ContactForm() {
   const [hotelName, setHotelName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState<Country>(DEFAULT_COUNTRY);
   const [message, setMessage] = useState('');
   const [company, setCompany] = useState('');
   const [status, setStatus] = useState<Status>('idle');
@@ -76,6 +78,10 @@ export default function ContactForm() {
       body.append('hotelName', hotelName);
       body.append('email', email);
       body.append('phone', phone);
+      // Travels as its own field rather than being concatenated onto `phone`
+      // so the backend gets both pieces distinctly and can reconstruct the
+      // full E.164 number itself if it ever needs to.
+      body.append('phone-country-code', phoneCountry.dialCode);
       body.append('message', message);
 
       // Apps Script web apps don't reliably send CORS headers for
@@ -94,6 +100,8 @@ export default function ContactForm() {
       setHotelName('');
       setEmail('');
       setPhone('');
+      // phoneCountry is deliberately left alone -- it's a preference the
+      // visitor actively set, not typed input that needs clearing.
       setMessage('');
       setCompany('');
     } catch {
@@ -137,7 +145,15 @@ export default function ContactForm() {
         </div>
         <div className="flex gap-8 max-md:flex-col items-start w-full">
           <Field id="email" label="Email" type="email" placeholder="jon@hotel.is" required value={email} onChange={setEmail} />
-          <Field id="phone" label="Phone number" type="tel" placeholder="Phone number" value={phone} onChange={setPhone} />
+          <PhoneNumberField
+            id="phone"
+            label="Phone number"
+            placeholder="Phone number"
+            value={phone}
+            onChange={setPhone}
+            country={phoneCountry}
+            onCountryChange={setPhoneCountry}
+          />
         </div>
         <div className="flex flex-col gap-2 items-start w-full">
           <label htmlFor="message" className="font-body font-medium text-body-sm text-navy">
