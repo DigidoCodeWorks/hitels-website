@@ -155,6 +155,7 @@ export default function ContactForm() {
             id="phone"
             label="Phone number"
             placeholder="Phone number"
+            required
             value={phone}
             onChange={setPhone}
             country={phoneCountry}

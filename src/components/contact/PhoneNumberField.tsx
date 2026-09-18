@@ -318,6 +318,12 @@ export default function PhoneNumberField({
     <div className="flex flex-1 flex-col gap-2 items-start w-full">
       <label htmlFor={id} className="font-body font-medium text-body-sm text-navy">
         {label}
+        {required && (
+          <>
+            <span className="text-red-600" aria-hidden="true"> *</span>
+            <span className="sr-only"> (required)</span>
+          </>
+        )}
       </label>
       <div
         ref={rowRef}
