@@ -25,36 +25,58 @@ for (const [name, value] of Object.entries({ PUBLIC_SANITY_PROJECT_ID, PUBLIC_SA
 const dataset = PUBLIC_SANITY_DATASET || 'production';
 
 // slug -> related slugs (2-4 each, per the field's own Studio guidance).
+// Every post gets exactly 3 — the RelatedPosts section always renders a
+// full 3-column row instead of an inconsistent 1-2-3 count. The smaller
+// clusters (guest-experience pair, hotel-launch pair, company/news posts)
+// needed a third link added beyond their natural 1-2 topical siblings; those
+// third picks bridge to the next-closest adjacent topic rather than a
+// same-cluster repeat, noted inline.
 const RELATED_BY_SLUG = {
   // Direct Bookings & Revenue — "why/how to get bookings" sub-group
   'the-roi-of-direct-bookings-why-15-feels-like-50': ['master-direct-bookins-with-hitels', 'maximizing-visibility-how-seo-drives-direct-bookings', 'increase-hotel-revenue'],
-  'master-direct-bookins-with-hitels': ['the-roi-of-direct-bookings-why-15-feels-like-50', 'maximizing-visibility-how-seo-drives-direct-bookings'],
-  'maximizing-visibility-how-seo-drives-direct-bookings': ['the-roi-of-direct-bookings-why-15-feels-like-50', 'master-direct-bookins-with-hitels'],
+  'master-direct-bookins-with-hitels': ['the-roi-of-direct-bookings-why-15-feels-like-50', 'maximizing-visibility-how-seo-drives-direct-bookings', 'increase-hotel-revenue'],
+  'maximizing-visibility-how-seo-drives-direct-bookings': ['the-roi-of-direct-bookings-why-15-feels-like-50', 'master-direct-bookins-with-hitels', 'increase-hotel-revenue'],
 
   // Direct Bookings & Revenue — "revenue optimization" sub-group
   'increase-hotel-revenue': ['boost-revpar-upselling-ancillary-services-before-check-in', 'how-to-use-offers-and-discounts', 'the-roi-of-direct-bookings-why-15-feels-like-50'],
-  'boost-revpar-upselling-ancillary-services-before-check-in': ['increase-hotel-revenue', 'how-to-use-offers-and-discounts'],
-  'how-to-use-offers-and-discounts': ['increase-hotel-revenue', 'boost-revpar-upselling-ancillary-services-before-check-in'],
+  'boost-revpar-upselling-ancillary-services-before-check-in': ['increase-hotel-revenue', 'how-to-use-offers-and-discounts', 'the-roi-of-direct-bookings-why-15-feels-like-50'],
+  'how-to-use-offers-and-discounts': ['increase-hotel-revenue', 'boost-revpar-upselling-ancillary-services-before-check-in', 'master-direct-bookins-with-hitels'],
 
-  // Hotel Website Design & Trust
+  // Hotel Website Design & Trust — a clean 4-post cluster, so each links to
+  // the other 3 (full mesh) rather than needing an out-of-cluster bridge.
   'we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found': ['first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website', 'how-a-great-hotel-website-builds-trust-before-check-in', 'how-to-build-a-successful-hotel-website'],
-  'first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'how-a-great-hotel-website-builds-trust-before-check-in'],
-  'how-a-great-hotel-website-builds-trust-before-check-in': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'how-to-build-a-successful-hotel-website'],
-  'how-to-build-a-successful-hotel-website': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website'],
+  'first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'how-a-great-hotel-website-builds-trust-before-check-in', 'how-to-build-a-successful-hotel-website'],
+  'how-a-great-hotel-website-builds-trust-before-check-in': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website', 'how-to-build-a-successful-hotel-website'],
+  'how-to-build-a-successful-hotel-website': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website', 'how-a-great-hotel-website-builds-trust-before-check-in'],
 
-  // Guest experience pair
-  'how-to-respond-to-negative-hotel-reviews': ['improve-loyalty'],
-  'improve-loyalty': ['how-to-respond-to-negative-hotel-reviews'],
+  // Guest experience pair — 3rd link bridges to trust/guest-experience themes.
+  'how-to-respond-to-negative-hotel-reviews': ['improve-loyalty', 'how-a-great-hotel-website-builds-trust-before-check-in', 'boost-revpar-upselling-ancillary-services-before-check-in'],
+  'improve-loyalty': ['how-to-respond-to-negative-hotel-reviews', 'increase-hotel-revenue', 'boost-revpar-upselling-ancillary-services-before-check-in'],
 
-  // Hotel-launch pair
-  'how-to-start-a-hotel-business': ['why-hotels-are-choosing-hitels-before-they-even-open-their-doors', 'introducing-hitels'],
-  'why-hotels-are-choosing-hitels-before-they-even-open-their-doors': ['how-to-start-a-hotel-business', 'introducing-hitels'],
+  // Hotel-launch pair — 3rd link bridges to a proof-point/build-oriented post.
+  'how-to-start-a-hotel-business': ['why-hotels-are-choosing-hitels-before-they-even-open-their-doors', 'introducing-hitels', 'how-to-build-a-successful-hotel-website'],
+  'why-hotels-are-choosing-hitels-before-they-even-open-their-doors': ['how-to-start-a-hotel-business', 'introducing-hitels', 'showcasing-hitels-websites'],
 
-  // Company/news posts, linked into the cluster their subject matter supports
-  'godo-hitels-partnership': ['master-direct-bookins-with-hitels', 'the-roi-of-direct-bookings-why-15-feels-like-50'],
-  'introducing-hitels': ['why-hotels-are-choosing-hitels-before-they-even-open-their-doors', 'how-to-start-a-hotel-business'],
-  'showcasing-hitels-websites': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'how-to-build-a-successful-hotel-website'],
+  // Company/news posts, linked into the clusters their subject matter supports.
+  'godo-hitels-partnership': ['master-direct-bookins-with-hitels', 'the-roi-of-direct-bookings-why-15-feels-like-50', 'increase-hotel-revenue'],
+  'introducing-hitels': ['why-hotels-are-choosing-hitels-before-they-even-open-their-doors', 'how-to-start-a-hotel-business', 'showcasing-hitels-websites'],
+  'showcasing-hitels-websites': ['we-analyzed-300-hotel-websites-in-iceland-here-s-what-we-found', 'how-to-build-a-successful-hotel-website', 'first-impressions-matter-what-visitors-expect-to-see-on-your-hotel-website'],
 };
+
+for (const [slug, related] of Object.entries(RELATED_BY_SLUG)) {
+  if (related.length !== 3) {
+    console.error(`RELATED_BY_SLUG["${slug}"] has ${related.length} entries, expected exactly 3.`);
+    process.exit(1);
+  }
+  if (related.includes(slug)) {
+    console.error(`RELATED_BY_SLUG["${slug}"] references itself.`);
+    process.exit(1);
+  }
+  if (new Set(related).size !== related.length) {
+    console.error(`RELATED_BY_SLUG["${slug}"] has duplicate entries.`);
+    process.exit(1);
+  }
+}
 
 const queryURL = `https://${PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/query/${dataset}?query=${encodeURIComponent(
   '*[_type == "post" && defined(slug.current)]{ _id, "slug": slug.current }'
