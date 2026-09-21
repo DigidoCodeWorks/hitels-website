@@ -4,6 +4,7 @@ import type { PortableTextBlock } from '@portabletext/types';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/blog-detail/Hero.astro';
 import PostBody from '../../components/blog-detail/PostBody.astro';
+import RelatedPosts from '../../components/blog-detail/RelatedPosts.astro';
 import Footer from '../../components/shared/Footer.astro';
 import { postSlugsQuery, postBySlugQuery } from '../../sanity/queries';
 import { breadcrumbSchema } from '../../lib/schema';
@@ -54,6 +55,7 @@ const breadcrumbs = breadcrumbSchema([
 	</header>
 	<main>
 		<PostBody body={(post.body ?? []) as PortableTextBlock[]} />
+		<RelatedPosts posts={post.relatedPosts ?? []} />
 	</main>
 	<Footer />
 </BaseLayout>

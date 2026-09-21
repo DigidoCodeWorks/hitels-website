@@ -52,7 +52,13 @@ export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current ==
   shortDescription,
   body,
   metaTitle,
-  metaDescription
+  metaDescription,
+  relatedPosts[]->{
+    title,
+    "slug": slug.current,
+    imageUrl,
+    imageAlt
+  }
 }`)
 
 export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans"][0]{ plans }`)
