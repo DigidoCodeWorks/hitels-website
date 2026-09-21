@@ -3,7 +3,7 @@
 // (src/components/shared/PricingSignupModal.tsx) — both POST here. Both
 // append a row to the spreadsheet (pricing signups leave Phone number/
 // Message blank and fill in Plan instead, and vice versa) AND email
-// LEAD_NOTIFICATION_EMAIL via Resend (resend.com), with their own
+// LEAD_NOTIFICATION_EMAILS via Resend (resend.com), with their own
 // subject/body below:
 // https://docs.google.com/spreadsheets/d/1-R6FaPLGuE355EEsPv-k_hkbMv9WiELmimgMYOKsOSI
 // The site is a static Astro build with no server, so form submissions are
@@ -29,7 +29,10 @@
 //    deployment until you do.
 
 const SHEET_NAME = 'Sheet1';
-const LEAD_NOTIFICATION_EMAIL = 'hi@hitels.is';
+// hitels-emails' Slack channel email address (Slack's "Send emails to this
+// channel" feature, not a webhook) -- sent alongside hi@hitels.is so
+// submissions keep landing in Slack the way the previous site's setup did.
+const LEAD_NOTIFICATION_EMAILS = ['hi@hitels.is', 'hitels-emails-aaaas5nuert5hxh2hd5uyype7u@revera-org.slack.com'];
 const FROM_EMAIL = 'Hitels Website <notifications@hitels.is>';
 
 // ContactForm.tsx sends the dial code as its own field (phone-country-code)
@@ -93,7 +96,7 @@ function doPost(e) {
   try {
     if (isPricingSignup) {
       sendViaResend({
-        to: LEAD_NOTIFICATION_EMAIL,
+        to: LEAD_NOTIFICATION_EMAILS,
         subject: `New pricing signup — ${data.plan}`,
         text: [
           `Plan: ${data.plan}`,
@@ -104,7 +107,7 @@ function doPost(e) {
       });
     } else {
       sendViaResend({
-        to: LEAD_NOTIFICATION_EMAIL,
+        to: LEAD_NOTIFICATION_EMAILS,
         subject: `New contact form message from ${data.name || 'website visitor'}`,
         text: [
           `Name: ${data.name || ''}`,
