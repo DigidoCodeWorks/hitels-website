@@ -6,8 +6,9 @@ import Pricing from '../components/shared/Pricing.astro';
 import AddOns from '../components/pricing/AddOns.astro';
 import ComparisonTable from '../components/pricing/ComparisonTable.astro';
 import Footer from '../components/shared/Footer.astro';
-import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
+import { pageBySlugQuery, pricingPlansQuery, siteSettingsQuery } from '../sanity/queries';
 import type { PageBySlugQueryResult } from '../../sanity.types';
+import { breadcrumbSchema } from '../lib/schema';
 
 // Sixth and final page converted to the Sanity page-builder pattern. Reuses
 // simpleHeroSection (this page's Hero is the same headline+subheading-only
@@ -39,9 +40,45 @@ const seoDescription =
   siteSettings?.defaultSeoDescription ??
   "Explore Hitels' flexible pricing plans, designed for hotels of all sizes. Boost direct bookings and online presence with our scalable solutions. Choose your perfect plan today.";
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+// Product schema for each plan card — nothing on the site previously
+// described what's actually being sold in structured data. pricingPlans'
+// `price`/`priceSuffix` fields are free-text display strings (e.g. "1,8%",
+// "/ direct booking"), not machine-parseable numbers, so they're carried as
+// Offer.priceSpecification.description rather than forced into a strict
+// numeric Offer.price — safer than risking invalid/wrong structured data if
+// that formatting ever changes (a flat monthly fee and a booking-percentage
+// fee can't both be represented as a single valid schema.org price anyway).
+const pricingPlans = await sanityClient.fetch(pricingPlansQuery);
+const productSchemas = (pricingPlans?.plans ?? []).map((plan) => ({
+	'@context': 'https://schema.org',
+	'@type': 'Product',
+	name: plan.title,
+	description: plan.description,
+	brand: { '@type': 'Organization', name: siteSettings?.organizationName ?? 'Hitels' },
+	offers: {
+		'@type': 'Offer',
+		url: new URL('/pricing/', Astro.site).toString(),
+		priceSpecification: {
+			'@type': 'UnitPriceSpecification',
+			description: [plan.price, plan.priceSuffix].filter(Boolean).join(' '),
+		},
+	},
+}));
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: 'Home', url: new URL('/', Astro.site).toString() },
+	{ name: 'Pricing', url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
+	<Fragment slot="head">
+		{productSchemas.map((schema) => (
+			<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+		))}
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
 	<header>
 		<Hero headline={heroSection.headline} subheading={heroSection.subheading} />
 	</header>

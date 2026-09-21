@@ -56,7 +56,7 @@ const CARDS = pricingPlans.plans;
               <div class="flex items-center shrink-0">
                 {(card.iconUrls ?? []).map((icon) => (
                   <div class={`flex items-center justify-center rounded-full size-8 p-2 ${card.theme === 'dark' ? 'bg-light-gray border-2 border-[#1e1261] -mr-2 last:mr-0' : 'bg-navy'}`}>
-                    <img src={icon} alt="" class="size-full" />
+                    <img loading="lazy" src={icon} alt="" class="size-full" />
                   </div>
                 ))}
               </div>
@@ -70,7 +70,7 @@ const CARDS = pricingPlans.plans;
           <div class="flex flex-col gap-4 items-start w-full">
             {(card.features ?? []).map((feature) => (
               <div class="flex gap-2 items-center w-full">
-                <img src={asset(card.theme === 'dark' ? 'images/home/pricing/icon-check-light.svg' : 'images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
+                <img loading="lazy" src={asset(card.theme === 'dark' ? 'images/home/pricing/icon-check-light.svg' : 'images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
                 <p class="font-body font-normal text-body-md">{feature}</p>
               </div>
             ))}

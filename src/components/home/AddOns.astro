@@ -28,7 +28,7 @@ const addons = addOnsDoc?.addons ?? [];
             <div class="flex items-start justify-between w-full">
               <h3 class="font-heading text-h5 text-navy whitespace-nowrap">{addon.title}</h3>
               <div class="flex items-center justify-center rounded-full size-8 bg-navy shrink-0">
-                <img src={addon.iconUrl} alt="" class="size-5" />
+                <img loading="lazy" src={addon.iconUrl} alt="" class="size-5" />
               </div>
             </div>
             <p class="font-body font-normal text-body-md text-gray w-full">{addon.description}</p>
@@ -40,7 +40,7 @@ const addons = addOnsDoc?.addons ?? [];
           <div class="flex flex-col gap-4 items-start w-full">
             {(addon.features ?? []).map((feature) => (
               <div class="flex gap-2 items-start w-full">
-                <img src={asset('images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
+                <img loading="lazy" src={asset('images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
                 <p class="flex-1 font-body font-normal text-body-md text-navy">{feature}</p>
               </div>
             ))}

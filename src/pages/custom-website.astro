@@ -7,6 +7,7 @@ import Pricing from '../components/shared/Pricing.astro';
 import Footer from '../components/shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
 import type { PageBySlugQueryResult } from '../../sanity.types';
+import { breadcrumbSchema } from '../lib/schema';
 
 // Second page converted to the Sanity page-builder pattern (see
 // src/sanity/schemaTypes/page.ts), after Home. Pricing/Footer stay fixed,
@@ -35,9 +36,31 @@ const seoDescription =
   siteSettings?.defaultSeoDescription ??
   'We design and build award-winning hotel websites from scratch. No templates — just bespoke, data-driven design engineered to bypass OTAs and capture direct bookings.';
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+// Service schema — see booking-engine.astro for why `offers` links out to
+// /pricing/ instead of embedding a numeric price directly.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Custom hotel website design',
+  name: heroSection.headline,
+  description: seoDescription,
+  provider: { '@type': 'Organization', name: siteSettings?.organizationName ?? 'Hitels' },
+  areaServed: 'Worldwide',
+  offers: { '@type': 'Offer', url: new URL('/pricing/', Astro.site).toString() },
+};
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: 'Home', url: new URL('/', Astro.site).toString() },
+	{ name: 'Custom Website', url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
 	<header>
 		<Hero
 			headline={heroSection.headline}

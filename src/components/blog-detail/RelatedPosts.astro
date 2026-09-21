@@ -1,0 +1,30 @@
+---
+interface RelatedPost {
+  title: string;
+  slug: string;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+}
+
+interface Props {
+  posts: RelatedPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <section class="flex flex-col items-center gap-10 px-[100px] max-lg:px-10 max-md:px-4 pt-20 max-lg:pt-14 max-md:pt-10 relative w-full max-w-[1440px] mx-auto">
+    <h2 data-reveal class="font-heading text-h3 text-navy text-center w-full">Related articles</h2>
+    <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
+      {posts.map((post, i) => (
+        <a href={`/blog/${post.slug}`} data-reveal style={`--reveal-delay: ${(i % 3) * 100}ms`} class="flex flex-col gap-6 items-start w-full">
+          <div class="bg-light-gray h-[200px] rounded-2xl shrink-0 w-full overflow-hidden">
+            {post.imageUrl && <img src={post.imageUrl} alt={post.imageAlt ?? ''} loading="lazy" class="w-full h-full object-cover" />}
+          </div>
+          <p class="font-heading text-h6 text-navy w-full">{post.title}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

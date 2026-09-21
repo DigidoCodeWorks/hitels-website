@@ -61,7 +61,7 @@ const STATS = [
     <div class="flex flex-col gap-6 items-start w-full">
       {FEATURES.map((feature) => (
         <div class="flex gap-3 items-start w-full">
-          <img src={asset('images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0 mt-0.5" />
+          <img src={asset('images/home/pricing/icon-check-dark.svg')} alt="" loading="lazy" class="size-5 shrink-0 mt-0.5" />
           <div class="flex flex-col gap-1 items-start flex-1">
             <p class="font-body font-medium text-body-md text-navy w-full">{feature.title}</p>
             <p class="font-body font-normal text-body-md text-gray w-full">{feature.description}</p>

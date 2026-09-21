@@ -70,5 +70,13 @@ export default defineType({
       type: 'text',
       rows: 2,
     }),
+    defineField({
+      name: 'relatedPosts',
+      title: 'Related posts',
+      description: 'Shown in a "Related articles" section at the bottom of this post. Pick 2-4 topically related posts.',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'post' }] }],
+      validation: (rule) => rule.max(4).unique(),
+    }),
   ],
 })
