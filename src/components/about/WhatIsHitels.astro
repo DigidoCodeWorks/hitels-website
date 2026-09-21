@@ -26,12 +26,16 @@ const STATS = [
 
 <section class="flex gap-[138px] items-center px-[100px] py-[100px] max-lg:flex-col max-lg:gap-10 max-lg:px-10 max-lg:py-10 max-md:px-4 max-md:py-10 relative w-full max-w-[1440px] mx-auto bg-background">
   <div data-reveal="fade" class="w-[604px] h-[520px] max-lg:h-[380px] max-md:h-[280px] max-lg:w-full shrink-0 relative rounded-2xl overflow-hidden bg-[linear-gradient(180deg,#2c1e7e_0%,#4734ff_44.7%,#bcb2ff_95.2%,#fbfbff_131.9%)]">
-    <div class="-translate-x-1/2 -translate-y-1/2 absolute bg-background flex flex-col gap-5 items-start left-1/2 top-1/2 pt-5 pb-6 px-6 rounded-2xl w-[367px] max-w-[calc(100%-2.5rem)]">
+    <div class="-translate-x-1/2 -translate-y-1/2 absolute bg-background flex flex-col gap-5 items-start left-1/2 top-1/2 pt-5 pb-6 px-6 rounded-2xl w-[367px] max-w-[calc(100%-2.5rem)]" data-booking-recap>
       <p class="font-heading text-h6 text-navy w-full">Booking Recap</p>
       <div class="flex gap-8 items-center w-full">
-        <div class="relative size-[132px] shrink-0 rounded-full" style="background: conic-gradient(var(--color-brand) 0% 60%, var(--color-border) 60% 100%)">
-          <span class="absolute top-4 left-5 font-body font-medium text-body-sm text-navy">40%</span>
-          <span class="absolute bottom-5 right-6 font-body font-medium text-body-sm text-background">60%</span>
+        <div
+          class="booking-recap-pie relative size-[132px] shrink-0 rounded-full"
+          data-pie
+          style="--brand-percent: 60; background: conic-gradient(var(--color-brand) 0% calc(var(--brand-percent) * 1%), var(--color-border) calc(var(--brand-percent) * 1%) 100%)"
+        >
+          <span class="stat-count absolute top-4 left-5 font-body font-medium text-body-sm text-navy" data-target="40" data-suffix="%">40%</span>
+          <span class="stat-count absolute bottom-5 right-6 font-body font-medium text-body-sm text-background" data-target="60" data-suffix="%">60%</span>
         </div>
         <div class="flex flex-col gap-4 items-start">
           {STATS.map((stat) => (
@@ -41,7 +45,7 @@ const STATS = [
                 <p class="font-body font-medium text-body-sm text-navy whitespace-nowrap">{stat.label}</p>
               </div>
               <div class="flex gap-1 items-baseline">
-                <p class="font-heading text-h6 text-navy whitespace-nowrap">{stat.value}</p>
+                <p class="stat-count font-heading text-h6 text-navy whitespace-nowrap" data-target={stat.value}>{stat.value}</p>
                 <p class="font-body font-normal text-body-sm text-gray whitespace-nowrap">{stat.unit}</p>
               </div>
             </div>
@@ -71,3 +75,58 @@ const STATS = [
     </div>
   </div>
 </section>
+
+<script>
+  // Server-rendered markup already shows the real 40%/60%/120/80 values (so
+  // no-JS clients and crawlers see accurate numbers) — this only adds a
+  // scroll-triggered "sweep in from zero" effect for JS-enabled visitors,
+  // same pattern as WhoWeAre.astro's stat counters and Benefits.astro's
+  // chart reveal.
+  document.querySelectorAll<HTMLElement>('[data-booking-recap]').forEach((card) => {
+    const pie = card.querySelector<HTMLElement>('[data-pie]');
+    const countEls = card.querySelectorAll<HTMLElement>('.stat-count');
+    const pieTarget = parseFloat(pie?.style.getPropertyValue('--brand-percent') || '0');
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animate(duration = 1200) {
+      if (prefersReducedMotion) return;
+
+      pie?.style.setProperty('--brand-percent', '0');
+      countEls.forEach((el) => {
+        el.textContent = `0${el.dataset.suffix ?? ''}`;
+      });
+
+      const start = performance.now();
+
+      function tick(now: number) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        pie?.style.setProperty('--brand-percent', String(pieTarget * eased));
+        countEls.forEach((el) => {
+          const target = parseFloat(el.dataset.target ?? '0');
+          const decimals = target % 1 !== 0 ? 1 : 0;
+          el.textContent = `${(target * eased).toFixed(decimals)}${el.dataset.suffix ?? ''}`;
+        });
+
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animate();
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(card);
+  });
+</script>
