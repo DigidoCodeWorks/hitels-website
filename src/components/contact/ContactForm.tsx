@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { asset } from '../../lib/cdn';
+import PhoneNumberField, { DEFAULT_COUNTRY, type Country } from './PhoneNumberField';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -26,6 +27,12 @@ function Field({
     <div className="flex flex-1 flex-col gap-2 items-start w-full">
       <label htmlFor={id} className="font-body font-medium text-body-sm text-navy">
         {label}
+        {required && (
+          <>
+            <span className="text-red-600" aria-hidden="true"> *</span>
+            <span className="sr-only"> (required)</span>
+          </>
+        )}
       </label>
       <input
         id={id}
@@ -46,6 +53,7 @@ export default function ContactForm() {
   const [hotelName, setHotelName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState<Country>(DEFAULT_COUNTRY);
   const [message, setMessage] = useState('');
   const [company, setCompany] = useState('');
   const [status, setStatus] = useState<Status>('idle');
@@ -76,18 +84,30 @@ export default function ContactForm() {
       body.append('hotelName', hotelName);
       body.append('email', email);
       body.append('phone', phone);
+      // Travels as its own field rather than being concatenated onto `phone`
+      // so the backend gets both pieces distinctly and can reconstruct the
+      // full E.164 number itself if it ever needs to.
+      body.append('phone-country-code', phoneCountry.dialCode);
       body.append('message', message);
 
       // Apps Script web apps don't reliably send CORS headers for
       // non-form-encoded bodies, so this is submitted as FormData (a
       // CORS-safelisted content type) to avoid a failing preflight request.
-      await fetch(ENDPOINT, { method: 'POST', body });
+      // mode: 'no-cors' is required too -- Apps Script never sends
+      // Access-Control-Allow-Origin on the response, so without it the
+      // browser blocks fetch() from reading the response and this always
+      // throws even when the submission actually went through. The
+      // tradeoff: the response becomes opaque, so a real backend failure
+      // can no longer be distinguished from success client-side.
+      await fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body });
 
       setStatus('success');
       setName('');
       setHotelName('');
       setEmail('');
       setPhone('');
+      // phoneCountry is deliberately left alone -- it's a preference the
+      // visitor actively set, not typed input that needs clearing.
       setMessage('');
       setCompany('');
     } catch {
@@ -131,11 +151,22 @@ export default function ContactForm() {
         </div>
         <div className="flex gap-8 max-md:flex-col items-start w-full">
           <Field id="email" label="Email" type="email" placeholder="jon@hotel.is" required value={email} onChange={setEmail} />
-          <Field id="phone" label="Phone number" type="tel" placeholder="Phone number" value={phone} onChange={setPhone} />
+          <PhoneNumberField
+            id="phone"
+            label="Phone number"
+            placeholder="Phone number"
+            required
+            value={phone}
+            onChange={setPhone}
+            country={phoneCountry}
+            onCountryChange={setPhoneCountry}
+          />
         </div>
         <div className="flex flex-col gap-2 items-start w-full">
           <label htmlFor="message" className="font-body font-medium text-body-sm text-navy">
             Message
+            <span className="text-red-600" aria-hidden="true"> *</span>
+            <span className="sr-only"> (required)</span>
           </label>
           <div className="relative w-full">
             <textarea
@@ -148,7 +179,7 @@ export default function ContactForm() {
               onChange={(e) => setMessage(e.target.value)}
               className="font-body font-normal text-body-md text-navy placeholder:text-gray bg-light-gray rounded-lg p-4 w-full outline-none focus:ring-2 focus:ring-navy resize-y"
             />
-            <img src={asset('images/contact/icon-notches.svg')} alt="" className="absolute bottom-1 right-1 size-3 pointer-events-none" />
+            <img src={asset('images/contact/icon-notches.svg')} alt="" loading="lazy" className="absolute bottom-1 right-1 size-3 pointer-events-none" />
           </div>
         </div>
 

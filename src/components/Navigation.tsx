@@ -206,7 +206,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
       >
         <div className="backdrop-blur-[18px] flex items-center justify-between p-4 absolute top-0 left-0 w-full">
           <a href="/" className="block h-6 w-[88px]">
-            <img src={asset('images/home/nav/mobile-menu-logo-dark.svg')} alt="Hitels" className="h-full w-full" />
+            <img src={asset('images/home/nav/mobile-menu-logo-dark.svg')} alt="Hitels" loading="lazy" className="h-full w-full" />
           </a>
           <button
             type="button"
@@ -216,7 +216,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
             aria-label="Close menu"
             onClick={() => setIsOpen(false)}
           >
-            <img src={asset('images/home/nav/mobile-menu-close.svg')} alt="" className="size-full" />
+            <img src={asset('images/home/nav/mobile-menu-close.svg')} alt="" loading="lazy" className="size-full" />
           </button>
         </div>
 
@@ -240,11 +240,6 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
           </div>
 
           <div className="flex flex-col gap-10 items-start w-full">
-            <div className="flex gap-6 items-center">
-              <a href="#" aria-label="Instagram"><img src={asset('images/home/nav/icon-instagram.svg')} alt="" className="size-6" /></a>
-              <a href="#" aria-label="Facebook"><img src={asset('images/home/nav/icon-facebook.svg')} alt="" className="size-[22px]" /></a>
-              <a href="#" aria-label="LinkedIn"><img src={asset('images/home/nav/icon-linkedin.svg')} alt="" className="size-6" /></a>
-            </div>
             <div className="font-heading text-h6 text-navy flex flex-col gap-5 w-full">
               <p>hi@hitels.is</p>
               <p>+354 5478001</p>

@@ -1,0 +1,40 @@
+---
+interface RelatedPost {
+  title: string;
+  slug: string;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+}
+
+interface Props {
+  posts: RelatedPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <section class="flex flex-col items-center gap-10 px-[100px] max-lg:px-10 max-md:px-4 pt-20 max-lg:pt-14 max-md:pt-10 relative w-full max-w-[1440px] mx-auto">
+    {/* No data-reveal here (unlike most sections on this site) — this content
+        exists purely for internal-linking/SEO value, not decoration, so it
+        shouldn't depend on a scroll-triggered IntersectionObserver ever
+        firing to become visible. That dependency is harmless for a hero a
+        user scrolls straight past, but this section can land far enough
+        down a long post that the observer doesn't fire before automated
+        tools (a Playwright full-page screenshot, a non-scrolling crawler)
+        capture the page, leaving the section painted at opacity:0 despite
+        being correct in the DOM — confirmed as the actual cause of a CI
+        screenshot-diff failure on this component, not a rendering bug. */}
+    <h2 class="font-heading text-h3 text-navy text-center w-full">Related articles</h2>
+    <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
+      {posts.map((post) => (
+        <a href={`/blog/${post.slug}`} class="flex flex-col gap-6 items-start w-full">
+          <div class="bg-light-gray h-[200px] rounded-2xl shrink-0 w-full overflow-hidden">
+            {post.imageUrl && <img src={post.imageUrl} alt={post.imageAlt ?? ''} loading="lazy" class="w-full h-full object-cover" />}
+          </div>
+          <p class="font-heading text-h6 text-navy w-full">{post.title}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

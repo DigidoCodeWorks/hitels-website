@@ -20,7 +20,7 @@ const testimonials = rows.map((t) => ({
   <div data-reveal="fade" class="w-[392px] max-lg:h-[320px] max-lg:w-full relative rounded-2xl shrink-0 overflow-hidden">
     <div class="testimonial-track flex h-full transition-transform duration-500 ease-in-out">
       {testimonials.map((t) => (
-        <img src={t.photo} alt={t.alt} class="w-full h-full object-cover shrink-0" />
+        <img loading="lazy" src={t.photo} alt={t.alt} class="w-full h-full object-cover shrink-0" />
       ))}
     </div>
   </div>

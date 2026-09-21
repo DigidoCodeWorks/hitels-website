@@ -1,0 +1,19 @@
+# Cloudflare Pages custom headers — https://developers.cloudflare.com/pages/configuration/headers/
+#
+# Content-Security-Policy is deliberately NOT set here: this site embeds
+# Sanity Studio at /studio, loads images/video from an external R2 host,
+# calls a Google Apps Script endpoint (ContactForm), and loads a Cloudflare
+# beacon script — a wrong CSP could silently break any of those, and there's
+# no environment here to load-test one against the real deploy. Add CSP in
+# its own follow-up, verified against a live preview before merging.
+
+# Astro's Vite build fingerprints every /_astro/* filename with a content
+# hash, so a given URL's bytes never change — safe to cache "forever".
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Baseline security headers, safe for every route including /studio.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), microphone=(), camera=()

@@ -34,8 +34,8 @@ const { cards } = Astro.props;
         style={`--reveal-delay: ${i * 120}ms`}
       >
         <div class="flex flex-col h-[440px] max-lg:h-[440px] max-md:h-80 items-start p-8 max-md:p-6 relative rounded-2xl shrink-0 w-full overflow-hidden">
-          <img src={card.imageUrl} alt="" class="absolute inset-0 w-full h-full object-cover" />
-          <img src={card.logoUrl} alt="" class="relative h-5 max-w-full" />
+          <img loading="lazy" src={card.imageUrl} alt="" class="absolute inset-0 w-full h-full object-cover" />
+          <img loading="lazy" src={card.logoUrl} alt="" class="relative h-5 max-w-full" />
         </div>
         <p class="font-body font-normal text-body-md text-navy w-full md:truncate">{card.caption}</p>
       </a>

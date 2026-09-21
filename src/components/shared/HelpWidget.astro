@@ -6,15 +6,17 @@ import IconCalendar from '../icons/IconCalendar.astro';
 import IconClose from '../icons/IconClose.astro';
 import IconChevronDown from '../icons/IconChevronDown.astro';
 
-// Same 4 team photos already seeded for the About page team section
-// (scripts/seed-about-us-page.mjs) — reused here as static avatars rather
-// than a live Sanity fetch, since this widget is sitewide chrome (like
-// Footer.astro) rather than page content.
+// Head-to-neck crops of the same 4 team members photographed for the About
+// page team section (scripts/seed-about-us-page.mjs) — cropped separately
+// for this widget since the About page photos are upper-body shots, which
+// left too much shoulder/torso visible in these small circular avatars.
+// Static rather than a live Sanity fetch, since this widget is sitewide
+// chrome (like Footer.astro) rather than page content.
 const MEMBERS = [
-  { name: 'Bjarki', photoUrl: asset('images/about/team/bjarki.webp') },
-  { name: 'Þórdís', photoUrl: asset('images/about/team/thordis.webp') },
-  { name: 'Birgir', photoUrl: asset('images/about/team/birgir.webp') },
-  { name: 'Salome', photoUrl: asset('images/about/team/salome.webp') },
+  { name: 'Birgir', photoUrl: asset('images/help-widget/avatars/birgir.webp') },
+  { name: 'Þórdís', photoUrl: asset('images/help-widget/avatars/thordis.webp') },
+  { name: 'Bjarki', photoUrl: asset('images/help-widget/avatars/bjarki.webp') },
+  { name: 'Salome', photoUrl: asset('images/help-widget/avatars/salome.webp') },
 ];
 
 // Every menu item points at the same destination — this widget isn't a
@@ -24,88 +26,100 @@ const CONTACT_HREF = '/contact-us';
 const BUBBLE_GRADIENT = 'linear-gradient(173deg, #33258C 1.71%, #654AFF 37.31%, #EAE8FF 94.28%)';
 ---
 
-<div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4" data-help-widget>
-  <div class="hidden w-[330px] max-w-[calc(100vw-3rem)] flex-col items-end gap-4" data-help-panel>
-    <div class="w-full flex flex-col gap-10 items-start bg-background border border-border rounded-2xl p-6">
-      <div class="w-full flex flex-col gap-8 items-start">
-        <div class="w-full flex items-start justify-between">
-          <div class="flex items-center">
-            {MEMBERS.map((member, i) => (
-              <div
-                class={`size-14 shrink-0 rounded-full border-[1.5px] border-background overflow-hidden ${i > 0 ? '-ml-3' : ''}`}
-                style={{ zIndex: MEMBERS.length - i }}
-              >
-                <img src={member.photoUrl} alt={member.name} class="size-full object-cover" />
-              </div>
-            ))}
-          </div>
-          <button type="button" aria-label="Close" data-help-close class="cursor-pointer text-navy">
-            <IconClose class="size-6" />
-          </button>
+<div class="fixed bottom-6 right-6 z-50" data-help-widget>
+  <div
+    class="absolute bottom-[calc(100%+1rem)] right-0 w-[330px] max-w-[calc(100vw-3rem)] flex flex-col gap-10 items-start bg-background border border-border rounded-2xl p-6 opacity-0 translate-y-6 pointer-events-none transition-[opacity,transform] duration-300 ease-out"
+    data-help-panel
+    inert
+  >
+    <div class="w-full flex flex-col gap-8 items-start">
+      <div class="w-full flex items-start justify-between">
+        <div class="flex items-center">
+          {MEMBERS.map((member, i) => (
+            <div
+              class={`size-14 shrink-0 rounded-full border-[1.5px] border-background overflow-hidden p-[3px] ${i > 0 ? '-ml-3' : ''}`}
+              style={{ zIndex: MEMBERS.length - i, backgroundImage: BUBBLE_GRADIENT }}
+            >
+              <img src={member.photoUrl} alt={member.name} loading="lazy" class="size-full rounded-full object-cover" />
+            </div>
+          ))}
         </div>
-        <div class="flex flex-col items-start">
-          <p class="font-heading text-h5 text-navy flex items-center gap-2">
-            Hi! <span aria-hidden="true" class="text-[28px] leading-none">👋</span>
-          </p>
-          <p class="font-heading text-h5 text-navy">How can we help?</p>
-        </div>
+        <button type="button" aria-label="Close" data-help-close class="cursor-pointer text-navy">
+          <IconClose class="size-6" />
+        </button>
       </div>
-      <div class="w-full flex flex-col gap-3 items-start">
-        <a href={CONTACT_HREF} class="w-full flex gap-4 items-center bg-light-gray hover:bg-border transition-colors duration-300 rounded-lg p-5">
-          <IconChat class="size-5 text-navy" />
-          <span class="font-body font-medium text-body-md text-navy">Contact us</span>
-        </a>
-        <a href={CONTACT_HREF} class="w-full flex gap-4 items-center bg-light-gray hover:bg-border transition-colors duration-300 rounded-lg p-5">
-          <IconCheckCircle class="size-5 text-brand" />
-          <span class="font-body font-medium text-body-md text-navy">Get offer</span>
-        </a>
-        <a href={CONTACT_HREF} class="w-full flex gap-4 items-center bg-light-gray hover:bg-border transition-colors duration-300 rounded-lg p-5">
-          <IconCalendar class="size-5 text-navy" />
-          <span class="font-body font-medium text-body-md text-navy">Book a demo</span>
-        </a>
+      <div class="flex flex-col items-start">
+        <p class="font-heading text-h5 text-navy flex items-center gap-2">
+          Hi! <span aria-hidden="true" class="text-[28px] leading-none">👋</span>
+        </p>
+        <p class="font-heading text-h5 text-navy">How can we help?</p>
       </div>
     </div>
-
-    <button
-      type="button"
-      aria-label="Collapse"
-      data-help-close
-      class="cursor-pointer size-[72px] shrink-0 rounded-full border border-background overflow-hidden flex items-center justify-center"
-      style={{ backgroundImage: BUBBLE_GRADIENT }}
-    >
-      <IconChevronDown class="size-8 text-background" />
-    </button>
+    <div class="w-full flex flex-col gap-3 items-start">
+      <a href={CONTACT_HREF} class="w-full flex gap-4 items-center bg-light-gray hover:bg-border transition-colors duration-300 rounded-lg p-5">
+        <IconChat class="size-5 text-brand" />
+        <span class="font-body font-medium text-body-md text-navy">Contact us</span>
+      </a>
+      <a href={CONTACT_HREF} class="w-full flex gap-4 items-center bg-light-gray hover:bg-border transition-colors duration-300 rounded-lg p-5">
+        <IconCheckCircle class="size-5 text-brand" />
+        <span class="font-body font-medium text-body-md text-navy">Get offer</span>
+      </a>
+      <a href={CONTACT_HREF} class="w-full flex gap-4 items-center bg-light-gray hover:bg-border transition-colors duration-300 rounded-lg p-5">
+        <IconCalendar class="size-5 text-brand" />
+        <span class="font-body font-medium text-body-md text-navy">Book a demo</span>
+      </a>
+    </div>
   </div>
 
   <button
     type="button"
     aria-label="Open help"
-    data-help-open
-    class="cursor-pointer size-[72px] shrink-0 rounded-full border border-background overflow-hidden"
+    aria-expanded="false"
+    data-help-toggle
+    class="relative cursor-pointer size-[72px] shrink-0 rounded-full border border-background overflow-hidden"
   >
-    <img src={MEMBERS[0].photoUrl} alt="" class="size-full object-cover" />
+    <div
+      data-help-avatar
+      class="absolute inset-0 flex items-center justify-center p-[3px] transition-transform duration-300 ease-out"
+      style={{ backgroundImage: BUBBLE_GRADIENT }}
+    >
+      <img src={MEMBERS.find((m) => m.name === 'Birgir')!.photoUrl} alt="" class="size-full rounded-full object-cover" />
+    </div>
+    <span
+      data-help-arrow
+      class="absolute inset-0 flex items-center justify-center -translate-y-full transition-transform duration-300 ease-out"
+      style={{ backgroundImage: BUBBLE_GRADIENT }}
+    >
+      <IconChevronDown class="size-8 text-background" />
+    </span>
   </button>
 </div>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-help-widget]').forEach((widget) => {
     const panel = widget.querySelector<HTMLElement>('[data-help-panel]');
-    const openButton = widget.querySelector<HTMLElement>('[data-help-open]');
+    const toggleButton = widget.querySelector<HTMLElement>('[data-help-toggle]');
+    const avatar = widget.querySelector<HTMLElement>('[data-help-avatar]');
+    const arrow = widget.querySelector<HTMLElement>('[data-help-arrow]');
     const closeButtons = widget.querySelectorAll<HTMLElement>('[data-help-close]');
 
-    function openPanel() {
-      panel?.classList.remove('hidden');
-      panel?.classList.add('flex');
-      openButton?.classList.add('hidden');
+    function setOpen(isOpen: boolean) {
+      panel?.classList.toggle('opacity-0', !isOpen);
+      panel?.classList.toggle('translate-y-6', !isOpen);
+      panel?.classList.toggle('pointer-events-none', !isOpen);
+      panel?.toggleAttribute('inert', !isOpen);
+
+      avatar?.classList.toggle('translate-y-full', isOpen);
+      arrow?.classList.toggle('-translate-y-full', !isOpen);
+
+      toggleButton?.setAttribute('aria-expanded', String(isOpen));
+      toggleButton?.setAttribute('aria-label', isOpen ? 'Close help' : 'Open help');
     }
 
-    function closePanel() {
-      panel?.classList.add('hidden');
-      panel?.classList.remove('flex');
-      openButton?.classList.remove('hidden');
-    }
+    toggleButton?.addEventListener('click', () => {
+      setOpen(toggleButton.getAttribute('aria-expanded') !== 'true');
+    });
 
-    openButton?.addEventListener('click', openPanel);
-    closeButtons.forEach((button) => button.addEventListener('click', closePanel));
+    closeButtons.forEach((button) => button.addEventListener('click', () => setOpen(false)));
   });
 </script>

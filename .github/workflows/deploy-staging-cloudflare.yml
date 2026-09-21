@@ -1,15 +1,26 @@
 name: Deploy Staging to Cloudflare Pages
 
 # Persistent staging environment: every push to `staging` builds and deploys
-# to a fixed Cloudflare Pages URL (https://staging.simple-website.pages.dev),
-# separate from deploy-cloudflare.yml which only ever deploys `main` to
-# production. Workflow: feature branch -> PR into `staging` -> merge (deploys
-# here) -> review on the staging URL -> PR `staging` into `main` -> merge
-# (deploys via deploy-cloudflare.yml) -> production.
+# to a fixed Cloudflare Pages URL (https://staging.simple-website-16a.pages.dev
+# — note the "-16a" suffix Cloudflare assigned this project's pages.dev
+# subdomain, same one astro.config.mjs falls back to), separate from
+# deploy-cloudflare.yml which only ever deploys `main` to production.
+# Workflow: feature branch -> PR into `staging` -> merge (deploys here) ->
+# review on the staging URL -> PR `staging` into `main` -> merge (deploys via
+# deploy-cloudflare.yml) -> production.
+#
+# repository_dispatch: same Sanity publish webhook that triggers
+# deploy-cloudflare.yml also fires this, so publishing content rebuilds
+# staging too — not just pushes to the branch. repository_dispatch runs
+# against the repo's default branch by default, so checkout below pins
+# `ref: staging` explicitly to make sure a content-only rebuild still
+# deploys the staging branch's code, not main's.
 on:
   push:
     branches: [staging]
   workflow_dispatch:
+  repository_dispatch:
+    types: [sanity-publish]
 
 concurrency:
   group: deploy-staging
@@ -22,6 +33,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: staging
 
       - uses: actions/setup-node@v4
         with:
@@ -49,7 +62,7 @@ jobs:
             --commit-dirty=true | tee /tmp/wrangler-deploy.log
           {
             echo "### Staging deploy"
-            echo "https://staging.simple-website.pages.dev"
+            echo "https://staging.simple-website-16a.pages.dev"
           } >> "$GITHUB_STEP_SUMMARY"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

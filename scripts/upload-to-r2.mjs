@@ -48,11 +48,19 @@ const client = new S3Client({
 const body = await readFile(localPath);
 const contentType = CONTENT_TYPES[extname(localPath).toLowerCase()] || 'application/octet-stream';
 
+// 30 days fresh, then serve-stale-while-revalidating for up to another day.
+// Not `immutable`/a long max-age alone: unlike the site's own content-hashed
+// /_astro/* build assets, an R2 key here is a stable path an editor can
+// re-upload the *same* key to (e.g. swapping a photo) — stale-while-revalidate
+// bounds how long a browser can keep showing the old bytes after that happens.
+const CACHE_CONTROL = 'public, max-age=2592000, stale-while-revalidate=86400';
+
 await client.send(new PutObjectCommand({
   Bucket: R2_BUCKET_NAME,
   Key: remoteKey,
   Body: body,
   ContentType: contentType,
+  CacheControl: CACHE_CONTROL,
 }));
 
 console.log(`Uploaded ${localPath} -> ${remoteKey} (${contentType})`);

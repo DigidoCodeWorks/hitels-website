@@ -43,7 +43,9 @@ route to SSR, a deliberate architecture change not currently justified.
 ## Staging branch and previews
 
 `staging` is a persistent branch with its own fixed Cloudflare Pages URL
-(`https://staging.simple-website.pages.dev`), separate from production:
+(`https://staging.simple-website-16a.pages.dev` — note the "-16a" suffix
+Cloudflare assigned this project's pages.dev subdomain, same one
+`astro.config.mjs`'s `SITE_URL` fallback uses), separate from production:
 
 1. New work happens on a feature branch, opened as a PR **into `staging`**
    (not `main`) — same branch-and-PR discipline as production work, just

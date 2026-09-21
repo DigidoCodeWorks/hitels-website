@@ -28,7 +28,7 @@ const STATS = rawStats.map((stat) => {
   <div data-stats-reveal class="flex flex-1 gap-8 max-md:gap-4 items-center w-full">
     {STATS.map((stat, i) => (
       <div data-reveal style={`--reveal-delay: ${120 + i * 100}ms`} class="flex flex-1 flex-col gap-2 items-start">
-        <p class="stat-count font-heading text-[4rem] leading-[1.2] tracking-[-0.025em] max-md:text-h2 text-navy w-full" data-target={stat.target} data-suffix={stat.suffix}>0{stat.suffix}</p>
+        <p class="stat-count font-heading text-[4rem] leading-[1.2] tracking-[-0.025em] max-md:text-h2 text-navy w-full" data-target={stat.target} data-suffix={stat.suffix}>{stat.target}{stat.suffix}</p>
         <p class="font-body font-normal text-body-md text-gray w-full">{stat.label}</p>
       </div>
     ))}
@@ -50,6 +50,12 @@ const STATS = rawStats.map((stat) => {
       el.textContent = `${target.toFixed(decimals)}${suffix}`;
       return;
     }
+
+    // The server-rendered markup shows the real target value (so no-JS
+    // clients and crawlers that don't execute JS see accurate numbers
+    // instead of a permanent "0") — the count-up-from-zero effect only
+    // starts once we know JS is actually running and about to animate it.
+    el.textContent = `0${suffix}`;
 
     const start = performance.now();
 

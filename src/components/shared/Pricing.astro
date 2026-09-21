@@ -1,8 +1,8 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
-import Button from './Button.astro';
 import ArrowLink from './ArrowLink.astro';
+import PricingSignupModal from './PricingSignupModal.tsx';
 import { pricingPlansQuery } from '../../sanity/queries';
 
 interface Props {
@@ -56,7 +56,7 @@ const CARDS = pricingPlans.plans;
               <div class="flex items-center shrink-0">
                 {(card.iconUrls ?? []).map((icon) => (
                   <div class={`flex items-center justify-center rounded-full size-8 p-2 ${card.theme === 'dark' ? 'bg-light-gray border-2 border-[#1e1261] -mr-2 last:mr-0' : 'bg-navy'}`}>
-                    <img src={icon} alt="" class="size-full" />
+                    <img loading="lazy" src={icon} alt="" class="size-full" />
                   </div>
                 ))}
               </div>
@@ -70,16 +70,44 @@ const CARDS = pricingPlans.plans;
           <div class="flex flex-col gap-4 items-start w-full">
             {(card.features ?? []).map((feature) => (
               <div class="flex gap-2 items-center w-full">
-                <img src={asset(card.theme === 'dark' ? 'images/home/pricing/icon-check-light.svg' : 'images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
+                <img loading="lazy" src={asset(card.theme === 'dark' ? 'images/home/pricing/icon-check-light.svg' : 'images/home/pricing/icon-check-dark.svg')} alt="" class="size-5 shrink-0" />
                 <p class="font-body font-normal text-body-md">{feature}</p>
               </div>
             ))}
           </div>
         </div>
-        <Button href={card.ctaHref} label={card.ctaLabel} variant={card.theme === 'dark' ? 'secondary' : 'dark'} class="w-full" />
+        <button
+          type="button"
+          data-open-pricing-modal
+          data-plan={card.title}
+          class={`${
+            card.theme === 'dark'
+              ? 'bg-background text-navy hover:bg-navy hover:text-background'
+              : 'bg-navy text-background hover:bg-background hover:text-navy hover:border-navy'
+          } flex gap-3 items-center justify-center rounded-lg border-2 border-transparent transition-colors duration-300 pl-4 pr-5 py-3 w-full cursor-pointer`}
+        >
+          <span class="font-body font-medium text-body-md whitespace-nowrap">{card.ctaLabel}</span>
+        </button>
       </div>
     ))}
   </div>
 
   {showDetailsLink && <ArrowLink href="/pricing" label="View pricing details" />}
 </section>
+
+<PricingSignupModal client:load />
+
+<script>
+  // Card CTAs (see the buttons above) no longer navigate via ctaHref — they
+  // open the shared PricingSignupModal island instead, pre-filled with the
+  // clicked card's plan name. Plain DOM event here (not a framework handler)
+  // since these buttons are static Astro markup, not part of the React island.
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as HTMLElement).closest<HTMLElement>('[data-open-pricing-modal]');
+    if (!trigger) return;
+
+    window.dispatchEvent(
+      new CustomEvent('open-pricing-modal', { detail: { plan: trigger.dataset.plan ?? '' } })
+    );
+  });
+</script>

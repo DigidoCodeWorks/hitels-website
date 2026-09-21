@@ -3,12 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/privacy-policy/Hero.astro';
 import PolicyContent from '../components/privacy-policy/PolicyContent.astro';
 import Footer from '../components/shared/Footer.astro';
+import { breadcrumbSchema } from '../lib/schema';
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: 'Home', url: new URL('/', Astro.site).toString() },
+	{ name: 'Privacy Policy', url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
 ---
 
 <BaseLayout
 	title="Privacy Policy — Hitels"
 	description="Learn how Hitels collects, uses, and protects your personal information across our website and services."
 >
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
 	<header>
 		<Hero />
 	</header>
