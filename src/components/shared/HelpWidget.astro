@@ -40,7 +40,7 @@ const BUBBLE_GRADIENT = 'linear-gradient(173deg, #33258C 1.71%, #654AFF 37.31%, 
               class={`size-14 shrink-0 rounded-full border-[1.5px] border-background overflow-hidden p-[3px] ${i > 0 ? '-ml-3' : ''}`}
               style={{ zIndex: MEMBERS.length - i, backgroundImage: BUBBLE_GRADIENT }}
             >
-              <img src={member.photoUrl} alt={member.name} class="size-full rounded-full object-cover" />
+              <img src={member.photoUrl} alt={member.name} loading="lazy" class="size-full rounded-full object-cover" />
             </div>
           ))}
         </div>

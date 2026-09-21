@@ -40,7 +40,7 @@ const { plans: PLANS, rows: ROWS } = Astro.props;
               ? PLANS.map(() => <td class="border border-border p-6" />)
               : (row.values ?? []).map((value) => (
                   <td class="border border-border p-6 text-center font-body font-normal text-body-sm text-navy whitespace-nowrap">
-                    {value === 'true' && <img src={asset('images/home/pricing/icon-check-dark.svg')} alt="Included" class="size-5 mx-auto" />}
+                    {value === 'true' && <img loading="lazy" src={asset('images/home/pricing/icon-check-dark.svg')} alt="Included" class="size-5 mx-auto" />}
                     {value !== 'true' && value !== 'false' && value}
                   </td>
                 ))}

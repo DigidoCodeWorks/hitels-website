@@ -65,22 +65,21 @@ const {
         same treatment ProductOfferings uses for its collage — the source has dozens
         of sub-pixel nested elements never meant to be legible/functional on their
         own. Desktop/Tablet/Mobile are separate Figma frames (different crops, not
-        just a scaled-down desktop image), so each gets its own exported asset. */}
-    <img
-      src={asset('images/custom-website/hero/hero-collage.png')}
-      alt="Collage of bespoke hotel websites designed and built by Hitels"
-      class="w-full rounded-2xl block max-lg:hidden"
-    />
-    <img
-      src={asset('images/custom-website/hero/tablet-hero-collage.png')}
-      alt="Collage of bespoke hotel websites designed and built by Hitels"
-      class="w-full rounded-2xl hidden max-lg:block max-md:hidden"
-    />
-    <img
-      src={asset('images/custom-website/hero/mobile-hero-collage.png')}
-      alt="Collage of bespoke hotel websites designed and built by Hitels"
-      class="w-full rounded-2xl hidden max-md:block"
-    />
+        just a scaled-down desktop image), so each gets its own exported asset.
+        <picture>/<source media> instead of three breakpoint-hidden <img> tags —
+        CSS display:none doesn't stop a browser fetching an <img>'s src, so the old
+        markup downloaded all three full collages on every visit; <picture> only
+        ever fetches the one matching source. Breakpoints match the Tailwind
+        max-lg/max-md classes this replaced (lg: 1024px, md: 768px). */}
+    <picture>
+      <source media="(max-width: 767px)" srcset={asset('images/custom-website/hero/mobile-hero-collage.png')} />
+      <source media="(max-width: 1023px)" srcset={asset('images/custom-website/hero/tablet-hero-collage.png')} />
+      <img
+        src={asset('images/custom-website/hero/hero-collage.png')}
+        alt="Collage of bespoke hotel websites designed and built by Hitels"
+        class="w-full rounded-2xl"
+      />
+    </picture>
     <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-background rounded-b-2xl pointer-events-none"></div>
   </div>
 </div>

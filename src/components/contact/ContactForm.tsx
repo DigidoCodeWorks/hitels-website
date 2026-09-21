@@ -179,7 +179,7 @@ export default function ContactForm() {
               onChange={(e) => setMessage(e.target.value)}
               className="font-body font-normal text-body-md text-navy placeholder:text-gray bg-light-gray rounded-lg p-4 w-full outline-none focus:ring-2 focus:ring-navy resize-y"
             />
-            <img src={asset('images/contact/icon-notches.svg')} alt="" className="absolute bottom-1 right-1 size-3 pointer-events-none" />
+            <img src={asset('images/contact/icon-notches.svg')} alt="" loading="lazy" className="absolute bottom-1 right-1 size-3 pointer-events-none" />
           </div>
         </div>
 

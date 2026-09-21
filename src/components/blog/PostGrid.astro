@@ -12,7 +12,7 @@ const posts = await sanityClient.fetch(postsQuery);
     {posts.map((post, i) => (
       <a href={`/blog/${post.slug}`} data-reveal style={`--reveal-delay: ${(i % 3) * 100}ms`} class="flex flex-col gap-8 items-start w-full">
         <div class="bg-light-gray h-[260px] rounded-2xl shrink-0 w-full overflow-hidden">
-          {post.imageUrl && <img src={post.imageUrl} alt={post.imageAlt ?? ''} class="w-full h-full object-cover" />}
+          {post.imageUrl && <img src={post.imageUrl} alt={post.imageAlt ?? ''} loading="lazy" class="w-full h-full object-cover" />}
         </div>
         <div class="flex flex-col gap-6 items-start w-full">
           <p class="font-heading text-h6 text-navy w-full">{post.title}</p>

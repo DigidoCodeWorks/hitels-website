@@ -87,7 +87,7 @@ const STORY_DURATION_MS = 6000;
           <div class="absolute inset-x-0 top-0 h-9 bg-gradient-to-b from-black/40 to-transparent"></div>
           <div class="relative flex gap-2 items-center p-2">
             <div class="flex items-center justify-center shrink-0 size-5 rounded-full bg-[#130c3c]">
-              <img src={asset('images/home/stories/story-badge.svg')} alt="" class="h-2 w-2.5" />
+              <img loading="lazy" src={asset('images/home/stories/story-badge.svg')} alt="" class="h-2 w-2.5" />
             </div>
             <p class="flex-1 min-w-0 font-body font-medium text-[12px] text-background truncate">{slide.name}</p>
           </div>
@@ -140,12 +140,12 @@ const STORY_DURATION_MS = 6000;
           <div class="absolute top-[37px] inset-x-4 flex items-center justify-between">
             <div class="flex flex-1 min-w-0 gap-2 items-center">
               <div class="flex items-center justify-center shrink-0 size-8 rounded-full bg-[#130c3c]">
-                <img src={asset('images/home/stories/story-badge.svg')} alt="" class="h-3 w-4" />
+                <img loading="lazy" src={asset('images/home/stories/story-badge.svg')} alt="" class="h-3 w-4" />
               </div>
               <p class="flex-1 min-w-0 font-body font-medium text-body-md text-background truncate">{slide.name}</p>
             </div>
             <button type="button" data-story-close aria-label="Close" class="shrink-0 size-8">
-              <img src={asset('images/home/stories/close-x.svg')} alt="" class="size-8" />
+              <img loading="lazy" src={asset('images/home/stories/close-x.svg')} alt="" class="size-8" />
             </button>
           </div>
 
@@ -183,7 +183,7 @@ const STORY_DURATION_MS = 6000;
                   class="flex gap-3 items-center justify-center rounded-lg text-background font-body font-medium text-body-md"
                 >
                   {slide.buttonText}
-                  <img src={asset('images/home/stories/arrow-right.svg')} alt="" class="size-5" />
+                  <img loading="lazy" src={asset('images/home/stories/arrow-right.svg')} alt="" class="size-5" />
                 </a>
               )}
             </div>
@@ -198,7 +198,7 @@ const STORY_DURATION_MS = 6000;
                   {slide.features.map((feature, featureIndex) => (
                     <>
                       <div class="flex gap-3 items-center w-full">
-                        {feature.iconUrl && <img src={feature.iconUrl} alt="" class="size-5 shrink-0" />}
+                        {feature.iconUrl && <img loading="lazy" src={feature.iconUrl} alt="" class="size-5 shrink-0" />}
                         <p class="flex-1 font-body font-normal text-body-md text-background">{feature.text}</p>
                       </div>
                       {featureIndex < slide.features.length - 1 && <div class="border-t border-background/20 w-full"></div>}
