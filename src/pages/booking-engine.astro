@@ -35,9 +35,30 @@ const seoDescription =
   siteSettings?.defaultSeoDescription ??
   'A modern booking engine built to maximize your direct revenue. Say goodbye to clunky, disconnected checkouts and hello to a seamless flow your guests will love.';
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+// Service schema for what this page actually sells — previously the site had
+// Organization schema everywhere but nothing describing the product itself.
+// `price` isn't included: the pricingPlans singleton's `price` field is a
+// free-text display string (e.g. "1,8%"), not a machine-parseable number, so
+// forcing it into a strict schema.org numeric Offer.price risks emitting
+// invalid/misleading structured data if that formatting ever changes —
+// `url` points to /pricing/, the actual source of truth, instead.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Hotel direct booking engine',
+  name: heroSection.headline,
+  description: seoDescription,
+  provider: { '@type': 'Organization', name: siteSettings?.organizationName ?? 'Hitels' },
+  areaServed: 'Worldwide',
+  offers: { '@type': 'Offer', url: new URL('/pricing/', Astro.site).toString() },
+};
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
+	</Fragment>
 	<header>
 		<Hero
 			headline={heroSection.headline}
