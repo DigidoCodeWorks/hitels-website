@@ -118,13 +118,18 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery);
 
     <div class="flex items-center justify-between max-lg:flex-col max-lg:gap-8 max-lg:items-start w-full">
       <div class="flex gap-6 items-center shrink-0">
-        {footer.instagramHref && (
+        {/* "#" is treated the same as blank/missing — the Sanity field currently
+            holds "#" as a placeholder rather than being left empty, and a link to
+            "#" is a dead link, not a real profile. Hide in both cases until a real
+            URL is set (per the field's own Studio description: "Leave blank to
+            hide the icon."). */}
+        {footer.instagramHref && footer.instagramHref !== '#' && (
           <a href={footer.instagramHref} aria-label="Instagram"><img src={asset('images/home/footer/icon-instagram.svg')} alt="" loading="lazy" class="size-6" /></a>
         )}
-        {footer.facebookHref && (
+        {footer.facebookHref && footer.facebookHref !== '#' && (
           <a href={footer.facebookHref} aria-label="Facebook"><img src={asset('images/home/footer/icon-facebook.svg')} alt="" loading="lazy" class="size-[22px]" /></a>
         )}
-        {footer.linkedinHref && (
+        {footer.linkedinHref && footer.linkedinHref !== '#' && (
           <a href={footer.linkedinHref} aria-label="LinkedIn"><img src={asset('images/home/footer/icon-linkedin.svg')} alt="" loading="lazy" class="size-6" /></a>
         )}
       </div>

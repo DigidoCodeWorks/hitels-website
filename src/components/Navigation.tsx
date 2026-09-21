@@ -240,11 +240,6 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
           </div>
 
           <div className="flex flex-col gap-10 items-start w-full">
-            <div className="flex gap-6 items-center">
-              <a href="#" aria-label="Instagram"><img src={asset('images/home/nav/icon-instagram.svg')} alt="" loading="lazy" className="size-6" /></a>
-              <a href="#" aria-label="Facebook"><img src={asset('images/home/nav/icon-facebook.svg')} alt="" loading="lazy" className="size-[22px]" /></a>
-              <a href="#" aria-label="LinkedIn"><img src={asset('images/home/nav/icon-linkedin.svg')} alt="" loading="lazy" className="size-6" /></a>
-            </div>
             <div className="font-heading text-h6 text-navy flex flex-col gap-5 w-full">
               <p>hi@hitels.is</p>
               <p>+354 5478001</p>
