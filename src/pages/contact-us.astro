@@ -6,6 +6,7 @@ import ContactForm from '../components/contact/ContactForm';
 import Footer from '../components/shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
 import type { PageBySlugQueryResult } from '../../sanity.types';
+import { breadcrumbSchema } from '../lib/schema';
 
 // Fourth page converted to the Sanity page-builder pattern. Reuses
 // simpleHeroSection (headline + subheading only — this page's Hero has no
@@ -32,9 +33,17 @@ const seoDescription =
   siteSettings?.defaultSeoDescription ??
   "Get in touch with Hitels. We'll get to know your team's needs and see how our hotel website and booking engine products fit, with expert advice from our consultants.";
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: 'Home', url: new URL('/', Astro.site).toString() },
+	{ name: 'Contact Us', url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
 	<header>
 		<Hero headline={heroSection.headline} subheading={heroSection.subheading} />
 	</header>

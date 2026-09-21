@@ -46,6 +46,7 @@ export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current ==
   imageUrl,
   imageAlt,
   publishedAt,
+  _updatedAt,
   category,
   externalLink,
   shortDescription,

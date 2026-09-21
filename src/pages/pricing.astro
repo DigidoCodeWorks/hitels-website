@@ -8,6 +8,7 @@ import ComparisonTable from '../components/pricing/ComparisonTable.astro';
 import Footer from '../components/shared/Footer.astro';
 import { pageBySlugQuery, pricingPlansQuery, siteSettingsQuery } from '../sanity/queries';
 import type { PageBySlugQueryResult } from '../../sanity.types';
+import { breadcrumbSchema } from '../lib/schema';
 
 // Sixth and final page converted to the Sanity page-builder pattern. Reuses
 // simpleHeroSection (this page's Hero is the same headline+subheading-only
@@ -64,6 +65,11 @@ const productSchemas = (pricingPlans?.plans ?? []).map((plan) => ({
 		},
 	},
 }));
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: 'Home', url: new URL('/', Astro.site).toString() },
+	{ name: 'Pricing', url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
@@ -71,6 +77,7 @@ const productSchemas = (pricingPlans?.plans ?? []).map((plan) => ({
 		{productSchemas.map((schema) => (
 			<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 		))}
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
 		<Hero headline={heroSection.headline} subheading={heroSection.subheading} />
