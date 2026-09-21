@@ -45,37 +45,55 @@ function isVideoUrl(url: string) {
     {offerings.map((offering, i) => (
       <div data-reveal style={`--reveal-delay: ${i * 120}ms`} class="group flex flex-1 flex-col gap-8 items-start rounded-2xl w-full">
         <div class={`${IMAGE_BG[i % IMAGE_BG.length]} h-[360px] max-lg:h-[280px] overflow-clip relative rounded-2xl shrink-0 w-full`}>
-          {isVideoUrl(offering.desktopImageUrl) ? (
+          {offering.desktopImageUrl === offering.mobileImageUrl && isVideoUrl(offering.desktopImageUrl) ? (
+            // Same asset for both breakpoints — one <video>, not two, so the
+            // browser doesn't fetch it twice (autoplay videos load eagerly
+            // regardless of which breakpoint-hidden copy is visible).
             <video
               src={offering.desktopImageUrl}
               autoplay
               muted
               loop
               playsinline
-              class="block max-md:hidden absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
+              class="absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
             />
           ) : (
-            <img
-              src={offering.desktopImageUrl}
-              alt=""
-              class="block max-md:hidden absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
-            />
-          )}
-          {isVideoUrl(offering.mobileImageUrl) ? (
-            <video
-              src={offering.mobileImageUrl}
-              autoplay
-              muted
-              loop
-              playsinline
-              class="hidden max-md:block absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
-            />
-          ) : (
-            <img
-              src={offering.mobileImageUrl}
-              alt=""
-              class="hidden max-md:block absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
-            />
+            <>
+              {isVideoUrl(offering.desktopImageUrl) ? (
+                <video
+                  src={offering.desktopImageUrl}
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  class="block max-md:hidden absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
+                />
+              ) : (
+                <img
+                  src={offering.desktopImageUrl}
+                  alt=""
+                  loading="lazy"
+                  class="block max-md:hidden absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
+                />
+              )}
+              {isVideoUrl(offering.mobileImageUrl) ? (
+                <video
+                  src={offering.mobileImageUrl}
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  class="hidden max-md:block absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
+                />
+              ) : (
+                <img
+                  src={offering.mobileImageUrl}
+                  alt=""
+                  loading="lazy"
+                  class="hidden max-md:block absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
+                />
+              )}
+            </>
           )}
         </div>
         <div class="flex flex-col gap-6 items-start w-full">

@@ -82,7 +82,7 @@ const STORY_DURATION_MS = 6000;
           class="flex flex-col shrink-0 w-[104px] h-[120px] rounded-lg overflow-hidden relative text-left"
         >
           {slide.backgroundImageUrl && (
-            <img src={slide.backgroundImageUrl} alt="" class="absolute inset-0 w-full h-full object-cover" />
+            <img src={slide.backgroundImageUrl} alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
           )}
           <div class="absolute inset-x-0 top-0 h-9 bg-gradient-to-b from-black/40 to-transparent"></div>
           <div class="relative flex gap-2 items-center p-2">
@@ -106,6 +106,7 @@ const STORY_DURATION_MS = 6000;
             <img
               src={slide.backgroundImageUrl}
               alt={slide.backgroundImageAlt ?? ''}
+              loading="lazy"
               class="absolute inset-0 w-full h-full object-cover"
             />
           )}
@@ -151,7 +152,7 @@ const STORY_DURATION_MS = 6000;
           {/* Case-study: floating website preview card */}
           {slide.kind === 'case-study' && slide.websitePreviewUrl && (
             <div class="absolute inset-x-5 top-1/2 -translate-y-1/2 rounded-md overflow-hidden shadow-lg">
-              <img src={slide.websitePreviewUrl} alt={slide.websitePreviewAlt ?? ''} class="w-full h-auto object-cover" />
+              <img src={slide.websitePreviewUrl} alt={slide.websitePreviewAlt ?? ''} loading="lazy" class="w-full h-auto object-cover" />
             </div>
           )}
 
