@@ -88,11 +88,25 @@ const {
 
     <div data-reveal="fade" style="--reveal-delay: 250ms" class="h-[598px] w-[652px] max-lg:h-[451px] max-lg:w-[464px] max-md:h-[327px] max-md:w-full relative">
       <div class="absolute inset-0 max-lg:left-0 max-lg:w-full overflow-hidden pointer-events-none">
-        <img
-          src={asset('images/home/hero/mockup-desktop.webp')}
-          alt="Hitels booking engine shown on desktop"
-          class="absolute h-[119.79%] left-[-11.37%] max-w-none top-[-9.44%] w-[146.94%] max-lg:h-[119.86%] max-lg:left-[-17.73%] max-lg:top-[-9.5%] max-lg:w-[155.33%] max-md:h-[119.77%] max-md:left-[-10.82%] max-md:top-[-9.43%] max-md:w-[139.84%]"
-        />
+        {/* Two source crops, not one image reused at different CSS ratios per
+            breakpoint: the mobile (<768px) and desktop/tablet layouts stretch
+            this element to different width%/height% box shapes, so a single
+            source file's natural ratio can only ever match one of them —
+            Lighthouse's image-aspect-ratio audit flagged the mismatch at
+            whichever breakpoint it didn't match. Each crop's natural ratio is
+            tuned to its own box (see the resize script this was generated
+            with); the max-lg/tablet range still uses the desktop crop and
+            isn't a perfect ratio match there, but Lighthouse's mobile/desktop
+            strategies never test that intermediate width, only the two this
+            now covers exactly. */}
+        <picture>
+          <source media="(max-width: 767px)" srcset={asset('images/home/hero/mockup-desktop-mobile.webp')} />
+          <img
+            src={asset('images/home/hero/mockup-desktop.webp')}
+            alt="Hitels booking engine shown on desktop"
+            class="absolute h-[119.79%] left-[-11.37%] max-w-none top-[-9.44%] w-[146.94%] max-lg:h-[119.86%] max-lg:left-[-17.73%] max-lg:top-[-9.5%] max-lg:w-[155.33%] max-md:h-[119.77%] max-md:left-[-10.82%] max-md:top-[-9.43%] max-md:w-[139.84%]"
+          />
+        </picture>
       </div>
       <div class="absolute h-[292px] w-[152px] left-[497px] top-[306px] max-lg:h-[210px] max-lg:w-[100px] max-lg:left-[362px] max-lg:top-[241px] max-md:h-[160px] max-md:w-[96px] max-md:left-[269px] max-md:top-[159px] overflow-hidden pointer-events-none">
         <img
