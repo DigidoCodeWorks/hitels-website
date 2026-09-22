@@ -90,5 +90,32 @@ const organizationSchema = {
 	<body class="bg-background">
 		<slot />
 		<HelpWidget />
+		<script>
+			// Sitewide scroll reveal: fades/rises any [data-reveal] element into place
+			// the first time it enters the viewport, then stops watching it (a
+			// one-time entrance, not a repeating scroll effect). Lives in the layout
+			// every page renders — it used to live in Footer.astro on the assumption
+			// every page includes that component, which turned out to be false
+			// (404.astro doesn't render a Footer), silently leaving that page's
+			// data-reveal content stuck at its pre-reveal opacity forever.
+			const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+			if (revealEls.length && 'IntersectionObserver' in window) {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								entry.target.classList.add('is-revealed');
+								observer.unobserve(entry.target);
+							}
+						});
+					},
+					{ threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+				);
+				revealEls.forEach((el) => observer.observe(el));
+			} else {
+				revealEls.forEach((el) => el.classList.add('is-revealed'));
+			}
+		</script>
 	</body>
 </html>
