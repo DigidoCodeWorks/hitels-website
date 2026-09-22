@@ -141,28 +141,3 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery);
     </div>
   </div>
 </footer>
-
-<script>
-  // Sitewide scroll reveal: fades/rises any [data-reveal] element into place
-  // the first time it enters the viewport, then stops watching it (a one-time
-  // entrance, not a repeating scroll effect). Lives here because Footer is
-  // the one component every page includes, so this only needs to exist once.
-  const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
-
-  if (revealEls.length && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
-    );
-    revealEls.forEach((el) => observer.observe(el));
-  } else {
-    revealEls.forEach((el) => el.classList.add('is-revealed'));
-  }
-</script>
