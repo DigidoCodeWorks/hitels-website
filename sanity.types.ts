@@ -660,8 +660,9 @@ export type PostSlugsQueryResult = Array<{
 
 // Source: src/sanity/queries.ts
 // Variable: postBySlugQuery
-// Query: *[_type == "post" && slug.current == $slug && language == $language][0]{  title,  imageUrl,  imageAlt,  publishedAt,  _updatedAt,  category,  externalLink,  shortDescription,  body,  metaTitle,  metaDescription,  relatedPosts[]->{    title,    "slug": slug.current,    imageUrl,    imageAlt  }}
+// Query: *[_type == "post" && slug.current == $slug && language == $language][0]{  _id,  title,  imageUrl,  imageAlt,  publishedAt,  _updatedAt,  category,  externalLink,  shortDescription,  body,  metaTitle,  metaDescription,  relatedPosts[]->{    title,    "slug": slug.current,    imageUrl,    imageAlt  }}
 export type PostBySlugQueryResult = {
+  _id: string;
   title: string;
   imageUrl: string | null;
   imageAlt: string | null;
@@ -697,6 +698,18 @@ export type PostBySlugQueryResult = {
     imageAlt: string | null;
   }> | null;
 } | null;
+
+// Source: src/sanity/queries.ts
+// Variable: postSlugByIdQuery
+// Query: *[_id == $id][0]{ "slug": slug.current }
+export type PostSlugByIdQueryResult =
+  | {
+      slug: null;
+    }
+  | {
+      slug: string;
+    }
+  | null;
 
 // Source: src/sanity/queries.ts
 // Variable: pricingPlansQuery
@@ -940,7 +953,8 @@ declare module "@sanity/client" {
     '*[_type == "testimonial"] | order(order asc){ name, role, quote, imageUrl, imageAlt }': TestimonialsQueryResult;
     '*[_type == "post" && defined(slug.current) && language == $language] | order(publishedAt desc){\n    title,\n    "slug": slug.current,\n    category,\n    imageUrl,\n    imageAlt\n  }': PostsQueryResult;
     '*[_type == "post" && defined(slug.current) && language == $language]{ "slug": slug.current }': PostSlugsQueryResult;
-    '*[_type == "post" && slug.current == $slug && language == $language][0]{\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  _updatedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription,\n  relatedPosts[]->{\n    title,\n    "slug": slug.current,\n    imageUrl,\n    imageAlt\n  }\n}': PostBySlugQueryResult;
+    '*[_type == "post" && slug.current == $slug && language == $language][0]{\n  _id,\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  _updatedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription,\n  relatedPosts[]->{\n    title,\n    "slug": slug.current,\n    imageUrl,\n    imageAlt\n  }\n}': PostBySlugQueryResult;
+    '*[_id == $id][0]{ "slug": slug.current }': PostSlugByIdQueryResult;
     '*[_type == "pricingPlans"][0]{ plans }': PricingPlansQueryResult;
     '\n  *[_type == "page" && slug.current == $slug && language == $language][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref,\n        imageUrl, imageAlt\n      },\n      _type == "simpleHeroSection" => { headline, subheading },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "featuresSection" => { features },\n      _type == "statsIntroSection" => { headline, body, stats },\n      _type == "teamSection" => { headline, body, members },\n      _type == "beliefsSection" => { headline, beliefs },\n      _type == "whatIsHitelsSection" => { headline, body, features },\n      _type == "comparisonTableSection" => { plans, rows }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
     '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;

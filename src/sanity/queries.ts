@@ -42,6 +42,7 @@ export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.cur
 // a raw `[0]` with no {...} keeps everything optional regardless of that
 // flag, since it falls back to the generic "any post document" shape.
 export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug && language == $language][0]{
+  _id,
   title,
   imageUrl,
   imageAlt,
@@ -60,6 +61,15 @@ export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current ==
     imageAlt
   }
 }`)
+
+// English/Icelandic post siblings will have independent, per-language slugs
+// once the Icelandic docs are migrated off their English sibling's
+// slug.current (see scripts/patch-is-posts-slugs.mjs, Phase 5) — so a
+// post's own slug can no longer be reused for its hreflang alternate in the
+// other language. Siblings are linked by a fixed "-is"-suffixed _id (see
+// seed-is-blog-batch*.mjs) — BlogPostPage.astro derives the sibling's _id
+// from the current post's _id and fetches its slug with this query.
+export const postSlugByIdQuery = defineQuery(`*[_id == $id][0]{ "slug": slug.current }`)
 
 export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans"][0]{ plans }`)
 
