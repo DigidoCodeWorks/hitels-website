@@ -14,8 +14,8 @@ const breadcrumbs = breadcrumbSchema([
 ---
 
 <BaseLayout
-	title="Resources — Hitels"
-	description="Guides, news, and insights on direct bookings, hotel websites, and revenue growth from the Hitels team."
+	title={t.sections.blogSeoTitle}
+	description={t.sections.blogSeoDescription}
 >
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />

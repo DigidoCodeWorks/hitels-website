@@ -95,6 +95,28 @@ interface Strings {
     cookiePolicy: string;
     privacyPolicy: string;
   };
+  // UI-chrome text for components that aren't page-builder/CMS-driven —
+  // their surrounding headline/label copy lives directly in component
+  // code, unlike the actual cards/plans/posts they render, which come from
+  // Sanity. Grouped by component rather than by page since several of
+  // these render on more than one page (e.g. Pricing on Home and About Us).
+  sections: {
+    blogHeading: string;
+    blogSeoTitle: string;
+    blogSeoDescription: string;
+    faqHeading: string;
+    storiesLabel: string;
+    storiesHeading: string;
+    storiesGetQuote: string;
+    addOnsHeading: string;
+    addOnsBody: string;
+    addOnsPerMonth: string;
+    pricingHeading: string;
+    pricingBody: string;
+    pricingDetailsLabel: string;
+    comparisonFeatureHeader: string;
+    comparisonIncludedAlt: string;
+  };
 }
 
 export const strings: Record<Locale, Strings> = {
@@ -177,6 +199,24 @@ export const strings: Record<Locale, Strings> = {
       cookiePolicy: 'Cookie Policy',
       privacyPolicy: 'Privacy Policy',
     },
+    sections: {
+      blogHeading: 'Resources',
+      blogSeoTitle: 'Resources — Hitels',
+      blogSeoDescription: 'Guides, news, and insights on direct bookings, hotel websites, and revenue growth from the Hitels team.',
+      faqHeading: 'Frequently asked questions',
+      storiesLabel: 'Customer stories',
+      storiesHeading: 'Proven to increase direct revenue',
+      storiesGetQuote: 'Get a quote',
+      addOnsHeading: 'Optional add-ons',
+      addOnsBody: 'Extend your services with these optional add-ons.',
+      addOnsPerMonth: '/ month',
+      pricingHeading: 'Affordable plans for every hotel',
+      pricingBody:
+        "Explore Hitels' flexible pricing plans, designed for hotels of all sizes. Boost direct bookings and online presence with our scalable solutions. Choose your perfect plan today!",
+      pricingDetailsLabel: 'View pricing details',
+      comparisonFeatureHeader: 'Feature',
+      comparisonIncludedAlt: 'Included',
+    },
   },
   is: {
     nav: {
@@ -256,6 +296,24 @@ export const strings: Record<Locale, Strings> = {
       blog: 'Fræðsla',
       cookiePolicy: 'Vefkökustefna',
       privacyPolicy: 'Persónuverndarstefna',
+    },
+    sections: {
+      blogHeading: 'Fræðsla',
+      blogSeoTitle: 'Fræðsla — Hitels',
+      blogSeoDescription: 'Leiðbeiningar, fréttir og innsýn í beinar bókanir, hótelvefsíður og tekjuaukningu frá teymi Hitels.',
+      faqHeading: 'Algengar spurningar',
+      storiesLabel: 'Reynslusögur viðskiptavina',
+      storiesHeading: 'Sannað að auka beinar tekjur',
+      storiesGetQuote: 'Fá tilboð',
+      addOnsHeading: 'Valfrjálsar viðbætur',
+      addOnsBody: 'Auktu þjónustuframboð þitt með þessum valfrjálsu viðbótum.',
+      addOnsPerMonth: '/ mánuði',
+      pricingHeading: 'Á viðráðanlegu verði fyrir öll hótel',
+      pricingBody:
+        'Kynntu þér sveigjanlega verðskrá Hitels, hannaða fyrir hótel af öllum stærðum. Auktu beinar bókanir og stafræna sýnileika með sveigjanlegum lausnum okkar. Veldu þína fullkomnu áskriftarleið í dag!',
+      pricingDetailsLabel: 'Skoða verðskrá',
+      comparisonFeatureHeader: 'Eiginleiki',
+      comparisonIncludedAlt: 'Innifalið',
     },
   },
 };

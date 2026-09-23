@@ -1,12 +1,14 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { postsQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
 
+const t = getStrings(Astro.currentLocale);
 const posts = await sanityClient.fetch(postsQuery);
 ---
 
 <section class="flex flex-col items-center gap-20 max-lg:gap-14 max-md:gap-10 px-[100px] max-lg:px-10 max-md:px-4 py-20 max-lg:py-14 max-md:py-10 relative w-full max-w-[1440px] mx-auto bg-background">
-  <h1 data-reveal class="font-heading text-h1 text-navy text-center w-full max-w-[816px]">Resources</h1>
+  <h1 data-reveal class="font-heading text-h1 text-navy text-center w-full max-w-[816px]">{t.sections.blogHeading}</h1>
 
   <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
     {posts.map((post, i) => (
