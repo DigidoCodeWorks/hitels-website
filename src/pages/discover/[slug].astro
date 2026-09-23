@@ -9,14 +9,18 @@ import Footer from '../../components/shared/Footer.astro';
 import { postSlugsQuery, postBySlugQuery } from '../../sanity/queries';
 import { breadcrumbSchema } from '../../lib/schema';
 
+// Astro.currentLocale isn't available inside getStaticPaths(), so the
+// language is a hardcoded literal here rather than derived — this file is
+// the English blog detail route; an Icelandic sibling with its own
+// getStaticPaths() hardcoding 'is' is added when the blog is localized.
 export async function getStaticPaths() {
-  const posts = await sanityClient.fetch(postSlugsQuery);
+  const posts = await sanityClient.fetch(postSlugsQuery, { language: 'en' });
   return posts.map((post) => ({ params: { slug: post.slug } }));
 }
 
 const { slug } = Astro.params;
 
-const post = await sanityClient.fetch(postBySlugQuery, { slug });
+const post = await sanityClient.fetch(postBySlugQuery, { slug, language: 'en' });
 
 if (!post) {
   return Astro.redirect('/discover');
