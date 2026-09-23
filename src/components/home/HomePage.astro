@@ -1,6 +1,5 @@
 ---
 import { sanityClient } from 'sanity:client';
-import { getRelativeLocaleUrl } from 'astro:i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from './Hero.astro';
 import PartnerLogos from './PartnerLogos.astro';
@@ -51,9 +50,16 @@ const seoDescription =
   'We build award-winning, bespoke hotel websites and seamless booking engines. No templates, no DIY builders — just a premium digital presence done for you from start to finish.';
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 
+// Hardcoded, not built from astro:i18n's getRelativeLocaleUrl() — importing
+// that virtual module here, even just for this, made Vite/Rollup merge
+// Sanity Studio's own CSS chunk into this page's bundle (reproduced with a
+// local production build: removing this one import made the leaked
+// /_astro/studio-component.*.css <link> disappear from both "/" and "/is/").
+// With only these two hardcoded locale paths to maintain, hand-writing them
+// is a small, safe price for avoiding that build-tool side effect.
 const hreflangAlternates = [
-  { lang: 'en', href: getRelativeLocaleUrl('en') },
-  { lang: 'is', href: getRelativeLocaleUrl('is') },
+  { lang: 'en', href: '/' },
+  { lang: 'is', href: '/is/' },
 ];
 ---
 
