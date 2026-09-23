@@ -2,7 +2,9 @@
 import { sanityClient } from 'sanity:client';
 import { postsQuery } from '../../sanity/queries';
 
-const posts = await sanityClient.fetch(postsQuery);
+// Hardcoded 'en': this component isn't locale-aware yet (no /is/discover
+// route exists) — see the i18n rollout plan's blog phase.
+const posts = await sanityClient.fetch(postsQuery, { language: 'en' });
 ---
 
 <section class="flex flex-col items-center gap-20 max-lg:gap-14 max-md:gap-10 px-[100px] max-lg:px-10 max-md:px-4 py-20 max-lg:py-14 max-md:py-10 relative w-full max-w-[1440px] mx-auto bg-background">

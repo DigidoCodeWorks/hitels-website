@@ -12,21 +12,21 @@ import { defineQuery } from 'groq'
 // sanity.types.ts before the new/changed shape is available to import.
 
 export const storiesQuery = defineQuery(
-  `*[_type == "story"] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
+  `*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
 )
 
 export const storiesClosingCardQuery = defineQuery(
-  `*[_type == "storiesClosingCard"][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }`
+  `*[_type == "storiesClosingCard" && language == $language][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }`
 )
 
-export const faqsQuery = defineQuery(`*[_type == "faq"] | order(order asc){ question, answer }`)
+export const faqsQuery = defineQuery(`*[_type == "faq" && language == $language] | order(order asc){ question, answer }`)
 
 export const testimonialsQuery = defineQuery(
-  `*[_type == "testimonial"] | order(order asc){ name, role, quote, imageUrl, imageAlt }`
+  `*[_type == "testimonial" && language == $language] | order(order asc){ name, role, quote, imageUrl, imageAlt }`
 )
 
 export const postsQuery = defineQuery(
-  `*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+  `*[_type == "post" && defined(slug.current) && language == $language] | order(publishedAt desc){
     title,
     "slug": slug.current,
     category,
@@ -35,13 +35,13 @@ export const postsQuery = defineQuery(
   }`
 )
 
-export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`)
+export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.current) && language == $language]{ "slug": slug.current }`)
 
 // Explicit projection (not a bare whole-document fetch) so typegen's
 // --enforce-required-fields narrows title/slug/body etc. to non-null —
 // a raw `[0]` with no {...} keeps everything optional regardless of that
 // flag, since it falls back to the generic "any post document" shape.
-export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug][0]{
+export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug && language == $language][0]{
   title,
   imageUrl,
   imageAlt,
