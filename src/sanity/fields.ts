@@ -1,4 +1,5 @@
 import { defineField } from 'sanity'
+import type { SlugIsUniqueValidator } from 'sanity'
 
 // Field factories: the repeated field shapes across this project's schemas,
 // written once and called everywhere instead of retyped per schema file.
@@ -71,6 +72,37 @@ export function languageField() {
     initialValue: 'en',
     validation: (rule) => rule.required(),
   })
+}
+
+/**
+ * Sanity's default slug uniqueness check is scoped only by `_type`, so an
+ * English and Icelandic document that both want the same slug (e.g. two
+ * "page" docs both slugged "home") would otherwise collide. Scope the check
+ * by `language` too, via `slug.options.isUnique`, so one slug can have (at
+ * most) one document per language. `typeName` must match the schema's own
+ * `name` (the check filters on `_type == typeName`).
+ *
+ * withConfig({ useCdn: false }) is required, not optional: the CDN lags
+ * ~30-60s behind writes, which can otherwise flag a real, already-resolved
+ * conflict as still unresolved right after a publish (reproduced and fixed
+ * once already, on the `page` schema, before this was extracted here).
+ */
+export function languageScopedSlugIsUnique(typeName: string): SlugIsUniqueValidator {
+  return async (slugValue, context) => {
+    const { document, getClient } = context
+    const client = getClient({ apiVersion: '2024-01-01' }).withConfig({ useCdn: false })
+    const id = document?._id.replace(/^drafts\./, '')
+    const params = {
+      draft: `drafts.${id}`,
+      published: id,
+      slug: slugValue,
+      language: document?.language,
+    }
+    return client.fetch(
+      `!defined(*[_type == "${typeName}" && !(_id in [$draft, $published]) && slug.current == $slug && language == $language][0]._id)`,
+      params
+    )
+  }
 }
 
 /**

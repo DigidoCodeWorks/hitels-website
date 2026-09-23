@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { languageField } from '../fields'
 import { addon } from './sections'
 
 // Site-wide singleton: the 3 add-on cards shown on Home (mobile layout,
@@ -15,6 +16,7 @@ export default defineType({
   // public TS surface.
   __experimental_actions: ['update', 'publish'],
   fields: [
+    languageField(),
     defineField({ name: 'addons', title: 'Add-ons', type: 'array', validation: (rule) => rule.required().min(1), of: [addon] }),
   ],
   preview: { prepare: () => ({ title: 'Add-Ons' }) },

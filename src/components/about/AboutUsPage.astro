@@ -1,0 +1,84 @@
+---
+import { sanityClient } from 'sanity:client';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import WhoWeAre from './WhoWeAre.astro';
+import Team from './Team.astro';
+import Beliefs from './Beliefs.astro';
+import WhatIsHitels from './WhatIsHitels.astro';
+import Pricing from '../shared/Pricing.astro';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
+
+// Shared by both src/pages/about-us.astro (English, "/about-us") and
+// src/pages/is/about-us.astro (Icelandic, "/is/about-us") — same
+// extraction pattern as src/components/home/HomePage.astro.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'about-us', language });
+
+if (!page) {
+  throw new Error(`Missing "page" document with slug "about-us" and language "${language}" in Sanity — run scripts/seed-about-us-page.mjs.`);
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'productHeroSection' }> => s._type === 'productHeroSection');
+if (!heroSection || !heroSection.imageUrl) {
+  throw new Error('About Us page document has no productHeroSection (with an image) — Hero requires one.');
+}
+
+const whoWeAreSection = page.sections.find((s): s is Extract<Section, { _type: 'statsIntroSection' }> => s._type === 'statsIntroSection');
+const teamSection = page.sections.find((s): s is Extract<Section, { _type: 'teamSection' }> => s._type === 'teamSection');
+const beliefsSection = page.sections.find((s): s is Extract<Section, { _type: 'beliefsSection' }> => s._type === 'beliefsSection');
+const whatIsHitelsSection = page.sections.find((s): s is Extract<Section, { _type: 'whatIsHitelsSection' }> => s._type === 'whatIsHitelsSection');
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'About Us — Hitels';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  'Hitels is a specialized digital agency and software provider on a mission to help hoteliers take back control of their revenue, their online presence, and their guest relationships.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+const t = getStrings(Astro.currentLocale);
+const breadcrumbs = breadcrumbSchema([
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.aboutUs, url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/about-us' },
+  { lang: 'is', href: '/is/about-us' },
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Hero
+			headline={heroSection.headline}
+			subheading={heroSection.subheading}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+			imageUrl={heroSection.imageUrl}
+			imageAlt={heroSection.imageAlt ?? undefined}
+		/>
+	</header>
+	<main>
+		{whoWeAreSection && <WhoWeAre headline={whoWeAreSection.headline} body={whoWeAreSection.body} stats={whoWeAreSection.stats} />}
+		{teamSection && <Team headline={teamSection.headline} body={teamSection.body} members={teamSection.members} />}
+		{beliefsSection && <Beliefs headline={beliefsSection.headline} beliefs={beliefsSection.beliefs} />}
+		{whatIsHitelsSection && <WhatIsHitels headline={whatIsHitelsSection.headline} body={whatIsHitelsSection.body} features={whatIsHitelsSection.features} />}
+		<Pricing />
+	</main>
+	<Footer />
+</BaseLayout>

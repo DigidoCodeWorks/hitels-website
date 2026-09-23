@@ -1,30 +1,5 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/cookie-policy/Hero.astro';
-import PolicyContent from '../components/cookie-policy/PolicyContent.astro';
-import Footer from '../components/shared/Footer.astro';
-import { breadcrumbSchema } from '../lib/schema';
-import { getStrings } from '../i18n/strings';
-
-const t = getStrings(Astro.currentLocale);
-const breadcrumbs = breadcrumbSchema([
-	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
-	{ name: t.breadcrumbs.cookiePolicy, url: new URL(Astro.url.pathname, Astro.site).toString() },
-]);
+import CookiePolicyPage from '../components/cookie-policy/CookiePolicyPage.astro';
 ---
 
-<BaseLayout
-	title="Cookie Policy — Hitels"
-	description="Learn how Hitels uses cookies and similar tracking technologies when you visit our website."
->
-	<Fragment slot="head">
-		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
-	</Fragment>
-	<header>
-		<Hero />
-	</header>
-	<main>
-		<PolicyContent />
-	</main>
-	<Footer />
-</BaseLayout>
+<CookiePolicyPage />

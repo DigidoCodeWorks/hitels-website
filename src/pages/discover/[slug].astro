@@ -1,63 +1,10 @@
 ---
-import { sanityClient } from 'sanity:client';
-import type { PortableTextBlock } from '@portabletext/types';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/blog-detail/Hero.astro';
-import PostBody from '../../components/blog-detail/PostBody.astro';
-import RelatedPosts from '../../components/blog-detail/RelatedPosts.astro';
-import Footer from '../../components/shared/Footer.astro';
-import { postSlugsQuery, postBySlugQuery } from '../../sanity/queries';
-import { breadcrumbSchema } from '../../lib/schema';
-import { getStrings } from '../../i18n/strings';
+import BlogPostPage from '../../components/blog-detail/BlogPostPage.astro';
+import { fetchPostSlugParams } from '../../sanity/postSlugs';
 
 export async function getStaticPaths() {
-  const posts = await sanityClient.fetch(postSlugsQuery);
-  return posts.map((post) => ({ params: { slug: post.slug } }));
+  return fetchPostSlugParams('en');
 }
-
-const { slug } = Astro.params;
-
-const post = await sanityClient.fetch(postBySlugQuery, { slug });
-
-if (!post) {
-  return Astro.redirect('/discover');
-}
-
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: post.title,
-  description: post.metaDescription || post.shortDescription,
-  image: post.imageUrl,
-  datePublished: post.publishedAt,
-  dateModified: post._updatedAt,
-  author: { '@type': 'Organization', name: 'Hitels' },
-};
-
-const t = getStrings(Astro.currentLocale);
-const breadcrumbs = breadcrumbSchema([
-  { name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
-  { name: t.breadcrumbs.blog, url: new URL(Astro.currentLocale === 'is' ? '/is/discover/' : '/discover/', Astro.site).toString() },
-  { name: post.title, url: new URL(Astro.url.pathname, Astro.site).toString() },
-]);
 ---
 
-<BaseLayout
-	title={`${post.metaTitle || post.title} — Hitels`}
-	description={post.metaDescription || post.shortDescription || post.title}
-	ogImage={post.imageUrl ?? undefined}
-	ogType="article"
->
-	<Fragment slot="head">
-		<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
-		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
-	</Fragment>
-	<header>
-		<Hero title={post.title} imageUrl={post.imageUrl ?? undefined} imageAlt={post.imageAlt ?? undefined} />
-	</header>
-	<main>
-		<PostBody body={(post.body ?? []) as PortableTextBlock[]} />
-		<RelatedPosts posts={post.relatedPosts ?? []} />
-	</main>
-	<Footer />
-</BaseLayout>
+<BlogPostPage />

@@ -9,7 +9,7 @@ import { getStrings } from '../../i18n/strings';
 // horizontal bar, one that rotates 90deg <-> 0deg to form/collapse the
 // vertical stroke of the "+".
 const t = getStrings(Astro.currentLocale);
-const faqs = await sanityClient.fetch(faqsQuery);
+const faqs = await sanityClient.fetch(faqsQuery, { language: Astro.currentLocale ?? 'en' });
 const FAQS = faqs.map((f) => ({ q: f.question, a: f.answer }));
 
 const faqSchema = {

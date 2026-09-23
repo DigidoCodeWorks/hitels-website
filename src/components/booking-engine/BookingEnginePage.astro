@@ -1,0 +1,103 @@
+---
+import { sanityClient } from 'sanity:client';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import FeatureSection from '../shared/FeatureSection.astro';
+import Pricing from '../shared/Pricing.astro';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
+
+// Shared by both src/pages/booking-engine.astro (English) and
+// src/pages/is/booking-engine.astro (Icelandic) — same extraction pattern
+// as src/components/home/HomePage.astro.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'booking-engine', language });
+
+if (!page) {
+  throw new Error(`Missing "page" document with slug "booking-engine" and language "${language}" in Sanity — run scripts/seed-booking-engine-page.mjs.`);
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'productHeroSection' }> => s._type === 'productHeroSection');
+if (!heroSection) {
+  throw new Error('Booking Engine page document has no productHeroSection — Hero requires one.');
+}
+
+const featuresSection = page.sections.find((s): s is Extract<Section, { _type: 'featuresSection' }> => s._type === 'featuresSection');
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Hitels — A booking engine built to maximize direct revenue';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  'A modern booking engine built to maximize your direct revenue. Say goodbye to clunky, disconnected checkouts and hello to a seamless flow your guests will love.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+// Service schema for what this page actually sells — previously the site had
+// Organization schema everywhere but nothing describing the product itself.
+// `price` isn't included: the pricingPlans singleton's `price` field is a
+// free-text display string (e.g. "1,8%"), not a machine-parseable number, so
+// forcing it into a strict schema.org numeric Offer.price risks emitting
+// invalid/misleading structured data if that formatting ever changes —
+// `url` points to /pricing/, the actual source of truth, instead.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Hotel direct booking engine',
+  name: heroSection.headline,
+  description: seoDescription,
+  provider: { '@type': 'Organization', name: siteSettings?.organizationName ?? 'Hitels' },
+  areaServed: 'Worldwide',
+  offers: { '@type': 'Offer', url: new URL('/pricing/', Astro.site).toString() },
+};
+
+const t = getStrings(Astro.currentLocale);
+const breadcrumbs = breadcrumbSchema([
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.bookingEngine, url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/booking-engine' },
+  { lang: 'is', href: '/is/booking-engine' },
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Hero
+			headline={heroSection.headline}
+			subheading={heroSection.subheading}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+		/>
+	</header>
+	<main>
+		{featuresSection?.features.map((feature) => (
+			<FeatureSection
+				label={feature.label}
+				heading={feature.heading}
+				description={feature.description}
+				image={feature.imageUrl}
+				imageAlt={feature.imageAlt ?? ''}
+				imageFirst={feature.imageFirst}
+				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
+				variant="booking-engine"
+			/>
+		))}
+		<Pricing />
+	</main>
+	<Footer />
+</BaseLayout>

@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { imageUrlField, altTextField, linkField } from '../fields'
+import { imageUrlField, altTextField, languageField, languageScopedSlugIsUnique, linkField } from '../fields'
 
 export default defineType({
   name: 'post',
@@ -16,9 +16,10 @@ export default defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: { source: 'title' },
+      options: { source: 'title', isUnique: languageScopedSlugIsUnique('post') },
       validation: (rule) => rule.required(),
     }),
+    languageField(),
     imageUrlField('imageUrl', 'Image URL', { required: false }),
     altTextField('imageAlt', 'Image alt text'),
     defineField({

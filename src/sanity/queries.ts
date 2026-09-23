@@ -12,21 +12,21 @@ import { defineQuery } from 'groq'
 // sanity.types.ts before the new/changed shape is available to import.
 
 export const storiesQuery = defineQuery(
-  `*[_type == "story"] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
+  `*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
 )
 
 export const storiesClosingCardQuery = defineQuery(
-  `*[_type == "storiesClosingCard"][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }`
+  `*[_type == "storiesClosingCard" && language == $language][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }`
 )
 
-export const faqsQuery = defineQuery(`*[_type == "faq"] | order(order asc){ question, answer }`)
+export const faqsQuery = defineQuery(`*[_type == "faq" && language == $language] | order(order asc){ question, answer }`)
 
 export const testimonialsQuery = defineQuery(
-  `*[_type == "testimonial"] | order(order asc){ name, role, quote, imageUrl, imageAlt }`
+  `*[_type == "testimonial" && language == $language] | order(order asc){ name, role, quote, imageUrl, imageAlt }`
 )
 
 export const postsQuery = defineQuery(
-  `*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+  `*[_type == "post" && defined(slug.current) && language == $language] | order(publishedAt desc){
     title,
     "slug": slug.current,
     category,
@@ -35,13 +35,14 @@ export const postsQuery = defineQuery(
   }`
 )
 
-export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`)
+export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.current) && language == $language]{ "slug": slug.current }`)
 
 // Explicit projection (not a bare whole-document fetch) so typegen's
 // --enforce-required-fields narrows title/slug/body etc. to non-null —
 // a raw `[0]` with no {...} keeps everything optional regardless of that
 // flag, since it falls back to the generic "any post document" shape.
-export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug][0]{
+export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug && language == $language][0]{
+  _id,
   title,
   imageUrl,
   imageAlt,
@@ -61,7 +62,16 @@ export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current ==
   }
 }`)
 
-export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans"][0]{ plans }`)
+// English/Icelandic post siblings will have independent, per-language slugs
+// once the Icelandic docs are migrated off their English sibling's
+// slug.current (see scripts/patch-is-posts-slugs.mjs, Phase 5) — so a
+// post's own slug can no longer be reused for its hreflang alternate in the
+// other language. Siblings are linked by a fixed "-is"-suffixed _id (see
+// seed-is-blog-batch*.mjs) — BlogPostPage.astro derives the sibling's _id
+// from the current post's _id and fetches its slug with this query.
+export const postSlugByIdQuery = defineQuery(`*[_id == $id][0]{ "slug": slug.current }`)
+
+export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans" && language == $language][0]{ plans }`)
 
 // Generic — fetches any `page` document by its slug, with every page-builder
 // section type's projection. One query for every page-builder page (Home,
@@ -102,17 +112,17 @@ export const pageBySlugQuery = defineQuery(`
 // page resolving its own SEO fields against the site defaults, so this is
 // the one shared projection both call sites narrow down to what they need.
 export const siteSettingsQuery = defineQuery(
-  `*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }`
+  `*[_type == "siteSettings" && language == $language][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }`
 )
 
 // Shared "Add-ons" singleton (src/sanity/schemaTypes/addOns.ts) — fetched
 // independently by both Home's and Pricing's AddOns.astro (different
 // layouts, same content), same pattern as siteSettingsQuery.
-export const addOnsQuery = defineQuery(`*[_type == "addOns"][0]{ addons }`)
+export const addOnsQuery = defineQuery(`*[_type == "addOns" && language == $language][0]{ addons }`)
 
 // Site-wide singleton (src/sanity/schemaTypes/footerSettings.ts) — fetched
 // by Footer.astro, the one component every page includes.
-export const footerSettingsQuery = defineQuery(`*[_type == "footerSettings"][0]{
+export const footerSettingsQuery = defineQuery(`*[_type == "footerSettings" && language == $language][0]{
   ctaHeadline, ctaBody,
   primaryButtonLabel, primaryButtonHref,
   secondaryButtonLabel, secondaryButtonHref,

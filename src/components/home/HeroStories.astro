@@ -16,9 +16,10 @@ import { getStrings } from '../../i18n/strings';
 // A final, non-CMS "closing" slide (storiesClosingCard singleton) always
 // plays last as a bumper.
 
-const t = getStrings(Astro.currentLocale);
-const stories = await sanityClient.fetch(storiesQuery);
-const closingCard = await sanityClient.fetch(storiesClosingCardQuery);
+const language = Astro.currentLocale ?? 'en';
+const t = getStrings(language);
+const stories = await sanityClient.fetch(storiesQuery, { language });
+const closingCard = await sanityClient.fetch(storiesClosingCardQuery, { language });
 
 // Bare CSV domains (e.g. "aurorafarmhotel.is") have no scheme; internal paths
 // ("/contact-us", "#") are left as-is.

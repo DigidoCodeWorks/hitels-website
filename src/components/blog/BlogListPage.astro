@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navigation from '../Navigation';
+import PostGrid from './PostGrid.astro';
+import Footer from '../shared/Footer.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
+
+// Shared by both src/pages/discover.astro (English) and
+// src/pages/is/discover.astro (Icelandic) — same extraction pattern as
+// src/components/home/HomePage.astro.
+const language = Astro.currentLocale ?? 'en';
+
+const t = getStrings(Astro.currentLocale);
+const breadcrumbs = breadcrumbSchema([
+	{ name: t.breadcrumbs.home, url: new URL(language === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.blog, url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/discover' },
+  { lang: 'is', href: '/is/discover' },
+];
+---
+
+<BaseLayout
+	title={t.sections.blogSeoTitle}
+	description={t.sections.blogSeoDescription}
+	lang={language}
+	hreflangAlternates={hreflangAlternates}
+>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Navigation client:load variant="light" lang={language === 'is' ? 'is' : 'en'} />
+	</header>
+	<main>
+		<PostGrid />
+	</main>
+	<Footer />
+</BaseLayout>

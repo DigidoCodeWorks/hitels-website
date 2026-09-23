@@ -3,16 +3,23 @@ import { sanityClient } from 'sanity:client';
 import { postsQuery } from '../../sanity/queries';
 import { getStrings } from '../../i18n/strings';
 
-const t = getStrings(Astro.currentLocale);
-const posts = await sanityClient.fetch(postsQuery);
+interface Props {
+  heading?: string;
+}
+
+const language = Astro.currentLocale ?? 'en';
+const { heading = getStrings(language).sections.blogHeading } = Astro.props;
+
+const posts = await sanityClient.fetch(postsQuery, { language });
+const discoverBase = language === 'is' ? '/is/discover' : '/discover';
 ---
 
 <section class="flex flex-col items-center gap-20 max-lg:gap-14 max-md:gap-10 px-[100px] max-lg:px-10 max-md:px-4 py-20 max-lg:py-14 max-md:py-10 relative w-full max-w-[1440px] mx-auto bg-background">
-  <h1 data-reveal class="font-heading text-h1 text-navy text-center w-full max-w-[816px]">{t.sections.blogHeading}</h1>
+  <h1 data-reveal class="font-heading text-h1 text-navy text-center w-full max-w-[816px]">{heading}</h1>
 
   <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
     {posts.map((post, i) => (
-      <a href={`/discover/${post.slug}`} data-reveal style={`--reveal-delay: ${(i % 3) * 100}ms`} class="flex flex-col gap-8 items-start w-full">
+      <a href={`${discoverBase}/${post.slug}`} data-reveal style={`--reveal-delay: ${(i % 3) * 100}ms`} class="flex flex-col gap-8 items-start w-full">
         <div class="bg-light-gray h-[260px] rounded-2xl shrink-0 w-full overflow-hidden">
           {post.imageUrl && <img src={post.imageUrl} alt={post.imageAlt ?? ''} loading="lazy" class="w-full h-full object-cover" />}
         </div>

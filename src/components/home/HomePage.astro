@@ -42,9 +42,7 @@ if (!heroSection) {
 
 // Site Settings singleton provides the SEO fallback when this page's own
 // `seo` object (Studio-editable per-document override) doesn't set a field.
-// Locale-agnostic for now — the Icelandic page sets its own seo.title/
-// description directly, so these English fallbacks are never reached for it.
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
 
 const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Hitels — Turn website visitors into direct bookings';
 const seoDescription =

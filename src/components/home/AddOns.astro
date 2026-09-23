@@ -12,7 +12,7 @@ import { getStrings } from '../../i18n/strings';
 // addOns.ts) rather than taking it as a prop from the page-builder — same
 // content Pricing's AddOns.astro renders in its own (desktop) layout.
 const t = getStrings(Astro.currentLocale);
-const addOnsDoc = await sanityClient.fetch(addOnsQuery);
+const addOnsDoc = await sanityClient.fetch(addOnsQuery, { language: Astro.currentLocale ?? 'en' });
 const addons = addOnsDoc?.addons ?? [];
 ---
 

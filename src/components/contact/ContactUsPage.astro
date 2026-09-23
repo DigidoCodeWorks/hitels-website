@@ -1,0 +1,62 @@
+---
+import { sanityClient } from 'sanity:client';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import ContactForm from './ContactForm';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
+
+// Shared by both src/pages/contact-us.astro (English) and
+// src/pages/is/contact-us.astro (Icelandic) — same extraction pattern as
+// src/components/home/HomePage.astro.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'contact-us', language });
+
+if (!page) {
+  throw new Error(`Missing "page" document with slug "contact-us" and language "${language}" in Sanity — run scripts/seed-contact-us-page.mjs.`);
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'simpleHeroSection' }> => s._type === 'simpleHeroSection');
+if (!heroSection) {
+  throw new Error('Contact Us page document has no simpleHeroSection — Hero requires one.');
+}
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Contact us — Hitels';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  "Get in touch with Hitels. We'll get to know your team's needs and see how our hotel website and booking engine products fit, with expert advice from our consultants.";
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+const t = getStrings(Astro.currentLocale);
+const breadcrumbs = breadcrumbSchema([
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.contactUs, url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/contact-us' },
+  { lang: 'is', href: '/is/contact-us' },
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Hero headline={heroSection.headline} subheading={heroSection.subheading} />
+	</header>
+	<main>
+		<ContactForm client:load lang={language === 'is' ? 'is' : 'en'} />
+	</main>
+	<Footer />
+</BaseLayout>

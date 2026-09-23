@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { linkField, stringListField } from '../fields'
+import { languageField, linkField, stringListField } from '../fields'
 
 // Site-wide singleton: the 3 pricing cards shown on Home, Pricing, About Us,
 // Custom Website, and Booking Engine (shared/Pricing.astro). Lives here
@@ -17,6 +17,7 @@ export default defineType({
   // public TS surface.
   __experimental_actions: ['update', 'publish'],
   fields: [
+    languageField(),
     defineField({
       name: 'plans',
       title: 'Plans',
