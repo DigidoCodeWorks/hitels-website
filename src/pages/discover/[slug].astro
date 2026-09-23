@@ -1,65 +1,10 @@
 ---
-import { sanityClient } from 'sanity:client';
-import type { PortableTextBlock } from '@portabletext/types';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Hero from '../../components/blog-detail/Hero.astro';
-import PostBody from '../../components/blog-detail/PostBody.astro';
-import RelatedPosts from '../../components/blog-detail/RelatedPosts.astro';
-import Footer from '../../components/shared/Footer.astro';
-import { postSlugsQuery, postBySlugQuery } from '../../sanity/queries';
-import { breadcrumbSchema } from '../../lib/schema';
+import BlogPostPage from '../../components/blog-detail/BlogPostPage.astro';
+import { fetchPostSlugParams } from '../../sanity/postSlugs';
 
-// Astro.currentLocale isn't available inside getStaticPaths(), so the
-// language is a hardcoded literal here rather than derived — this file is
-// the English blog detail route; an Icelandic sibling with its own
-// getStaticPaths() hardcoding 'is' is added when the blog is localized.
 export async function getStaticPaths() {
-  const posts = await sanityClient.fetch(postSlugsQuery, { language: 'en' });
-  return posts.map((post) => ({ params: { slug: post.slug } }));
+  return fetchPostSlugParams('en');
 }
-
-const { slug } = Astro.params;
-
-const post = await sanityClient.fetch(postBySlugQuery, { slug, language: 'en' });
-
-if (!post) {
-  return Astro.redirect('/discover');
-}
-
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: post.title,
-  description: post.metaDescription || post.shortDescription,
-  image: post.imageUrl,
-  datePublished: post.publishedAt,
-  dateModified: post._updatedAt,
-  author: { '@type': 'Organization', name: 'Hitels' },
-};
-
-const breadcrumbs = breadcrumbSchema([
-  { name: 'Home', url: new URL('/', Astro.site).toString() },
-  { name: 'Blog', url: new URL('/discover/', Astro.site).toString() },
-  { name: post.title, url: new URL(Astro.url.pathname, Astro.site).toString() },
-]);
 ---
 
-<BaseLayout
-	title={`${post.metaTitle || post.title} — Hitels`}
-	description={post.metaDescription || post.shortDescription || post.title}
-	ogImage={post.imageUrl ?? undefined}
-	ogType="article"
->
-	<Fragment slot="head">
-		<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
-		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
-	</Fragment>
-	<header>
-		<Hero title={post.title} imageUrl={post.imageUrl ?? undefined} imageAlt={post.imageAlt ?? undefined} />
-	</header>
-	<main>
-		<PostBody body={(post.body ?? []) as PortableTextBlock[]} />
-		<RelatedPosts posts={post.relatedPosts ?? []} />
-	</main>
-	<Footer />
-</BaseLayout>
+<BlogPostPage />

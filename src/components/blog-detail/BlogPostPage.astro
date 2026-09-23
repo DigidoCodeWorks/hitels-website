@@ -1,0 +1,88 @@
+---
+import { sanityClient } from 'sanity:client';
+import type { PortableTextBlock } from '@portabletext/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import PostBody from './PostBody.astro';
+import RelatedPosts from './RelatedPosts.astro';
+import Footer from '../shared/Footer.astro';
+import { postBySlugQuery, postSlugByIdQuery } from '../../sanity/queries';
+import { breadcrumbSchema } from '../../lib/schema';
+
+// Shared by both src/pages/discover/[slug].astro (English) and
+// src/pages/is/discover/[slug].astro (Icelandic) — same extraction pattern
+// as src/components/home/HomePage.astro, but only for the part that runs
+// per-page (Astro.currentLocale isn't available inside getStaticPaths(),
+// so each locale's page file keeps its own literal-language
+// getStaticPaths(), via src/sanity/postSlugs.ts's fetchPostSlugParams()).
+const language = Astro.currentLocale ?? 'en';
+const { slug } = Astro.params;
+
+const post = await sanityClient.fetch(postBySlugQuery, { slug, language });
+
+if (!post) {
+  return Astro.redirect(language === 'is' ? '/is/discover' : '/discover');
+}
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.title,
+  description: post.metaDescription || post.shortDescription,
+  image: post.imageUrl,
+  datePublished: post.publishedAt,
+  dateModified: post._updatedAt,
+  author: { '@type': 'Organization', name: 'Hitels' },
+};
+
+const discoverBase = language === 'is' ? '/is/discover' : '/discover';
+
+const breadcrumbs = breadcrumbSchema([
+  { name: 'Home', url: new URL(language === 'is' ? '/is/' : '/', Astro.site).toString() },
+  { name: 'Blog', url: new URL(`${discoverBase}/`, Astro.site).toString() },
+  { name: post.title, url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+// English/Icelandic siblings will have independent slugs once the
+// Icelandic docs are migrated off their English sibling's slug.current
+// (see scripts/patch-is-posts-slugs.mjs, Phase 5), linked by a fixed
+// "-is"-suffixed _id — derive the sibling's _id and look up its own slug
+// rather than assuming it matches this page's.
+const siblingId = language === 'is' ? post._id.replace(/-is$/, '') : `${post._id}-is`;
+const sibling = await sanityClient.fetch(postSlugByIdQuery, { id: siblingId });
+
+const enSlug = language === 'is' ? (sibling?.slug ?? slug) : slug;
+const isSlug = language === 'is' ? slug : (sibling?.slug ?? slug);
+
+const hreflangAlternates = [
+  { lang: 'en', href: `/discover/${enSlug}` },
+  { lang: 'is', href: `/is/discover/${isSlug}` },
+];
+---
+
+<BaseLayout
+	title={`${post.metaTitle || post.title} — Hitels`}
+	description={post.metaDescription || post.shortDescription || post.title}
+	ogImage={post.imageUrl ?? undefined}
+	ogType="article"
+	lang={language}
+	hreflangAlternates={hreflangAlternates}
+>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Hero
+			title={post.title}
+			imageUrl={post.imageUrl ?? undefined}
+			imageAlt={post.imageAlt ?? undefined}
+			backLabel={language === 'is' ? 'Til baka' : 'Back'}
+		/>
+	</header>
+	<main>
+		<PostBody body={(post.body ?? []) as PortableTextBlock[]} />
+		<RelatedPosts posts={post.relatedPosts ?? []} heading={language === 'is' ? 'Tengdar greinar' : 'Related articles'} />
+	</main>
+	<Footer />
+</BaseLayout>

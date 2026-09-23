@@ -1,0 +1,56 @@
+---
+import CookiePolicyPage from '../../components/cookie-policy/CookiePolicyPage.astro';
+// DRAFT TRANSLATION: machine-drafted by Claude, not reviewed by a native
+// Icelandic speaker or legal counsel yet — flagged for review before this
+// goes past staging, same as every other batch of this rollout, but with
+// extra weight here given this is legal/compliance text.
+const POLICIES = [
+  {
+    title: 'Hvað eru vefkökur?',
+    description:
+      'Vefkökur eru litlar textaskrár sem vistast á tækinu þínu (tölvu, snjallsíma eða spjaldtölvu) þegar þú heimsækir vefsíðu. Þær bæta vafraupplifun þína með því að muna stillingar þínar, greina frammistöðu vefsíðunnar og birta sérsniðið efni og auglýsingar.',
+  },
+  {
+    title: 'Tegundir vefkaka sem við notum',
+    intro: 'Hitels notar eftirfarandi tegundir vefkaka:',
+    list: [
+      'Nauðsynlegar vefkökur: nauðsynlegar til að vefsíðan starfi rétt, svo sem auðkenningar- og öryggisvefkökur.',
+      'Greiningarvefkökur: notaðar til að greina notkun og frammistöðu vefsíðunnar, svo sem Google Analytics vefkökur.',
+      'Virknivefkökur: gera kleift að auka virkni og sérsníða vefsíðuna, svo sem að muna tungumálastillingar þínar.',
+      'Auglýsingavefkökur: notaðar til að birta markvissar auglýsingar byggðar á áhugasviðum þínum og vafrahegðun.',
+    ],
+  },
+  {
+    title: 'Hvernig við notum vefkökur',
+    intro: 'Við notum vefkökur í ýmsum tilgangi, meðal annars til að:',
+    list: [
+      'Bæta frammistöðu og virkni vefsíðunnar.',
+      'Greina umferð og notkunarþróun á vefsíðunni.',
+      'Sérsníða efni og auglýsingar.',
+      'Muna stillingar þínar og valkosti.',
+    ],
+  },
+  {
+    title: 'Vefkökur frá þriðja aðila',
+    description:
+      'Við kunnum einnig að nota vefkökur frá þriðja aðila, svo sem þjónustuveitendum eins og Google Analytics og auglýsingakerfum, til að greina umferð á vefsíðunni og birta markvissar auglýsingar. Þessar vefkökur þriðja aðila lúta eigin persónuverndarstefnu.',
+  },
+  {
+    title: 'Breytingar á þessari vefkökustefnu',
+    description:
+      'Við kunnum að uppfæra þessa vefkökustefnu af og til og allar breytingar verða birtar á þessari síðu. Við hvetjum þig til að skoða þessa vefkökustefnu reglulega til að fylgjast með uppfærslum.',
+  },
+];
+---
+
+<CookiePolicyPage
+  title="Vefkökustefna"
+  lastUpdated="Síðast uppfært 15. apríl 2024"
+  description="Kynntu þér hvernig Hitels notar vefkökur og sambærilega mælingartækni þegar þú heimsækir vefsíðu okkar."
+  intro="Þessi vefkökustefna útskýrir hvernig Hitels notar vefkökur og sambærilega mælingartækni þegar þú heimsækir vefsíðu okkar. Með því að nálgast eða nota Hitels samþykkir þú notkun vefkaka í samræmi við þessa vefkökustefnu."
+  policies={POLICIES}
+  contactHeading="Hafðu samband"
+  contactIntro="Ef þú hefur spurningar eða áhyggjur varðandi þessa vefkökustefnu eða notkun okkar á vefkökum, vinsamlegast hafðu samband við okkur á"
+  breadcrumbHome="Heim"
+  breadcrumbSelf="Vefkökustefna"
+/>
