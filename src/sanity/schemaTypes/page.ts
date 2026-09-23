@@ -23,7 +23,13 @@ export default defineType({
         // slug can have (at most) one document per language.
         isUnique: async (slugValue, context) => {
           const { document, getClient } = context
-          const client = getClient({ apiVersion: '2024-01-01' })
+          // withConfig({ useCdn: false }) — a uniqueness check needs fresh
+          // data; the CDN lags ~30-60s behind writes (same reasoning as
+          // astro.config.mjs's sanity() integration), which can otherwise
+          // flag a real, already-resolved conflict as still unresolved
+          // right after a publish. getClient()'s own options type doesn't
+          // accept useCdn directly, so it's applied via withConfig instead.
+          const client = getClient({ apiVersion: '2024-01-01' }).withConfig({ useCdn: false })
           const id = document?._id.replace(/^drafts\./, '')
           const params = {
             draft: `drafts.${id}`,
