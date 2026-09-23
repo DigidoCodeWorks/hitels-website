@@ -9,6 +9,7 @@ import Footer from '../shared/Footer.astro';
 import { pageBySlugQuery, pricingPlansQuery, siteSettingsQuery } from '../../sanity/queries';
 import type { PageBySlugQueryResult } from '../../../sanity.types';
 import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/pricing.astro (English) and
 // src/pages/is/pricing.astro (Icelandic) — same extraction pattern as
@@ -64,9 +65,10 @@ const productSchemas = (pricingPlans?.plans ?? []).map((plan) => ({
 	},
 }));
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-	{ name: 'Home', url: new URL('/', Astro.site).toString() },
-	{ name: 'Pricing', url: new URL(Astro.url.pathname, Astro.site).toString() },
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.pricing, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 
 const hreflangAlternates = [

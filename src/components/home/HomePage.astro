@@ -18,8 +18,11 @@ import type { PageBySlugQueryResult } from '../../../sanity.types';
 // src/pages/is/index.astro (Icelandic, "/is/") — Astro's file-based i18n
 // routing requires a real page file per locale, but both just render this
 // component, which reads Astro.currentLocale to fetch the right "page"
-// document. See the i18n pilot plan for why Benefits, Pricing, PartnerLogos,
-// and Footer stay fixed, non-page-builder, English-only sections here.
+// document. Benefits, Pricing, PartnerLogos, and Footer stay fixed,
+// non-page-builder sections here (not editable per-page-instance through
+// the page builder) — but each still localizes its own copy via
+// src/i18n/strings.ts (Pricing/Footer) or getStrings() directly
+// (Benefits/PartnerLogos), same as any other UI-chrome text.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
 const language = Astro.currentLocale ?? 'en';

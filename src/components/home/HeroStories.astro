@@ -2,6 +2,7 @@
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import { storiesQuery, storiesClosingCardQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
 
 // Instagram-style stories: a tappable avatar tray (mobile hero only) that
 // opens a full-screen, auto-advancing viewer. Figma: node 6:1534 (tray
@@ -16,6 +17,7 @@ import { storiesQuery, storiesClosingCardQuery } from '../../sanity/queries';
 // plays last as a bumper.
 
 const language = Astro.currentLocale ?? 'en';
+const t = getStrings(language);
 const stories = await sanityClient.fetch(storiesQuery, { language });
 const closingCard = await sanityClient.fetch(storiesClosingCardQuery, { language });
 
@@ -60,7 +62,7 @@ const slides: Slide[] = stories.map((story) =>
 if (closingCard) {
   slides.push({
     kind: 'closing',
-    name: 'Get a quote',
+    name: t.sections.storiesGetQuote,
     backgroundImageUrl: closingCard.backgroundImageUrl,
     backgroundImageAlt: closingCard.backgroundImageAlt,
     heading: closingCard.heading,

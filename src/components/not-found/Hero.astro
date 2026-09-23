@@ -21,7 +21,7 @@ const { message = 'The page you are looking for doesn’t exist or has been move
   </div>
 
   <div class="absolute top-0 inset-x-0 z-10">
-    <Navigation client:load />
+    <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
   </div>
 
   <div class="flex flex-col gap-8 items-center px-4 relative text-center w-[604px] max-w-full">

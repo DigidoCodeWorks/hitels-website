@@ -1,15 +1,17 @@
 ---
 import PartnerLogosTrack from './PartnerLogosTrack.astro';
+import { getStrings } from '../../i18n/strings';
 // "Trusted by 19 partners" logo ticker — an infinite auto-scrolling marquee
 // (the Figma layer is literally named "Logo Ticker"). Renders the logo set
 // twice back-to-back and animates a -50% translateX; since both copies are
 // identical, the loop is seamless — the instant the first set scrolls fully
 // offscreen, the second is sitting exactly where the first one started.
+const t = getStrings(Astro.currentLocale);
 ---
 
 <div class="flex flex-col gap-1 items-center py-4 relative w-full max-w-[1440px] mx-auto bg-background">
   <p class="font-body font-normal text-navy text-body-md text-center tracking-[-0.16px] w-full">
-    Trusted by 19 partners and counting
+    {t.sections.partnerLogosTrusted}
   </p>
   <div class="backdrop-blur-[25px] px-8 py-6 relative w-full overflow-hidden">
     <div class="partner-ticker-track flex w-max">
@@ -29,7 +31,7 @@ import PartnerLogosTrack from './PartnerLogosTrack.astro';
     <div class="absolute left-1/2 -translate-x-1/2 top-0 h-[92px] flex items-center gap-[6.909px] px-20 z-10">
       <div class="absolute left-0 top-1/2 -translate-y-1/2 h-[45px] w-[223px] bg-gradient-to-r from-white/0 via-white to-white/0"></div>
       <div class="relative h-16 w-[62.857px] shrink-0">
-        <img src="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/home/hero/framer-badge-icon.svg" alt="Framer Partner" loading="lazy" class="h-16 w-[62.857px]" />
+        <img src="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/home/hero/framer-badge-icon.svg" alt={t.sections.partnerLogosBadgeAlt} loading="lazy" class="h-16 w-[62.857px]" />
       </div>
     </div>
   </div>

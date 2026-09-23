@@ -1,14 +1,15 @@
 ---
 import { sanityClient } from 'sanity:client';
 import { postsQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
 
 interface Props {
   heading?: string;
 }
 
-const { heading = 'Resources' } = Astro.props;
-
 const language = Astro.currentLocale ?? 'en';
+const { heading = getStrings(language).sections.blogHeading } = Astro.props;
+
 const posts = await sanityClient.fetch(postsQuery, { language });
 const discoverBase = language === 'is' ? '/is/discover' : '/discover';
 ---

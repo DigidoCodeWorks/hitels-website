@@ -4,6 +4,7 @@ import { asset } from '../../lib/cdn';
 import ArrowLink from './ArrowLink.astro';
 import PricingSignupModal from './PricingSignupModal.tsx';
 import { pricingPlansQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
 
 interface Props {
   showHeading?: boolean;
@@ -15,6 +16,10 @@ interface Props {
 // reuses the same cards but suppresses both, since its own Hero already
 // carries the "Pricing" heading and linking to itself would be circular.
 const { showHeading = true, showDetailsLink = true } = Astro.props;
+
+const language = Astro.currentLocale ?? 'en';
+const t = getStrings(language);
+const pricingHref = language === 'is' ? '/is/pricing' : '/pricing';
 
 // Site-wide singleton (see src/sanity/schemaTypes/pricingPlans.ts) — the same
 // 3 cards shown on every page that renders this component, edited in one
@@ -31,10 +36,8 @@ const CARDS = pricingPlans.plans;
 <section id="pricing" class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
   {showHeading && (
     <div data-reveal class="flex flex-col gap-4 items-center text-center w-[792px] max-w-full">
-      <h2 class="font-heading text-h3 text-navy w-full">Affordable plans for every hotel</h2>
-      <p class="font-body font-normal text-body-md text-gray w-full">
-        Explore Hitels' flexible pricing plans, designed for hotels of all sizes. Boost direct bookings and online presence with our scalable solutions. Choose your perfect plan today!
-      </p>
+      <h2 class="font-heading text-h3 text-navy w-full">{t.sections.pricingHeading}</h2>
+      <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.pricingBody}</p>
     </div>
   )}
 
@@ -92,10 +95,10 @@ const CARDS = pricingPlans.plans;
     ))}
   </div>
 
-  {showDetailsLink && <ArrowLink href="/pricing" label="View pricing details" />}
+  {showDetailsLink && <ArrowLink href={pricingHref} label={t.sections.pricingDetailsLabel} />}
 </section>
 
-<PricingSignupModal client:load />
+<PricingSignupModal client:load lang={language === 'is' ? 'is' : 'en'} />
 
 <script>
   // Card CTAs (see the buttons above) no longer navigate via ctaHref — they

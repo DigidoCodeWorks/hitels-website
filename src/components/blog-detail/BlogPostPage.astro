@@ -8,6 +8,7 @@ import RelatedPosts from './RelatedPosts.astro';
 import Footer from '../shared/Footer.astro';
 import { postBySlugQuery, postSlugByIdQuery } from '../../sanity/queries';
 import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/discover/[slug].astro (English) and
 // src/pages/is/discover/[slug].astro (Icelandic) — same extraction pattern
@@ -37,9 +38,10 @@ const articleSchema = {
 
 const discoverBase = language === 'is' ? '/is/discover' : '/discover';
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-  { name: 'Home', url: new URL(language === 'is' ? '/is/' : '/', Astro.site).toString() },
-  { name: 'Blog', url: new URL(`${discoverBase}/`, Astro.site).toString() },
+  { name: t.breadcrumbs.home, url: new URL(language === 'is' ? '/is/' : '/', Astro.site).toString() },
+  { name: t.breadcrumbs.blog, url: new URL(`${discoverBase}/`, Astro.site).toString() },
   { name: post.title, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 

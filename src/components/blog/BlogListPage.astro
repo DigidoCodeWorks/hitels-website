@@ -4,16 +4,17 @@ import Navigation from '../Navigation';
 import PostGrid from './PostGrid.astro';
 import Footer from '../shared/Footer.astro';
 import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/discover.astro (English) and
 // src/pages/is/discover.astro (Icelandic) — same extraction pattern as
-// src/components/home/HomePage.astro. English copy for now (title/
-// description/breadcrumb/heading); UI-chrome translation is a later pass.
+// src/components/home/HomePage.astro.
 const language = Astro.currentLocale ?? 'en';
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-	{ name: 'Home', url: new URL('/', Astro.site).toString() },
-	{ name: 'Blog', url: new URL(Astro.url.pathname, Astro.site).toString() },
+	{ name: t.breadcrumbs.home, url: new URL(language === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.blog, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 
 const hreflangAlternates = [
@@ -23,8 +24,8 @@ const hreflangAlternates = [
 ---
 
 <BaseLayout
-	title="Resources — Hitels"
-	description="Guides, news, and insights on direct bookings, hotel websites, and revenue growth from the Hitels team."
+	title={t.sections.blogSeoTitle}
+	description={t.sections.blogSeoDescription}
 	lang={language}
 	hreflangAlternates={hreflangAlternates}
 >
@@ -32,7 +33,7 @@ const hreflangAlternates = [
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
-		<Navigation client:load variant="light" />
+		<Navigation client:load variant="light" lang={language === 'is' ? 'is' : 'en'} />
 	</header>
 	<main>
 		<PostGrid />

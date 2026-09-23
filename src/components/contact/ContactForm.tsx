@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { asset } from '../../lib/cdn';
 import PhoneNumberField, { DEFAULT_COUNTRY, type Country } from './PhoneNumberField';
+import { getStrings, type Locale } from '../../i18n/strings';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -12,6 +13,7 @@ function Field({
   type = 'text',
   placeholder,
   required = false,
+  requiredSrOnlyText = ' (required)',
   value,
   onChange,
 }: {
@@ -20,6 +22,7 @@ function Field({
   type?: string;
   placeholder: string;
   required?: boolean;
+  requiredSrOnlyText?: string;
   value: string;
   onChange: (value: string) => void;
 }) {
@@ -30,7 +33,7 @@ function Field({
         {required && (
           <>
             <span className="text-red-600" aria-hidden="true"> *</span>
-            <span className="sr-only"> (required)</span>
+            <span className="sr-only">{requiredSrOnlyText}</span>
           </>
         )}
       </label>
@@ -48,7 +51,8 @@ function Field({
   );
 }
 
-export default function ContactForm() {
+export default function ContactForm({ lang = 'en' }: { lang?: Locale }) {
+  const t = getStrings(lang).contactForm;
   const [name, setName] = useState('');
   const [hotelName, setHotelName] = useState('');
   const [email, setEmail] = useState('');
@@ -119,8 +123,8 @@ export default function ContactForm() {
     return (
       <section className="flex justify-center px-[100px] max-lg:px-10 max-md:px-4 pt-20 max-lg:pt-14 max-md:pt-10 pb-[112px] max-lg:pb-14 max-md:pb-16 w-full bg-background">
         <div className="flex flex-col gap-2 items-center text-center max-w-[816px] w-full">
-          <p className="font-heading text-h5 text-navy w-full">Thanks for reaching out</p>
-          <p className="font-body font-normal text-body-md text-gray w-full">We'll get back to you shortly.</p>
+          <p className="font-heading text-h5 text-navy w-full">{t.successHeading}</p>
+          <p className="font-body font-normal text-body-md text-gray w-full">{t.successBody}</p>
         </div>
       </section>
     );
@@ -146,15 +150,15 @@ export default function ContactForm() {
           className="sr-only"
         />
         <div className="flex gap-8 max-md:flex-col items-start w-full">
-          <Field id="name" label="Name" placeholder="Full name" required value={name} onChange={setName} />
-          <Field id="hotelName" label="Hotel name" placeholder="Hotel name" value={hotelName} onChange={setHotelName} />
+          <Field id="name" label={t.nameLabel} placeholder={t.namePlaceholder} required requiredSrOnlyText={t.requiredSrOnly} value={name} onChange={setName} />
+          <Field id="hotelName" label={t.hotelNameLabel} placeholder={t.hotelNamePlaceholder} value={hotelName} onChange={setHotelName} />
         </div>
         <div className="flex gap-8 max-md:flex-col items-start w-full">
-          <Field id="email" label="Email" type="email" placeholder="jon@hotel.is" required value={email} onChange={setEmail} />
+          <Field id="email" label={t.emailLabel} type="email" placeholder={t.emailPlaceholder} required requiredSrOnlyText={t.requiredSrOnly} value={email} onChange={setEmail} />
           <PhoneNumberField
             id="phone"
-            label="Phone number"
-            placeholder="Phone number"
+            label={t.phoneLabel}
+            placeholder={t.phonePlaceholder}
             required
             value={phone}
             onChange={setPhone}
@@ -164,9 +168,9 @@ export default function ContactForm() {
         </div>
         <div className="flex flex-col gap-2 items-start w-full">
           <label htmlFor="message" className="font-body font-medium text-body-sm text-navy">
-            Message
+            {t.messageLabel}
             <span className="text-red-600" aria-hidden="true"> *</span>
-            <span className="sr-only"> (required)</span>
+            <span className="sr-only">{t.requiredSrOnly}</span>
           </label>
           <div className="relative w-full">
             <textarea
@@ -174,7 +178,7 @@ export default function ContactForm() {
               name="message"
               required
               rows={6}
-              placeholder="Type your message here"
+              placeholder={t.messagePlaceholder}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="font-body font-normal text-body-md text-navy placeholder:text-gray bg-light-gray rounded-lg p-4 w-full outline-none focus:ring-2 focus:ring-navy resize-y"
@@ -185,7 +189,7 @@ export default function ContactForm() {
 
         {status === 'error' && (
           <p className="font-body font-normal text-body-sm text-red-600 w-full">
-            Something went wrong sending your message. Please try again or email us directly.
+            {t.error}
           </p>
         )}
 
@@ -195,7 +199,7 @@ export default function ContactForm() {
           className="bg-navy text-background hover:bg-background hover:text-navy flex gap-3 items-center justify-center rounded-lg border-2 border-transparent hover:border-navy transition-colors duration-300 px-5 py-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span className="font-body font-medium text-body-md whitespace-nowrap">
-            {status === 'submitting' ? 'Sending…' : 'Send message'}
+            {status === 'submitting' ? t.sending : t.send}
           </span>
         </button>
       </form>
