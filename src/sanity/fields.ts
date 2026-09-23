@@ -51,6 +51,29 @@ export function stringListField(name: string, title: string) {
 }
 
 /**
+ * Document language, for schemas with a locale-specific counterpart (e.g. an
+ * English and Icelandic `page` document sharing the same slug). Defaults to
+ * 'en' for new documents, but existing documents need this backfilled
+ * explicitly — initialValue only applies on creation in the Studio UI.
+ */
+export function languageField() {
+  return defineField({
+    name: 'language',
+    title: 'Language',
+    type: 'string',
+    options: {
+      list: [
+        { title: 'English', value: 'en' },
+        { title: 'Icelandic', value: 'is' },
+      ],
+      layout: 'radio',
+    },
+    initialValue: 'en',
+    validation: (rule) => rule.required(),
+  })
+}
+
+/**
  * Per-document SEO override (title/description/OG image), always named
  * "seo" so every page-builder-converted document type exposes it under the
  * same field name for BaseLayout/page components to resolve consistently

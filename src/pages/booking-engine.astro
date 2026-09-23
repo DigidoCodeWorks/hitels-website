@@ -15,7 +15,7 @@ import { breadcrumbSchema } from '../lib/schema';
 // fixed, not page-builder content, same reasoning as the other two.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'booking-engine' });
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'booking-engine', language: Astro.currentLocale ?? 'en' });
 
 if (!page) {
   throw new Error('Missing "page" document with slug "booking-engine" in Sanity — run scripts/seed-booking-engine-page.mjs.');

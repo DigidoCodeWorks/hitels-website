@@ -1,0 +1,104 @@
+---
+import { sanityClient } from 'sanity:client';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import PartnerLogos from './PartnerLogos.astro';
+import ProductOfferings from './ProductOfferings.astro';
+import Testimonial from './Testimonial.astro';
+import Stories from './Stories.astro';
+import Benefits from './Benefits.astro';
+import Pricing from '../shared/Pricing.astro';
+import AddOns from './AddOns.astro';
+import Faq from './Faq.astro';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+
+// Shared by both src/pages/index.astro (English, "/") and
+// src/pages/is/index.astro (Icelandic, "/is/") — Astro's file-based i18n
+// routing requires a real page file per locale, but both just render this
+// component, which reads Astro.currentLocale to fetch the right "page"
+// document. See the i18n pilot plan for why Benefits, Pricing, PartnerLogos,
+// and Footer stay fixed, non-page-builder, English-only sections here.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'home', language });
+
+if (!page) {
+  throw new Error(
+    `Missing "page" document with slug "home" and language "${language}" in Sanity — run scripts/seed-home-page${language === 'is' ? '-is' : ''}.mjs.`
+  );
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'heroSection' }> => s._type === 'heroSection');
+if (!heroSection) {
+  throw new Error('Home page document has no heroSection — Hero requires one.');
+}
+
+// Site Settings singleton provides the SEO fallback when this page's own
+// `seo` object (Studio-editable per-document override) doesn't set a field.
+// Locale-agnostic for now — the Icelandic page sets its own seo.title/
+// description directly, so these English fallbacks are never reached for it.
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Hitels — Turn website visitors into direct bookings';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  'We build award-winning, bespoke hotel websites and seamless booking engines. No templates, no DIY builders — just a premium digital presence done for you from start to finish.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+const hreflangAlternates = [
+  { lang: 'en', href: getRelativeLocaleUrl('en') },
+  { lang: 'is', href: getRelativeLocaleUrl('is') },
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+	<header>
+		<Hero
+			headline={heroSection.headline}
+			subheadingDesktop={heroSection.subheadingDesktop}
+			subheadingMobile={heroSection.subheadingMobile}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+		/>
+	</header>
+	<main>
+		<PartnerLogos />
+		{page.sections.map((section) => {
+			switch (section._type) {
+				case 'productOfferingsSection':
+					return <ProductOfferings offerings={section.offerings} />;
+				case 'testimonialsSection':
+					return <Testimonial />;
+				case 'customerStoriesSection':
+					return <Stories cards={section.cards} />;
+				default:
+					return null;
+			}
+		})}
+		{/* Benefits/Pricing are fixed, not page-builder content (see the top-of-file
+		    note), but they sit in the *middle* of the original section order — between
+		    Stories and AddOns/Faq — so the dynamic loop is split around them rather
+		    than dumping both fixed sections after every dynamic one. */}
+		<Benefits />
+		<Pricing />
+		{page.sections.map((section) => {
+			switch (section._type) {
+				case 'addOnsSection':
+					return <AddOns />;
+				case 'faqSection':
+					return <Faq />;
+				default:
+					return null;
+			}
+		})}
+	</main>
+	<Footer />
+</BaseLayout>

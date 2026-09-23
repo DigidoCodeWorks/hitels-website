@@ -68,7 +68,7 @@ export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans"][0]{ pla
 // Custom Website, and any future conversion) rather than one hand-copied
 // per-page query, so a new section type only needs adding here once.
 export const pageBySlugQuery = defineQuery(`
-  *[_type == "page" && slug.current == $slug][0]{
+  *[_type == "page" && slug.current == $slug && language == $language][0]{
     sections[]{
       _key,
       _type,
