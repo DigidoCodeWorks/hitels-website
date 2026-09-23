@@ -25,7 +25,7 @@ if (!heroSection) {
   throw new Error('Contact Us page document has no simpleHeroSection — Hero requires one.');
 }
 
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language: Astro.currentLocale ?? 'en' });
 
 const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Contact us — Hitels';
 const seoDescription =

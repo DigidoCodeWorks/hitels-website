@@ -30,6 +30,28 @@ function localizedList(S: StructureBuilder, typeName: string, title: string) {
     )
 }
 
+// Every locked singleton (fixed _id, exactly one document per language —
+// see e.g. src/sanity/schemaTypes/pricingPlans.ts) gets an English/Icelandic
+// pair of direct document shortcuts, rather than a filtered list, since a
+// singleton's `documentId` is already known and fixed. `enId`/`isId` are
+// the two documents' fixed ids (the Icelandic one is conventionally the
+// English one + "-is", but pricingPlans/siteSettings/footerSettings/addOns
+// all predate that convention, so it's passed explicitly rather than
+// derived).
+function pinnedSingletonPair(S: StructureBuilder, typeName: string, title: string, enId: string, isId: string) {
+  return S.listItem()
+    .id(typeName)
+    .title(title)
+    .child(
+      S.list()
+        .title(title)
+        .items([
+          S.listItem().id(`${typeName}-en`).title('English').child(S.document().schemaType(typeName).documentId(enId)),
+          S.listItem().id(`${typeName}-is`).title('Icelandic').child(S.document().schemaType(typeName).documentId(isId)),
+        ])
+    )
+}
+
 const LOCALIZED_LIST_TYPES = ['page', 'post', 'faq', 'testimonial', 'story']
 
 // Pins direct shortcuts to the true singletons (fixed _id, created by
@@ -51,39 +73,11 @@ const structure: StructureResolver = (S) =>
       localizedList(S, 'faq', 'FAQ'),
       localizedList(S, 'testimonial', 'Testimonials'),
       localizedList(S, 'story', 'Customer Stories'),
-      S.listItem()
-        .id('pricingPlans')
-        .title('Pricing Plans')
-        .child(S.document().schemaType('pricingPlans').documentId('pricingPlans')),
-      S.listItem()
-        .id('addOns')
-        .title('Add-Ons')
-        .child(S.document().schemaType('addOns').documentId('addOns')),
-      S.listItem()
-        .id('siteSettings')
-        .title('Site Settings')
-        .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
-      S.listItem()
-        .id('footerSettings')
-        .title('Footer Settings')
-        .child(S.document().schemaType('footerSettings').documentId('footerSettings')),
-      S.listItem()
-        .id('storiesClosingCard')
-        .title('Stories: Closing Card')
-        .child(
-          S.list()
-            .title('Stories: Closing Card')
-            .items([
-              S.listItem()
-                .id('storiesClosingCard-en')
-                .title('English')
-                .child(S.document().schemaType('storiesClosingCard').documentId('storiesClosingCard-default')),
-              S.listItem()
-                .id('storiesClosingCard-is')
-                .title('Icelandic')
-                .child(S.document().schemaType('storiesClosingCard').documentId('storiesClosingCard-default-is')),
-            ])
-        ),
+      pinnedSingletonPair(S, 'pricingPlans', 'Pricing Plans', 'pricingPlans', 'pricingPlans-is'),
+      pinnedSingletonPair(S, 'addOns', 'Add-Ons', 'addOns', 'addOns-is'),
+      pinnedSingletonPair(S, 'siteSettings', 'Site Settings', 'siteSettings', 'siteSettings-is'),
+      pinnedSingletonPair(S, 'footerSettings', 'Footer Settings', 'footerSettings', 'footerSettings-is'),
+      pinnedSingletonPair(S, 'storiesClosingCard', 'Stories: Closing Card', 'storiesClosingCard-default', 'storiesClosingCard-default-is'),
       S.divider(),
       ...S.documentTypeListItems().filter(
         (item) => ![...LOCALIZED_LIST_TYPES, 'pricingPlans', 'addOns', 'siteSettings', 'footerSettings', 'storiesClosingCard'].includes(item.getId() ?? '')

@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { languageField } from '../fields'
 
 // Site-wide singleton: SEO defaults and Organization identity, replacing the
 // hardcoded "Hitels" strings previously baked into BaseLayout.astro. Same
@@ -14,6 +15,7 @@ export default defineType({
   // public TS surface.
   __experimental_actions: ['update', 'publish'],
   fields: [
+    languageField(),
     defineField({ name: 'siteName', title: 'Site name', type: 'string', validation: (rule) => rule.required() }),
     defineField({
       name: 'defaultSeoTitle',
