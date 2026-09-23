@@ -1,24 +1,26 @@
 ---
 import { sanityClient } from 'sanity:client';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/custom-website/Hero.astro';
-import FeatureSection from '../components/shared/FeatureSection.astro';
-import Pricing from '../components/shared/Pricing.astro';
-import Footer from '../components/shared/Footer.astro';
-import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
-import type { PageBySlugQueryResult } from '../../sanity.types';
-import { breadcrumbSchema } from '../lib/schema';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import FeatureSection from '../shared/FeatureSection.astro';
+import Pricing from '../shared/Pricing.astro';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
 
-// Second page converted to the Sanity page-builder pattern (see
-// src/sanity/schemaTypes/page.ts), after Home. Pricing/Footer stay fixed,
-// not page-builder content — same reasoning as Home: shared/global across
-// pages, not specific to this one.
+// Shared by both src/pages/custom-hotels-website.astro (English) and
+// src/pages/is/custom-hotels-website.astro (Icelandic) — same extraction
+// pattern as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-website' });
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-hotels-website', language });
 
 if (!page) {
-  throw new Error('Missing "page" document with slug "custom-website" in Sanity — run scripts/seed-custom-website-page.mjs.');
+  throw new Error(`Missing "page" document with slug "custom-hotels-website" and language "${language}" in Sanity — run scripts/seed-custom-website-page.mjs.`);
 }
 
 const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'productHeroSection' }> => s._type === 'productHeroSection');
@@ -28,7 +30,7 @@ if (!heroSection) {
 
 const featuresSection = page.sections.find((s): s is Extract<Section, { _type: 'featuresSection' }> => s._type === 'featuresSection');
 
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
 
 const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Custom Website Design — Hitels';
 const seoDescription =
@@ -37,8 +39,8 @@ const seoDescription =
   'We design and build award-winning hotel websites from scratch. No templates — just bespoke, data-driven design engineered to bypass OTAs and capture direct bookings.';
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 
-// Service schema — see booking-engine.astro for why `offers` links out to
-// /pricing/ instead of embedding a numeric price directly.
+// Service schema — see booking-engine's page component for why `offers`
+// links out to /pricing/ instead of embedding a numeric price directly.
 const serviceSchema = {
   '@context': 'https://schema.org',
   '@type': 'Service',
@@ -50,13 +52,19 @@ const serviceSchema = {
   offers: { '@type': 'Offer', url: new URL('/pricing/', Astro.site).toString() },
 };
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-	{ name: 'Home', url: new URL('/', Astro.site).toString() },
-	{ name: 'Custom Website', url: new URL(Astro.url.pathname, Astro.site).toString() },
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.customWebsite, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/custom-hotels-website' },
+  { lang: 'is', href: '/is/custom-hotels-website' },
+];
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />

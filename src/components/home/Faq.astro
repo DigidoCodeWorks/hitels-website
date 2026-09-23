@@ -2,12 +2,14 @@
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import { faqsQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
 
 // No "Plus"/collapsed-state icon asset exists in the source — only "Minus".
 // The plus is synthesized from two overlaid copies of minus.svg: one fixed
 // horizontal bar, one that rotates 90deg <-> 0deg to form/collapse the
 // vertical stroke of the "+".
-const faqs = await sanityClient.fetch(faqsQuery);
+const t = getStrings(Astro.currentLocale);
+const faqs = await sanityClient.fetch(faqsQuery, { language: Astro.currentLocale ?? 'en' });
 const FAQS = faqs.map((f) => ({ q: f.question, a: f.answer }));
 
 const faqSchema = {
@@ -29,7 +31,7 @@ const faqSchema = {
 <section class="flex flex-col items-center px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
   <div class="flex gap-8 items-start justify-center max-lg:flex-col w-full">
     <div data-reveal class="flex flex-col items-start w-[498px] max-lg:w-full">
-      <h2 class="font-heading text-h3 text-navy w-full">Frequently asked questions</h2>
+      <h2 class="font-heading text-h3 text-navy w-full">{t.sections.faqHeading}</h2>
     </div>
     <div data-reveal style="--reveal-delay: 120ms" class="flex flex-1 flex-col gap-8 items-start min-w-0 w-full" data-faq-list>
       {FAQS.map((faq, i) => (

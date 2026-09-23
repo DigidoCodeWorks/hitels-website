@@ -1,49 +1,86 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
-import type { StructureResolver } from 'sanity/structure'
+import type { StructureBuilder, StructureResolver } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './src/sanity/schemaTypes'
+
+// Every localized collection (English/Icelandic documents distinguished by
+// a `language` field, sharing slugs/titles-in-different-languages) gets the
+// same "one sub-list per language" treatment, instead of one flat list that
+// makes same-titled documents hard to tell apart at a glance — first built
+// for `page` during the i18n pilot, now shared here as more types localize.
+// Add a new sub-list item here whenever a new locale is added sitewide.
+function localizedList(S: StructureBuilder, typeName: string, title: string) {
+  return S.listItem()
+    .id(typeName)
+    .title(title)
+    .child(
+      S.list()
+        .title(title)
+        .items([
+          S.listItem()
+            .id(`${typeName}-en`)
+            .title('English')
+            .child(S.documentTypeList(typeName).title(`English ${title}`).filter(`_type == "${typeName}" && language == "en"`)),
+          S.listItem()
+            .id(`${typeName}-is`)
+            .title('Icelandic')
+            .child(S.documentTypeList(typeName).title(`Icelandic ${title}`).filter(`_type == "${typeName}" && language == "is"`)),
+        ])
+    )
+}
+
+// Every locked singleton (fixed _id, exactly one document per language —
+// see e.g. src/sanity/schemaTypes/pricingPlans.ts) gets an English/Icelandic
+// pair of direct document shortcuts, rather than a filtered list, since a
+// singleton's `documentId` is already known and fixed. `enId`/`isId` are
+// the two documents' fixed ids (the Icelandic one is conventionally the
+// English one + "-is", but pricingPlans/siteSettings/footerSettings/addOns
+// all predate that convention, so it's passed explicitly rather than
+// derived).
+function pinnedSingletonPair(S: StructureBuilder, typeName: string, title: string, enId: string, isId: string) {
+  return S.listItem()
+    .id(typeName)
+    .title(title)
+    .child(
+      S.list()
+        .title(title)
+        .items([
+          S.listItem().id(`${typeName}-en`).title('English').child(S.document().schemaType(typeName).documentId(enId)),
+          S.listItem().id(`${typeName}-is`).title('Icelandic').child(S.document().schemaType(typeName).documentId(isId)),
+        ])
+    )
+}
+
+const LOCALIZED_LIST_TYPES = ['page', 'post', 'faq', 'testimonial', 'story']
 
 // Pins direct shortcuts to the true singletons (fixed _id, created by
 // scripts/seed-site-settings.mjs) so editors open them straight away instead
 // of a generic list — then falls back to the normal document-type list for
 // everything else.
 //
-// "Pages" is its own list item (not part of the generic document-type
-// fallback below, which excludes 'page' entirely) so every page-builder
-// `page` document — Home, Custom Website, and any future conversion — is
-// reachable from one place. No separate pinned shortcut for Home: unlike
-// pricingPlans/siteSettings, "page" isn't a singleton — it's a growing
-// collection Home just happens to be the first member of — so a dedicated
-// Home shortcut sitting next to a "Pages" list that already shows Home one
-// click away was pure redundancy, not a real navigation win.
+// "Pages"/"Blog Posts"/"FAQ"/"Testimonials"/"Customer Stories" are their own
+// list items (not part of the generic document-type fallback below, which
+// excludes all of LOCALIZED_LIST_TYPES) so every document of these types —
+// across both languages — is reachable from one place, via localizedList()
+// above.
 const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
     .items([
-      S.listItem()
-        .id('pages')
-        .title('Pages')
-        .child(S.documentTypeList('page').title('Pages')),
-      S.listItem()
-        .id('pricingPlans')
-        .title('Pricing Plans')
-        .child(S.document().schemaType('pricingPlans').documentId('pricingPlans')),
-      S.listItem()
-        .id('addOns')
-        .title('Add-Ons')
-        .child(S.document().schemaType('addOns').documentId('addOns')),
-      S.listItem()
-        .id('siteSettings')
-        .title('Site Settings')
-        .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
-      S.listItem()
-        .id('footerSettings')
-        .title('Footer Settings')
-        .child(S.document().schemaType('footerSettings').documentId('footerSettings')),
+      localizedList(S, 'page', 'Pages'),
+      localizedList(S, 'post', 'Blog Posts'),
+      localizedList(S, 'faq', 'FAQ'),
+      localizedList(S, 'testimonial', 'Testimonials'),
+      localizedList(S, 'story', 'Customer Stories'),
+      pinnedSingletonPair(S, 'pricingPlans', 'Pricing Plans', 'pricingPlans', 'pricingPlans-is'),
+      pinnedSingletonPair(S, 'addOns', 'Add-Ons', 'addOns', 'addOns-is'),
+      pinnedSingletonPair(S, 'siteSettings', 'Site Settings', 'siteSettings', 'siteSettings-is'),
+      pinnedSingletonPair(S, 'footerSettings', 'Footer Settings', 'footerSettings', 'footerSettings-is'),
+      pinnedSingletonPair(S, 'storiesClosingCard', 'Stories: Closing Card', 'storiesClosingCard-default', 'storiesClosingCard-default-is'),
       S.divider(),
       ...S.documentTypeListItems().filter(
-        (item) => !['page', 'pricingPlans', 'addOns', 'siteSettings', 'footerSettings'].includes(item.getId() ?? '')
+        (item) => ![...LOCALIZED_LIST_TYPES, 'pricingPlans', 'addOns', 'siteSettings', 'footerSettings', 'storiesClosingCard'].includes(item.getId() ?? '')
       ),
     ])
 

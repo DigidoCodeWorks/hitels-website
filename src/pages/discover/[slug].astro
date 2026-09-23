@@ -1,0 +1,10 @@
+---
+import BlogPostPage from '../../components/blog-detail/BlogPostPage.astro';
+import { fetchPostSlugParams } from '../../sanity/postSlugs';
+
+export async function getStaticPaths() {
+  return fetchPostSlugParams('en');
+}
+---
+
+<BlogPostPage />

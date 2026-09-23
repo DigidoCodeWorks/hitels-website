@@ -18,10 +18,10 @@ export const GET: APIRoute = ({ site }) => {
 
 - [Home](${url('/')}): Overview of the custom website and booking engine offering, customer results, add-ons, and pricing.
 - [About Us](${url('/about-us')}): Who Hitels is and its mission to help hoteliers reclaim direct revenue, online presence, and guest relationships.
-- [Custom Website](${url('/custom-website')}): Bespoke, SEO-driven hotel website design built from scratch — no templates.
+- [Custom Website](${url('/custom-hotels-website')}): Bespoke, SEO-driven hotel website design built from scratch — no templates.
 - [Booking Engine](${url('/booking-engine')}): A booking engine built to maximize direct revenue with a seamless, branded checkout flow.
 - [Pricing](${url('/pricing')}): Pricing plans for the custom website, booking engine, and combined packages.
-- [Blog](${url('/blog')}): Guides, news, and insights on direct bookings, hotel websites, and revenue growth.
+- [Blog](${url('/discover')}): Guides, news, and insights on direct bookings, hotel websites, and revenue growth.
 - [Contact Us](${url('/contact-us')}): Get in touch with the Hitels team.
 `;
 

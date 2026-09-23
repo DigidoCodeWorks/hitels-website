@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getStrings, type Locale } from '../../i18n/strings';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -45,7 +46,8 @@ function Field({
   );
 }
 
-export default function PricingSignupModal() {
+export default function PricingSignupModal({ lang = 'en' }: { lang?: Locale }) {
+  const t = getStrings(lang).pricingSignupModal;
   const [open, setOpen] = useState(false);
   const [plan, setPlan] = useState('');
   const [name, setName] = useState('');
@@ -133,8 +135,8 @@ export default function PricingSignupModal() {
       >
         {status === 'success' ? (
           <div className="flex flex-col gap-2 items-center text-center w-full py-8">
-            <p className="font-heading text-h5 text-navy w-full">Thanks for reaching out</p>
-            <p className="font-body font-normal text-body-md text-gray w-full">We'll get back to you shortly.</p>
+            <p className="font-heading text-h5 text-navy w-full">{t.successHeading}</p>
+            <p className="font-body font-normal text-body-md text-gray w-full">{t.successBody}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-6 items-start w-full">
@@ -149,13 +151,13 @@ export default function PricingSignupModal() {
               className="sr-only"
             />
 
-            <Field id="name" label="Name" placeholder="Full name" required value={name} onChange={setName} />
-            <Field id="hotelName" label="Hotel name" placeholder="Hotel name" value={hotelName} onChange={setHotelName} />
-            <Field id="email" label="Email" type="email" placeholder="jon@hotel.is" required value={email} onChange={setEmail} />
+            <Field id="name" label={t.nameLabel} placeholder={t.namePlaceholder} required value={name} onChange={setName} />
+            <Field id="hotelName" label={t.hotelNameLabel} placeholder={t.hotelNamePlaceholder} value={hotelName} onChange={setHotelName} />
+            <Field id="email" label={t.emailLabel} type="email" placeholder={t.emailPlaceholder} required value={email} onChange={setEmail} />
 
             <div className="flex flex-col gap-2 items-start w-full">
               <label htmlFor="plan" className="font-body font-medium text-body-sm text-navy">
-                Plan
+                {t.planLabel}
               </label>
               <input
                 id="plan"
@@ -169,7 +171,7 @@ export default function PricingSignupModal() {
 
             {status === 'error' && (
               <p className="font-body font-normal text-body-sm text-red-600 w-full">
-                Something went wrong sending your submission. Please try again or email us directly.
+                {t.error}
               </p>
             )}
 
@@ -179,7 +181,7 @@ export default function PricingSignupModal() {
               className="bg-yellow text-navy hover:bg-brand hover:text-background flex items-center justify-center rounded-lg border-2 border-transparent transition-colors duration-300 px-5 py-3 w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
             >
               <span className="font-body font-medium text-body-md whitespace-nowrap">
-                {status === 'submitting' ? 'Submitting…' : 'Submit'}
+                {status === 'submitting' ? t.submitting : t.submit}
               </span>
             </button>
           </form>

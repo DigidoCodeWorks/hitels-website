@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/not-found/Hero.astro';
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/404' },
+  { lang: 'is', href: '/is/404' },
+];
+---
+
+<BaseLayout
+	title="Síða fannst ekki — Hitels"
+	description="Síðan sem þú leitar að er ekki til eða hefur verið flutt."
+	lang="is"
+	hreflangAlternates={hreflangAlternates}
+	noindex
+>
+	<main>
+		<Hero message="Síðan sem þú leitar að er ekki til eða hefur verið flutt." buttonLabel="Til baka á forsíðu" />
+	</main>
+</BaseLayout>

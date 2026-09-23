@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import PolicyContent from './PolicyContent.astro';
+import Footer from '../shared/Footer.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+
+// Shared by both src/pages/cookie-policy.astro (English) and
+// src/pages/is/cookie-policy.astro (Icelandic) — same extraction pattern
+// as src/components/home/HomePage.astro. Not Sanity-driven (same as
+// before) — Icelandic copy is passed in as props from the "is" page file,
+// DRAFT TRANSLATION needing native-speaker (and, for legal text
+// specifically, legal) review before promotion past staging.
+interface Policy {
+	title: string;
+	intro?: string;
+	description?: string;
+	list?: string[];
+}
+
+interface Props {
+	title?: string;
+	lastUpdated?: string;
+	description?: string;
+	intro?: string;
+	policies?: Policy[];
+	contactHeading?: string;
+	contactIntro?: string;
+	breadcrumbHome?: string;
+	breadcrumbSelf?: string;
+}
+
+const {
+	title,
+	lastUpdated,
+	description = "Learn how Hitels uses cookies and similar tracking technologies when you visit our website.",
+	intro,
+	policies,
+	contactHeading,
+	contactIntro,
+	breadcrumbHome = 'Home',
+	breadcrumbSelf = 'Cookie Policy',
+} = Astro.props;
+
+const language = Astro.currentLocale ?? 'en';
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: breadcrumbHome, url: new URL(language === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: breadcrumbSelf, url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/cookie-policy' },
+  { lang: 'is', href: '/is/cookie-policy' },
+];
+---
+
+<BaseLayout
+	title={`${title ?? 'Cookie Policy'} — Hitels`}
+	description={description}
+	lang={language}
+	hreflangAlternates={hreflangAlternates}
+>
+	<Fragment slot="head">
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Hero title={title} lastUpdated={lastUpdated} />
+	</header>
+	<main>
+		<PolicyContent intro={intro} policies={policies} contactHeading={contactHeading} contactIntro={contactIntro} />
+	</main>
+	<Footer />
+</BaseLayout>

@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { linkField } from '../fields'
+import { languageField, linkField } from '../fields'
 
 // Site-wide singleton: every piece of Footer.astro's content that was
 // previously hardcoded (CTA banner, contact column, Product/Company link
@@ -39,6 +39,7 @@ export default defineType({
   // public TS surface.
   __experimental_actions: ['update', 'publish'],
   fields: [
+    languageField(),
     defineField({
       name: 'ctaHeadline',
       title: 'CTA headline',

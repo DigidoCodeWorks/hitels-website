@@ -1,0 +1,111 @@
+---
+import { sanityClient } from 'sanity:client';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import PartnerLogos from './PartnerLogos.astro';
+import ProductOfferings from './ProductOfferings.astro';
+import Testimonial from './Testimonial.astro';
+import Stories from './Stories.astro';
+import Benefits from './Benefits.astro';
+import Pricing from '../shared/Pricing.astro';
+import AddOns from './AddOns.astro';
+import Faq from './Faq.astro';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+
+// Shared by both src/pages/index.astro (English, "/") and
+// src/pages/is/index.astro (Icelandic, "/is/") — Astro's file-based i18n
+// routing requires a real page file per locale, but both just render this
+// component, which reads Astro.currentLocale to fetch the right "page"
+// document. Benefits, Pricing, PartnerLogos, and Footer stay fixed,
+// non-page-builder sections here (not editable per-page-instance through
+// the page builder) — but each still localizes its own copy via
+// src/i18n/strings.ts (Pricing/Footer) or getStrings() directly
+// (Benefits/PartnerLogos), same as any other UI-chrome text.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'home', language });
+
+if (!page) {
+  throw new Error(
+    `Missing "page" document with slug "home" and language "${language}" in Sanity — run scripts/seed-home-page${language === 'is' ? '-is' : ''}.mjs.`
+  );
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'heroSection' }> => s._type === 'heroSection');
+if (!heroSection) {
+  throw new Error('Home page document has no heroSection — Hero requires one.');
+}
+
+// Site Settings singleton provides the SEO fallback when this page's own
+// `seo` object (Studio-editable per-document override) doesn't set a field.
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Hitels — Turn website visitors into direct bookings';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  'We build award-winning, bespoke hotel websites and seamless booking engines. No templates, no DIY builders — just a premium digital presence done for you from start to finish.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+// Hardcoded, not built from astro:i18n's getRelativeLocaleUrl() — importing
+// that virtual module here, even just for this, made Vite/Rollup merge
+// Sanity Studio's own CSS chunk into this page's bundle (reproduced with a
+// local production build: removing this one import made the leaked
+// /_astro/studio-component.*.css <link> disappear from both "/" and "/is/").
+// With only these two hardcoded locale paths to maintain, hand-writing them
+// is a small, safe price for avoiding that build-tool side effect.
+const hreflangAlternates = [
+  { lang: 'en', href: '/' },
+  { lang: 'is', href: '/is/' },
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+	<header>
+		<Hero
+			headline={heroSection.headline}
+			subheadingDesktop={heroSection.subheadingDesktop}
+			subheadingMobile={heroSection.subheadingMobile}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+		/>
+	</header>
+	<main>
+		<PartnerLogos />
+		{page.sections.map((section) => {
+			switch (section._type) {
+				case 'productOfferingsSection':
+					return <ProductOfferings offerings={section.offerings} />;
+				case 'testimonialsSection':
+					return <Testimonial />;
+				case 'customerStoriesSection':
+					return <Stories cards={section.cards} />;
+				default:
+					return null;
+			}
+		})}
+		{/* Benefits/Pricing are fixed, not page-builder content (see the top-of-file
+		    note), but they sit in the *middle* of the original section order — between
+		    Stories and AddOns/Faq — so the dynamic loop is split around them rather
+		    than dumping both fixed sections after every dynamic one. */}
+		<Benefits />
+		<Pricing />
+		{page.sections.map((section) => {
+			switch (section._type) {
+				case 'addOnsSection':
+					return <AddOns />;
+				case 'faqSection':
+					return <Faq />;
+				default:
+					return null;
+			}
+		})}
+	</main>
+	<Footer />
+</BaseLayout>

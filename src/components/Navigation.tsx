@@ -1,14 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { asset } from '../lib/cdn';
-
-const LINKS = [
-  { label: 'Booking engine', href: '/booking-engine', badge: 'New' },
-  { label: 'Custom website', href: '/custom-website' },
-  { label: 'Pricing', href: '/pricing' },
-  { label: 'About us', href: '/about-us' },
-  { label: 'Resources', href: '/blog' },
-  { label: 'Contact us', href: '/contact-us' },
-];
+import { getStrings, type Locale } from '../i18n/strings';
 
 // Local mirror of shared/Button.astro's prop shape (styles kept in sync by
 // hand) -- kept separate since Astro components can't be imported into a
@@ -92,9 +84,13 @@ function CtaPill({
 // directly on the plain page background (bg-background) instead of a hero.
 type NavigationProps = {
   variant?: 'dark' | 'light';
+  lang?: Locale;
 };
 
-export default function Navigation({ variant = 'dark' }: NavigationProps) {
+export default function Navigation({ variant = 'dark', lang = 'en' }: NavigationProps) {
+  const t = getStrings(lang);
+  const homeHref = lang === 'is' ? '/is/' : '/';
+  const contactHref = lang === 'is' ? '/is/contact-us' : '/contact-us';
   const [isOpen, setIsOpen] = useState(false);
   const [navHeight, setNavHeight] = useState(0);
   // Tracks whether the page has been scrolled past its hero section (marked with
@@ -152,13 +148,13 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
         className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${isLight ? 'bg-background/70' : 'bg-transparent'} backdrop-blur-[18px] w-full ${isOpen ? 'max-lg:invisible' : ''}`}
       >
         <div className="flex items-center justify-between px-4 lg:px-[100px] py-4 max-w-[1440px] mx-auto">
-          <a href="/" className="block h-6 w-[88px]">
+          <a href={homeHref} className="block h-6 w-[88px]">
             <img src={asset(isLight ? 'images/home/nav/mobile-menu-logo-dark.svg' : 'images/home/hero/hitels-logo.svg')} alt="Hitels" className="h-full w-full" />
           </a>
 
           <div className="flex gap-6 items-center">
             <div className="hidden lg:flex gap-6 items-center">
-              {LINKS.map((link) => (
+              {t.nav.links.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
@@ -174,8 +170,8 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
             </div>
             {/* Book a demo stays visible on tablet (only true mobile, <768px, drops it) — confirmed against the Tablet Home frame, which keeps this button next to the hamburger */}
             <CtaPill
-              href="/contact-us"
-              label="Book a demo"
+              href={contactHref}
+              label={t.nav.bookADemo}
               icon={IconCalendarNav}
               variant={isLight ? 'dark' : 'secondary'}
               padding="pl-3 pr-4 py-2"
@@ -189,7 +185,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
               className="lg:hidden block relative shrink-0 size-8"
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
-              aria-label="Open menu"
+              aria-label={t.nav.openMenu}
               onClick={() => setIsOpen(true)}
             >
               <img src={asset(isLight ? 'images/home/nav/mobile-nav-hamburger-navy.svg' : 'images/home/nav/mobile-nav-hamburger.svg')} alt="" className="size-full" />
@@ -205,7 +201,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
         }`}
       >
         <div className="backdrop-blur-[18px] flex items-center justify-between p-4 absolute top-0 left-0 w-full">
-          <a href="/" className="block h-6 w-[88px]">
+          <a href={homeHref} className="block h-6 w-[88px]">
             <img src={asset('images/home/nav/mobile-menu-logo-dark.svg')} alt="Hitels" loading="lazy" className="h-full w-full" />
           </a>
           <button
@@ -213,7 +209,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
             className="relative shrink-0 size-8"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
-            aria-label="Close menu"
+            aria-label={t.nav.closeMenu}
             onClick={() => setIsOpen(false)}
           >
             <img src={asset('images/home/nav/mobile-menu-close.svg')} alt="" loading="lazy" className="size-full" />
@@ -222,7 +218,7 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
 
         <div className="flex flex-col justify-between h-full pt-[104px] px-4 pb-4">
           <div className="flex flex-col gap-5 items-start w-full">
-            {LINKS.map((link) => (
+            {t.nav.links.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
@@ -245,8 +241,8 @@ export default function Navigation({ variant = 'dark' }: NavigationProps) {
               <p>+354 5478001</p>
             </div>
             <CtaPill
-              href="/contact-us"
-              label="Book a demo"
+              href={contactHref}
+              label={t.nav.bookADemo}
               icon={IconCalendarCta}
               variant="primary"
               padding="px-4 py-3"

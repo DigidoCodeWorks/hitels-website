@@ -1,0 +1,70 @@
+---
+import PrivacyPolicyPage from '../../components/privacy-policy/PrivacyPolicyPage.astro';
+// DRAFT TRANSLATION: machine-drafted by Claude, not reviewed by a native
+// Icelandic speaker or legal counsel yet — flagged for review before this
+// goes past staging, same as every other batch of this rollout, but with
+// extra weight here given this is legal/compliance text.
+const POLICIES = [
+  {
+    title: 'Upplýsingar sem við söfnum',
+    intro: 'Við söfnum ýmsum tegundum upplýsinga þegar þú notar Hitels, meðal annars:',
+    list: [
+      'Persónuupplýsingar: svo sem nafn, netfang, símanúmer og greiðsluupplýsingar.',
+      'Notkunarupplýsingar: svo sem IP-tölu, upplýsingar um tæki, tegund vafra og stýrikerfi.',
+      'Vefkökur: Hitels notar vefkökur til að bæta vafraupplifun þína og birta sérsniðið efni og auglýsingar.',
+      'Atburðaskrár: við kunnum að safna atburðaskrám sem innihalda upplýsingar um samskipti þín við vefsíðu okkar, svo sem heimsóttar síður, tíma sem varið er á hverri síðu og tilvísunaraðila.',
+    ],
+  },
+  {
+    title: 'Hvernig við notum upplýsingar þínar',
+    intro: 'Við notum upplýsingarnar sem safnað er í ýmsum tilgangi, meðal annars til að:',
+    list: [
+      'Veita og bæta þjónustu okkar: til að birta sérsniðið efni, greina notkunarþróun og hámarka vefsíðuna.',
+      'Eiga samskipti við þig: til að svara fyrirspurnum, veita þjónustuaðstoð og senda mikilvægar uppfærslur og tilkynningar.',
+      'Markaðssetning og auglýsingar: til að birta markvissar auglýsingar, kynningar og fréttabréf byggð á áhugasviðum þínum og óskum.',
+      'Lagalegt samræmi: til að fara að gildandi lögum, reglugerðum og lagalegum ferlum.',
+    ],
+  },
+  {
+    title: 'Deiling og miðlun upplýsinga',
+    intro: 'Við kunnum að deila upplýsingum þínum með þriðju aðilum við eftirfarandi aðstæður:',
+    list: [
+      'Með samþykki þínu: þegar þú samþykkir sérstaklega deilingu upplýsinga þinna.',
+      'Þjónustuveitendur: við kunnum að fá þriðju aðila þjónustuveitendur til að aðstoða við starfsemi okkar og þjónustu.',
+      'Lagalegar kröfur: þegar lög krefjast þess eða til að vernda réttindi okkar, eignir eða öryggi, kunnum við að miðla upplýsingum þínum til yfirvalda eða annarra aðila.',
+    ],
+  },
+  {
+    title: 'Varðveisla gagna',
+    description:
+      'Við varðveitum upplýsingar þínar eins lengi og nauðsynlegt er til að uppfylla tilgang þessarar persónuverndarstefnu eða eins og lög krefjast.',
+  },
+  {
+    title: 'Réttindi þín og valkostir',
+    description:
+      'Þú hefur rétt til að nálgast, uppfæra og eyða persónuupplýsingum þínum. Þú getur einnig afþakkað markaðssamskipti og stjórnað vefkökustillingum þínum í gegnum stillingar vafrans.',
+  },
+  {
+    title: 'Öryggi',
+    description:
+      'Við beitum öryggisráðstöfunum til að vernda upplýsingar þínar gegn óheimilum aðgangi, breytingum, miðlun eða eyðingu. Hins vegar er engin aðferð við sendingu gagna um internetið eða rafræna geymslu 100% örugg og við getum ekki tryggt fullkomið öryggi.',
+  },
+  {
+    title: 'Breytingar á þessari persónuverndarstefnu',
+    description:
+      'Við kunnum að uppfæra þessa persónuverndarstefnu af og til og allar breytingar verða birtar á þessari síðu. Við hvetjum þig til að skoða þessa persónuverndarstefnu reglulega til að fylgjast með uppfærslum.',
+  },
+];
+---
+
+<PrivacyPolicyPage
+  title="Persónuverndarstefna"
+  lastUpdated="Síðast uppfært 15. apríl 2024"
+  description="Kynntu þér hvernig Hitels safnar, notar og verndar persónuupplýsingar þínar á vefsíðu okkar og í þjónustu."
+  intro="Hjá Hitels tökum við persónuvernd þína alvarlega og leggjum okkur fram um að vernda persónuupplýsingar þínar. Þessi persónuverndarstefna útskýrir hvernig við söfnum, notum og miðlum upplýsingum þínum þegar þú notar vefsíðu okkar og þjónustu. Með því að nálgast eða nota Hitels samþykkir þú skilmálana sem fram koma í þessari persónuverndarstefnu."
+  policies={POLICIES}
+  contactHeading="Hafðu samband"
+  contactIntro="Ef þú hefur spurningar eða áhyggjur varðandi þessa persónuverndarstefnu eða notkun okkar á vefkökum, vinsamlegast hafðu samband við okkur á"
+  breadcrumbHome="Heim"
+  breadcrumbSelf="Persónuverndarstefna"
+/>

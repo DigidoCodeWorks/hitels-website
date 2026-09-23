@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { seoField } from '../fields'
+import { languageField, languageScopedSlugIsUnique, seoField } from '../fields'
 
 // A real collection (not Home-special-cased) so other pages can reuse this
 // same page-builder system in later passes. Home's instance is identified by
@@ -11,7 +11,17 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({ name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required() }),
-    defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title' }, validation: (rule) => rule.required() }),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'title',
+        isUnique: languageScopedSlugIsUnique('page'),
+      },
+      validation: (rule) => rule.required(),
+    }),
+    languageField(),
     defineField({
       name: 'sections',
       title: 'Sections',
@@ -37,7 +47,10 @@ export default defineType({
     seoField(),
   ],
   preview: {
-    select: { title: 'title', slug: 'slug.current' },
-    prepare: ({ title, slug }) => ({ title, subtitle: slug ? `/${slug}` : undefined }),
+    select: { title: 'title', slug: 'slug.current', language: 'language' },
+    prepare: ({ title, slug, language }) => ({
+      title,
+      subtitle: slug ? `/${slug}${language ? ` · ${language}` : ''}` : undefined,
+    }),
   },
 })

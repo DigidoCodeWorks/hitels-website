@@ -23,7 +23,7 @@ const customWebsitePage = {
   _id: 'customWebsitePage',
   _type: 'page',
   title: 'Custom Website',
-  slug: { current: 'custom-website' },
+  slug: { current: 'custom-hotels-website' },
   sections: [
     {
       _key: 'hero',

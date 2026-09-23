@@ -3,6 +3,10 @@ import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import Button from './Button.astro';
 import { footerSettingsQuery, siteSettingsQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
+
+const t = getStrings(Astro.currentLocale);
+
 // Footer link columns ("Product" / "Company") are the same on every
 // breakpoint. The Figma mobile spec originally had a different, larger set
 // of links here (an extra "Resources" column, several placeholder "#"
@@ -13,12 +17,13 @@ import { footerSettingsQuery, siteSettingsQuery } from '../../sanity/queries';
 // comes from the footerSettings singleton — see its schema for what's
 // deliberately excluded (logo, "by Revera" credit, decorative video/blob,
 // Cookie Settings/Privacy Policy links) and why.
-const footer = await sanityClient.fetch(footerSettingsQuery);
+const language = Astro.currentLocale ?? 'en';
+const footer = await sanityClient.fetch(footerSettingsQuery, { language });
 if (!footer) {
-  throw new Error('Missing "footerSettings" document in Sanity — run scripts/seed-footer-settings.mjs.');
+  throw new Error(`Missing "footerSettings" document (language "${language}") in Sanity — run scripts/seed-footer-settings.mjs.`);
 }
 
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
 ---
 
 <footer class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center overflow-hidden pt-[416px] max-lg:pt-60 max-md:pt-40 pb-12 px-[100px] max-lg:px-10 max-md:px-4 relative w-full bg-navy">
@@ -72,7 +77,7 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery);
       <div class="flex flex-col gap-0.5 items-end w-[111px]">
         <img src={asset('images/home/footer/hitels-logo.svg')} alt={siteSettings?.organizationName ?? 'Hitels'} loading="lazy" class="w-full aspect-[113/30.91]" />
         <div class="flex gap-1 items-center">
-          <span class="font-body text-background text-[0.53125rem]">by</span>
+          <span class="font-body text-background text-[0.53125rem]">{t.footer.by}</span>
           <img src={asset('images/home/footer/by-revera.svg')} alt="Revera" loading="lazy" class="h-[7.8px]" />
         </div>
       </div>
@@ -97,7 +102,7 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery);
              was the outdated Figma mobile spec; simplified to match desktop). -->
         <div class="flex flex-1 gap-8 items-start md:items-end">
           <div class="flex flex-1 flex-col gap-4 items-start text-background">
-            <p class="font-body font-medium text-body-md w-full">Product</p>
+            <p class="font-body font-medium text-body-md w-full">{t.footer.product}</p>
             <div class="flex flex-col gap-3 items-start font-body font-normal text-body-md w-full">
               {footer.productLinks.map((link) => (
                 <a href={link.href} class="w-full hover:underline">{link.label}</a>
@@ -105,7 +110,7 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery);
             </div>
           </div>
           <div class="flex flex-1 flex-col gap-4 items-start text-background">
-            <p class="font-body font-medium text-body-md w-full">Company</p>
+            <p class="font-body font-medium text-body-md w-full">{t.footer.company}</p>
             <div class="flex flex-col gap-3 items-start font-body font-normal text-body-md w-full">
               {footer.companyLinks.map((link) => (
                 <a href={link.href} class="w-full hover:underline">{link.label}</a>
@@ -135,34 +140,9 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery);
       </div>
       <div class="flex items-center justify-between max-lg:flex-wrap gap-4 font-body font-normal text-body-md text-background w-[604px] max-lg:w-full whitespace-nowrap">
         <p>{footer.copyrightText}</p>
-        <a href="/cookie-policy" class="hover:underline">Cookie Settings</a>
-        <a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
+        <a href={t.footer.cookieSettingsHref} class="hover:underline">{t.footer.cookieSettingsLabel}</a>
+        <a href={t.footer.privacyPolicyHref} class="hover:underline">{t.footer.privacyPolicyLabel}</a>
       </div>
     </div>
   </div>
 </footer>
-
-<script>
-  // Sitewide scroll reveal: fades/rises any [data-reveal] element into place
-  // the first time it enters the viewport, then stops watching it (a one-time
-  // entrance, not a repeating scroll effect). Lives here because Footer is
-  // the one component every page includes, so this only needs to exist once.
-  const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
-
-  if (revealEls.length && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
-    );
-    revealEls.forEach((el) => observer.observe(el));
-  } else {
-    revealEls.forEach((el) => el.classList.add('is-revealed'));
-  }
-</script>

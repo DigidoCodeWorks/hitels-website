@@ -2,18 +2,20 @@
 import { sanityClient } from 'sanity:client';
 import { asset } from '../../lib/cdn';
 import { addOnsQuery } from '../../sanity/queries';
+import { getStrings } from '../../i18n/strings';
 
 // Self-fetches the shared "Add-Ons" singleton (src/sanity/schemaTypes/
 // addOns.ts) rather than a hardcoded array — same content Home's
 // AddOns.astro renders in its own (mobile) layout.
-const addOnsDoc = await sanityClient.fetch(addOnsQuery);
+const t = getStrings(Astro.currentLocale);
+const addOnsDoc = await sanityClient.fetch(addOnsQuery, { language: Astro.currentLocale ?? 'en' });
 const ADDONS = addOnsDoc?.addons ?? [];
 ---
 
 <section class="max-md:hidden flex flex-col gap-12 items-center px-[100px] max-lg:px-10 py-16 max-lg:py-14 relative w-full max-w-[1440px] mx-auto bg-background">
   <div data-reveal class="flex flex-col gap-4 items-center text-center w-[792px] max-w-full">
-    <h2 class="font-heading text-h3 text-navy w-full">Optional add-ons</h2>
-    <p class="font-body font-normal text-body-md text-gray w-full">Extend your services with these optional add-ons.</p>
+    <h2 class="font-heading text-h3 text-navy w-full">{t.sections.addOnsHeading}</h2>
+    <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.addOnsBody}</p>
   </div>
 
   <div class="flex gap-8 items-stretch max-lg:flex-col w-full">
@@ -31,7 +33,7 @@ const ADDONS = addOnsDoc?.addons ?? [];
           </div>
           <div class="flex gap-1 items-end w-full">
             <p class="font-heading text-[1.75rem] leading-[1.4] tracking-[-0.025em] text-navy whitespace-nowrap">{addon.price}</p>
-            <p class="font-body font-normal text-body-md text-gray">/ month</p>
+            <p class="font-body font-normal text-body-md text-gray">{t.sections.addOnsPerMonth}</p>
           </div>
           <div class="flex flex-col gap-4 items-start w-full">
             {(addon.features ?? []).map((feature) => (

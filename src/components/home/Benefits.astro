@@ -1,22 +1,21 @@
 ---
 import { asset } from '../../lib/cdn';
+import { getStrings } from '../../i18n/strings';
+
+const t = getStrings(Astro.currentLocale);
 ---
 
 <section class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
   <div data-reveal class="flex flex-col gap-4 items-center text-center w-[792px] max-w-full">
-    <h2 class="font-heading text-h3 text-navy w-full">You run the hotel, we run the website</h2>
-    <p class="font-body font-normal text-body-md text-gray w-full">
-      You are a hospitality expert, not a web developer. Stop wasting hours wrestling with broken integrations or restrictive templates. We handle the design, the tech, and the optimization—giving you peace of mind and more time to focus on your guests.
-    </p>
+    <h2 class="font-heading text-h3 text-navy w-full">{t.sections.benefitsHeading}</h2>
+    <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsBody}</p>
   </div>
 
   <div class="flex gap-8 items-stretch max-md:flex-col w-full">
     <div data-reveal class="bg-light-gray flex flex-1 flex-col gap-6 items-start p-8 rounded-2xl overflow-hidden">
       <div class="flex flex-col gap-4 items-start w-full">
-        <h3 class="font-heading text-h5 text-navy w-full">UX &amp; Design Driven</h3>
-        <p class="font-body font-normal text-body-md text-gray w-full">
-          First impressions matter. We design visually stunning websites that reflect the unique atmosphere of your hotel.
-        </p>
+        <h3 class="font-heading text-h5 text-navy w-full">{t.sections.benefitsUxTitle}</h3>
+        <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsUxBody}</p>
       </div>
       <div class="h-[251px] w-full relative rounded-xl overflow-hidden">
         <img src={asset('images/home/benefits/laptop-mockup.webp')} alt="Custom hotel website shown on a laptop" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
@@ -25,22 +24,20 @@ import { asset } from '../../lib/cdn';
 
     <div data-reveal style="--reveal-delay: 120ms" class="bg-light-gray flex flex-1 flex-col gap-6 items-start justify-center p-8 rounded-2xl overflow-hidden">
       <div class="flex flex-col gap-4 items-start w-full">
-        <h3 class="font-heading text-h5 text-navy w-full">Advanced SEO Optimization</h3>
-        <p class="font-body font-normal text-body-md text-gray w-full">
-          We build your site from the ground up with advanced technical SEO, ensuring your hotel stands out.
-        </p>
+        <h3 class="font-heading text-h5 text-navy w-full">{t.sections.benefitsSeoTitle}</h3>
+        <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsSeoBody}</p>
       </div>
       <div class="h-[251px] w-full relative" data-chart-reveal>
         <div class="absolute top-0 left-0 flex flex-col gap-0.5 items-start text-navy">
-          <p class="font-body font-normal text-body-sm w-full">Total clicks</p>
+          <p class="font-body font-normal text-body-sm w-full">{t.sections.benefitsTotalClicks}</p>
           <p class="chart-count font-heading text-h6 w-full" data-target="5.5" data-suffix="K">0K</p>
         </div>
         <div class="absolute top-0 left-[119px] flex flex-col gap-0.5 items-start text-navy">
-          <p class="font-body font-normal text-body-sm w-full">Impressions</p>
+          <p class="font-body font-normal text-body-sm w-full">{t.sections.benefitsImpressions}</p>
           <p class="chart-count font-heading text-h6 w-full" data-target="120" data-suffix="K">0K</p>
         </div>
         <div class="absolute top-0 right-0 flex flex-col gap-0.5 items-start text-navy">
-          <p class="font-body font-normal text-body-sm w-full">Avg. CTR</p>
+          <p class="font-body font-normal text-body-sm w-full">{t.sections.benefitsAvgCtr}</p>
           <p class="chart-count font-heading text-h6 w-full" data-target="7.5" data-suffix="%">0%</p>
         </div>
         <img src={asset('images/home/benefits/chart-grid.svg')} alt="" loading="lazy" class="absolute left-0 top-[77px] h-[132px] w-full" />
@@ -71,10 +68,8 @@ import { asset } from '../../lib/cdn';
 
     <div data-reveal style="--reveal-delay: 240ms" class="bg-light-gray flex flex-1 flex-col gap-6 items-start justify-center p-8 rounded-2xl overflow-hidden">
       <div class="flex flex-col gap-4 items-start w-full">
-        <h3 class="font-heading text-h5 text-navy w-full">Data-Driven Performance</h3>
-        <p class="font-body font-normal text-body-md text-gray w-full">
-          Your site is meticulously crafted to guide visitors smoothly toward making a direct reservation.
-        </p>
+        <h3 class="font-heading text-h5 text-navy w-full">{t.sections.benefitsDataTitle}</h3>
+        <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsDataBody}</p>
       </div>
       <div class="h-[251px] w-full relative overflow-hidden" aria-hidden="true" data-cursor-parallax>
         <div class="parallax-item absolute h-[270px] w-[353px] -left-8 -top-[29px]" data-depth="0.05">
