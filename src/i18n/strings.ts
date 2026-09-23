@@ -116,6 +116,25 @@ interface Strings {
     pricingDetailsLabel: string;
     comparisonFeatureHeader: string;
     comparisonIncludedAlt: string;
+    partnerLogosTrusted: string;
+    partnerLogosBadgeAlt: string;
+    productOfferingsHeading: string;
+    productOfferingsBody: string;
+    benefitsHeading: string;
+    benefitsBody: string;
+    benefitsUxTitle: string;
+    benefitsUxBody: string;
+    benefitsSeoTitle: string;
+    benefitsSeoBody: string;
+    benefitsTotalClicks: string;
+    benefitsImpressions: string;
+    benefitsAvgCtr: string;
+    benefitsDataTitle: string;
+    benefitsDataBody: string;
+    whatIsHitelsBookingRecap: string;
+    whatIsHitelsDirectBookings: string;
+    whatIsHitelsBookingPlatform: string;
+    whatIsHitelsBookingsUnit: string;
   };
 }
 
@@ -216,6 +235,26 @@ export const strings: Record<Locale, Strings> = {
       pricingDetailsLabel: 'View pricing details',
       comparisonFeatureHeader: 'Feature',
       comparisonIncludedAlt: 'Included',
+      partnerLogosTrusted: 'Trusted by 19 partners and counting',
+      partnerLogosBadgeAlt: 'Framer Partner',
+      productOfferingsHeading: 'Everything you need to scale direct revenue',
+      productOfferingsBody: "We don't just give you the tools; we build the engine for you.",
+      benefitsHeading: 'You run the hotel, we run the website',
+      benefitsBody:
+        'You are a hospitality expert, not a web developer. Stop wasting hours wrestling with broken integrations or restrictive templates. We handle the design, the tech, and the optimization—giving you peace of mind and more time to focus on your guests.',
+      benefitsUxTitle: 'UX & Design Driven',
+      benefitsUxBody: 'First impressions matter. We design visually stunning websites that reflect the unique atmosphere of your hotel.',
+      benefitsSeoTitle: 'Advanced SEO Optimization',
+      benefitsSeoBody: 'We build your site from the ground up with advanced technical SEO, ensuring your hotel stands out.',
+      benefitsTotalClicks: 'Total clicks',
+      benefitsImpressions: 'Impressions',
+      benefitsAvgCtr: 'Avg. CTR',
+      benefitsDataTitle: 'Data-Driven Performance',
+      benefitsDataBody: 'Your site is meticulously crafted to guide visitors smoothly toward making a direct reservation.',
+      whatIsHitelsBookingRecap: 'Booking Recap',
+      whatIsHitelsDirectBookings: 'Direct bookings',
+      whatIsHitelsBookingPlatform: 'Booking platform',
+      whatIsHitelsBookingsUnit: 'bookings',
     },
   },
   is: {
@@ -314,6 +353,26 @@ export const strings: Record<Locale, Strings> = {
       pricingDetailsLabel: 'Skoða verðskrá',
       comparisonFeatureHeader: 'Eiginleiki',
       comparisonIncludedAlt: 'Innifalið',
+      partnerLogosTrusted: '19 samstarfsaðilar treysta okkur, og þeim fjölgar',
+      partnerLogosBadgeAlt: 'Framer samstarfsaðili',
+      productOfferingsHeading: 'Allt sem þú þarft til að auka beinar tekjur',
+      productOfferingsBody: 'Við gefum þér ekki bara verkfærin — við byggjum vélina fyrir þig.',
+      benefitsHeading: 'Þú rekur hótelið, við rekum vefinn',
+      benefitsBody:
+        'Þú ert sérfræðingur í gistiþjónustu, ekki vefforritari. Hættu að eyða tímum í baráttu við bilaðar samtengingar eða takmarkandi sniðmát. Við sjáum um hönnunina, tæknina og hagræðinguna — sem gefur þér hugarró og meiri tíma til að einbeita þér að gestum þínum.',
+      benefitsUxTitle: 'Notendaupplifun og hönnun í fyrirrúmi',
+      benefitsUxBody: 'Fyrstu kynni skipta máli. Við hönnum sjónrænt glæsilegar vefsíður sem endurspegla einstaka stemningu hótelsins þíns.',
+      benefitsSeoTitle: 'Fullkomin SEO-hagræðing',
+      benefitsSeoBody: 'Við byggjum vefinn þinn frá grunni með háþróaðri tæknilegri leitarvélabestun, svo hótelið þitt skeri sig úr.',
+      benefitsTotalClicks: 'Heildarsmellir',
+      benefitsImpressions: 'Birtingar',
+      benefitsAvgCtr: 'Meðal CTR',
+      benefitsDataTitle: 'Gagnadrifin frammistaða',
+      benefitsDataBody: 'Vefurinn þinn er nákvæmlega hannaður til að leiða gesti mjúklega í átt að beinni bókun.',
+      whatIsHitelsBookingRecap: 'Bókunaryfirlit',
+      whatIsHitelsDirectBookings: 'Beinar bókanir',
+      whatIsHitelsBookingPlatform: 'Bókunarvettvangur',
+      whatIsHitelsBookingsUnit: 'bókanir',
     },
   },
 };
