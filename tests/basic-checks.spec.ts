@@ -7,12 +7,12 @@ import { test, expect, type Page } from '@playwright/test';
 const PAGES = [
   '/',
   '/about-us',
-  '/custom-website',
+  '/custom-hotels-website',
   '/booking-engine',
   '/pricing',
   '/contact-us',
-  '/blog',
-  '/blog/godo-hitels-partnership',
+  '/discover',
+  '/discover/godo-hitels-partnership',
   '/cookie-policy',
   '/privacy-policy',
 ];

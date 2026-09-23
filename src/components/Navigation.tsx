@@ -3,10 +3,10 @@ import { asset } from '../lib/cdn';
 
 const LINKS = [
   { label: 'Booking engine', href: '/booking-engine', badge: 'New' },
-  { label: 'Custom website', href: '/custom-website' },
+  { label: 'Custom website', href: '/custom-hotels-website' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'About us', href: '/about-us' },
-  { label: 'Resources', href: '/blog' },
+  { label: 'Resources', href: '/discover' },
   { label: 'Contact us', href: '/contact-us' },
 ];
 

@@ -47,7 +47,7 @@ const homePage = {
           headline: 'Award-winning design. Zero templates.',
           body: 'We design and build blazing-fast, visually stunning websites tailored perfectly to your brand. Built with advanced SEO to rank higher and flawless UX to keep guests on your site instead of bouncing to an aggregator.',
           ctaLabel: 'Explore Custom Websites',
-          ctaHref: '/custom-website',
+          ctaHref: '/custom-hotels-website',
           desktopImageUrl: r2('images/home/product-offerings/custom-website-collage.webp'),
           mobileImageUrl: r2('images/home/product-offerings/mobile-custom-website-photo.webp'),
         },
