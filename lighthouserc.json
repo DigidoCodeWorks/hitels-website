@@ -6,11 +6,11 @@
       "startServerReadyTimeout": 30000,
       "url": [
         "http://localhost:4321/",
-        "http://localhost:4321/custom-website",
+        "http://localhost:4321/custom-hotels-website",
         "http://localhost:4321/booking-engine",
         "http://localhost:4321/pricing",
         "http://localhost:4321/about-us",
-        "http://localhost:4321/blog/godo-hitels-partnership"
+        "http://localhost:4321/discover/godo-hitels-partnership"
       ],
       "numberOfRuns": 3
     },
