@@ -19,7 +19,7 @@ const { showHeading = true, showDetailsLink = true } = Astro.props;
 // Site-wide singleton (see src/sanity/schemaTypes/pricingPlans.ts) — the same
 // 3 cards shown on every page that renders this component, edited in one
 // place in Studio instead of duplicated per page.
-const pricingPlans = await sanityClient.fetch(pricingPlansQuery);
+const pricingPlans = await sanityClient.fetch(pricingPlansQuery, { language: Astro.currentLocale ?? 'en' });
 
 if (!pricingPlans) {
   throw new Error('Missing "pricingPlans" document in Sanity — run scripts/seed-home-page.mjs.');

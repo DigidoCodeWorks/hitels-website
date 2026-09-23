@@ -6,7 +6,7 @@ import { addOnsQuery } from '../../sanity/queries';
 // Self-fetches the shared "Add-Ons" singleton (src/sanity/schemaTypes/
 // addOns.ts) rather than a hardcoded array — same content Home's
 // AddOns.astro renders in its own (mobile) layout.
-const addOnsDoc = await sanityClient.fetch(addOnsQuery);
+const addOnsDoc = await sanityClient.fetch(addOnsQuery, { language: Astro.currentLocale ?? 'en' });
 const ADDONS = addOnsDoc?.addons ?? [];
 ---
 

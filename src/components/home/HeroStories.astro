@@ -15,8 +15,9 @@ import { storiesQuery, storiesClosingCardQuery } from '../../sanity/queries';
 // A final, non-CMS "closing" slide (storiesClosingCard singleton) always
 // plays last as a bumper.
 
-const stories = await sanityClient.fetch(storiesQuery);
-const closingCard = await sanityClient.fetch(storiesClosingCardQuery);
+const language = Astro.currentLocale ?? 'en';
+const stories = await sanityClient.fetch(storiesQuery, { language });
+const closingCard = await sanityClient.fetch(storiesClosingCardQuery, { language });
 
 // Bare CSV domains (e.g. "aurorafarmhotel.is") have no scheme; internal paths
 // ("/contact-us", "#") are left as-is.

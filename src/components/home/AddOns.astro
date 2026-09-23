@@ -10,7 +10,7 @@ import { addOnsQuery } from '../../sanity/queries';
 // Self-fetches the shared "Add-Ons" singleton (src/sanity/schemaTypes/
 // addOns.ts) rather than taking it as a prop from the page-builder — same
 // content Pricing's AddOns.astro renders in its own (desktop) layout.
-const addOnsDoc = await sanityClient.fetch(addOnsQuery);
+const addOnsDoc = await sanityClient.fetch(addOnsQuery, { language: Astro.currentLocale ?? 'en' });
 const addons = addOnsDoc?.addons ?? [];
 ---
 
