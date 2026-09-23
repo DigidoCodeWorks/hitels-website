@@ -285,6 +285,7 @@ export type AddOns = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  language: "en" | "is";
   addons: Array<{
     title: string;
     description: string;
@@ -313,6 +314,7 @@ export type FooterSettings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  language: "en" | "is";
   ctaHeadline: string;
   ctaBody: string;
   primaryButtonLabel: string;
@@ -348,6 +350,7 @@ export type SiteSettings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  language: "en" | "is";
   siteName: string;
   defaultSeoTitle: string;
   defaultSeoDescription: string;
@@ -362,6 +365,7 @@ export type PricingPlans = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  language: "en" | "is";
   plans: Array<{
     title: string;
     description: string;
@@ -700,7 +704,7 @@ export type PostBySlugQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: pricingPlansQuery
-// Query: *[_type == "pricingPlans"][0]{ plans }
+// Query: *[_type == "pricingPlans" && language == $language][0]{ plans }
 export type PricingPlansQueryResult = {
   plans: Array<{
     title: string;
@@ -876,7 +880,7 @@ export type PageBySlugQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: siteSettingsQuery
-// Query: *[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }
+// Query: *[_type == "siteSettings" && language == $language][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }
 export type SiteSettingsQueryResult = {
   siteName: string;
   defaultSeoTitle: string;
@@ -888,7 +892,7 @@ export type SiteSettingsQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: addOnsQuery
-// Query: *[_type == "addOns"][0]{ addons }
+// Query: *[_type == "addOns" && language == $language][0]{ addons }
 export type AddOnsQueryResult = {
   addons: Array<{
     title: string;
@@ -903,7 +907,7 @@ export type AddOnsQueryResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: footerSettingsQuery
-// Query: *[_type == "footerSettings"][0]{  ctaHeadline, ctaBody,  primaryButtonLabel, primaryButtonHref,  secondaryButtonLabel, secondaryButtonHref,  contactHeadline,  phoneLabel, phoneHref,  mailingListLabel, mailingListHref,  productLinks[]{ label, href },  companyLinks[]{ label, href },  instagramHref, facebookHref, linkedinHref,  copyrightText}
+// Query: *[_type == "footerSettings" && language == $language][0]{  ctaHeadline, ctaBody,  primaryButtonLabel, primaryButtonHref,  secondaryButtonLabel, secondaryButtonHref,  contactHeadline,  phoneLabel, phoneHref,  mailingListLabel, mailingListHref,  productLinks[]{ label, href },  companyLinks[]{ label, href },  instagramHref, facebookHref, linkedinHref,  copyrightText}
 export type FooterSettingsQueryResult = {
   ctaHeadline: string;
   ctaBody: string;
@@ -941,10 +945,10 @@ declare module "@sanity/client" {
     '*[_type == "post" && defined(slug.current)] | order(publishedAt desc){\n    title,\n    "slug": slug.current,\n    category,\n    imageUrl,\n    imageAlt\n  }': PostsQueryResult;
     '*[_type == "post" && defined(slug.current)]{ "slug": slug.current }': PostSlugsQueryResult;
     '*[_type == "post" && slug.current == $slug][0]{\n  title,\n  imageUrl,\n  imageAlt,\n  publishedAt,\n  _updatedAt,\n  category,\n  externalLink,\n  shortDescription,\n  body,\n  metaTitle,\n  metaDescription,\n  relatedPosts[]->{\n    title,\n    "slug": slug.current,\n    imageUrl,\n    imageAlt\n  }\n}': PostBySlugQueryResult;
-    '*[_type == "pricingPlans"][0]{ plans }': PricingPlansQueryResult;
+    '*[_type == "pricingPlans" && language == $language][0]{ plans }': PricingPlansQueryResult;
     '\n  *[_type == "page" && slug.current == $slug && language == $language][0]{\n    sections[]{\n      _key,\n      _type,\n      _type == "heroSection" => {\n        headline, subheadingDesktop, subheadingMobile,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref\n      },\n      _type == "productHeroSection" => {\n        headline, subheading,\n        primaryButtonLabel, primaryButtonHref,\n        secondaryButtonLabel, secondaryButtonHref,\n        imageUrl, imageAlt\n      },\n      _type == "simpleHeroSection" => { headline, subheading },\n      _type == "productOfferingsSection" => { offerings },\n      _type == "customerStoriesSection" => { cards },\n      _type == "featuresSection" => { features },\n      _type == "statsIntroSection" => { headline, body, stats },\n      _type == "teamSection" => { headline, body, members },\n      _type == "beliefsSection" => { headline, beliefs },\n      _type == "whatIsHitelsSection" => { headline, body, features },\n      _type == "comparisonTableSection" => { plans, rows }\n    },\n    seo\n  }\n': PageBySlugQueryResult;
-    '*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
-    '*[_type == "addOns"][0]{ addons }': AddOnsQueryResult;
-    '*[_type == "footerSettings"][0]{\n  ctaHeadline, ctaBody,\n  primaryButtonLabel, primaryButtonHref,\n  secondaryButtonLabel, secondaryButtonHref,\n  contactHeadline,\n  phoneLabel, phoneHref,\n  mailingListLabel, mailingListHref,\n  productLinks[]{ label, href },\n  companyLinks[]{ label, href },\n  instagramHref, facebookHref, linkedinHref,\n  copyrightText\n}': FooterSettingsQueryResult;
+    '*[_type == "siteSettings" && language == $language][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }': SiteSettingsQueryResult;
+    '*[_type == "addOns" && language == $language][0]{ addons }': AddOnsQueryResult;
+    '*[_type == "footerSettings" && language == $language][0]{\n  ctaHeadline, ctaBody,\n  primaryButtonLabel, primaryButtonHref,\n  secondaryButtonLabel, secondaryButtonHref,\n  contactHeadline,\n  phoneLabel, phoneHref,\n  mailingListLabel, mailingListHref,\n  productLinks[]{ label, href },\n  companyLinks[]{ label, href },\n  instagramHref, facebookHref, linkedinHref,\n  copyrightText\n}': FooterSettingsQueryResult;
   }
 }

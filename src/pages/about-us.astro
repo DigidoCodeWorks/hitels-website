@@ -35,7 +35,7 @@ const teamSection = page.sections.find((s): s is Extract<Section, { _type: 'team
 const beliefsSection = page.sections.find((s): s is Extract<Section, { _type: 'beliefsSection' }> => s._type === 'beliefsSection');
 const whatIsHitelsSection = page.sections.find((s): s is Extract<Section, { _type: 'whatIsHitelsSection' }> => s._type === 'whatIsHitelsSection');
 
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language: Astro.currentLocale ?? 'en' });
 
 const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'About Us — Hitels';
 const seoDescription =

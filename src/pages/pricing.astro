@@ -32,7 +32,7 @@ if (!heroSection) {
 
 const comparisonSection = page.sections.find((s): s is Extract<Section, { _type: 'comparisonTableSection' }> => s._type === 'comparisonTableSection');
 
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language: Astro.currentLocale ?? 'en' });
 
 const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Pricing — Hitels';
 const seoDescription =
@@ -49,7 +49,7 @@ const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 // numeric Offer.price — safer than risking invalid/wrong structured data if
 // that formatting ever changes (a flat monthly fee and a booking-percentage
 // fee can't both be represented as a single valid schema.org price anyway).
-const pricingPlans = await sanityClient.fetch(pricingPlansQuery);
+const pricingPlans = await sanityClient.fetch(pricingPlansQuery, { language: Astro.currentLocale ?? 'en' });
 const productSchemas = (pricingPlans?.plans ?? []).map((plan) => ({
 	'@context': 'https://schema.org',
 	'@type': 'Product',

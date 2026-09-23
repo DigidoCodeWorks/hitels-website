@@ -28,7 +28,7 @@ interface Props {
 // working unchanged; a page opts into the site default by passing its own
 // resolved `page.seo?.title ?? siteSettings.defaultSeoTitle`, not by this
 // layout reaching for it implicitly.
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language: Astro.currentLocale ?? 'en' });
 
 const {
   title,

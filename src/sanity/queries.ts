@@ -61,7 +61,7 @@ export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current ==
   }
 }`)
 
-export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans"][0]{ plans }`)
+export const pricingPlansQuery = defineQuery(`*[_type == "pricingPlans" && language == $language][0]{ plans }`)
 
 // Generic — fetches any `page` document by its slug, with every page-builder
 // section type's projection. One query for every page-builder page (Home,
@@ -102,17 +102,17 @@ export const pageBySlugQuery = defineQuery(`
 // page resolving its own SEO fields against the site defaults, so this is
 // the one shared projection both call sites narrow down to what they need.
 export const siteSettingsQuery = defineQuery(
-  `*[_type == "siteSettings"][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }`
+  `*[_type == "siteSettings" && language == $language][0]{ siteName, defaultSeoTitle, defaultSeoDescription, defaultOgImage, organizationName, organizationLogoUrl }`
 )
 
 // Shared "Add-ons" singleton (src/sanity/schemaTypes/addOns.ts) — fetched
 // independently by both Home's and Pricing's AddOns.astro (different
 // layouts, same content), same pattern as siteSettingsQuery.
-export const addOnsQuery = defineQuery(`*[_type == "addOns"][0]{ addons }`)
+export const addOnsQuery = defineQuery(`*[_type == "addOns" && language == $language][0]{ addons }`)
 
 // Site-wide singleton (src/sanity/schemaTypes/footerSettings.ts) — fetched
 // by Footer.astro, the one component every page includes.
-export const footerSettingsQuery = defineQuery(`*[_type == "footerSettings"][0]{
+export const footerSettingsQuery = defineQuery(`*[_type == "footerSettings" && language == $language][0]{
   ctaHeadline, ctaBody,
   primaryButtonLabel, primaryButtonHref,
   secondaryButtonLabel, secondaryButtonHref,

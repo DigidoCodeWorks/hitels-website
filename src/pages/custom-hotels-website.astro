@@ -28,7 +28,7 @@ if (!heroSection) {
 
 const featuresSection = page.sections.find((s): s is Extract<Section, { _type: 'featuresSection' }> => s._type === 'featuresSection');
 
-const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language: Astro.currentLocale ?? 'en' });
 
 const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Custom Website Design — Hitels';
 const seoDescription =
