@@ -6,7 +6,14 @@ interface Policy {
 	list?: string[];
 }
 
-const POLICIES: Policy[] = [
+interface Props {
+	intro?: string;
+	policies?: Policy[];
+	contactHeading?: string;
+	contactIntro?: string;
+}
+
+const DEFAULT_POLICIES: Policy[] = [
 	{
 		title: 'What are Cookies?',
 		description: 'Cookies are small text files that are stored on your device (computer, smartphone, or tablet) when you visit a website. They help enhance your browsing experience by remembering your preferences, analyzing website performance, and delivering personalized content and advertisements.',
@@ -40,17 +47,22 @@ const POLICIES: Policy[] = [
 		description: 'We may update this Cookie Policy from time to time, and any changes will be posted on this page. We encourage you to review this Cookie Policy periodically for any updates.',
 	},
 ];
+
+const {
+	intro = 'This Cookie Policy explains how Hitels uses cookies and similar tracking technologies when you visit our website. By accessing or using Hitels, you consent to the use of cookies in accordance with this Cookie Policy.',
+	policies = DEFAULT_POLICIES,
+	contactHeading = 'Contact Us',
+	contactIntro = 'If you have any questions or concerns about this Cookie Policy or our use of cookies, please contact us at',
+} = Astro.props;
 ---
 
 <section class="flex flex-col items-start px-[312px] max-lg:px-10 max-md:px-4 pt-20 max-lg:pt-14 max-md:pt-10 relative w-full max-w-[1440px] mx-auto">
 	<div class="flex flex-col gap-12 items-start w-full">
 		<p data-reveal class="font-body font-normal text-body-md text-gray w-full">
-			This Cookie Policy explains how Hitels uses cookies and similar tracking technologies when you visit our
-			website. By accessing or using Hitels, you consent to the use of cookies in accordance with this Cookie
-			Policy.
+			{intro}
 		</p>
 
-		{POLICIES.map((policy) => (
+		{policies.map((policy) => (
 			<div class="flex flex-col gap-4 items-start w-full">
 				<h2 class="font-heading text-h5 text-navy w-full">{policy.title}</h2>
 				{policy.list ? (
@@ -69,9 +81,9 @@ const POLICIES: Policy[] = [
 		))}
 
 		<div class="flex flex-col gap-4 items-start w-full">
-			<h2 class="font-heading text-h5 text-navy w-full">Contact Us</h2>
+			<h2 class="font-heading text-h5 text-navy w-full">{contactHeading}</h2>
 			<p class="font-body font-normal text-body-md text-gray w-full">
-				If you have any questions or concerns about this Cookie Policy or our use of cookies, please contact us at{' '}
+				{contactIntro}{' '}
 				<a href="mailto:birgir@revera.is" class="text-brand hover:underline">birgir@revera.is</a>
 			</p>
 		</div>

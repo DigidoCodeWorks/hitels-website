@@ -2,6 +2,13 @@
 import Navigation from '../Navigation';
 import Button from '../shared/Button.astro';
 import { asset } from '../../lib/cdn';
+
+interface Props {
+  message?: string;
+  buttonLabel?: string;
+}
+
+const { message = 'The page you are looking for doesn’t exist or has been moved.', buttonLabel = 'Back to homepage' } = Astro.props;
 ---
 
 <div data-hero class="flex flex-col items-center justify-center min-h-screen overflow-hidden relative w-full bg-gradient-to-b from-[#3d2c99] via-[#654aff] via-50% to-background">
@@ -20,10 +27,10 @@ import { asset } from '../../lib/cdn';
   <div class="flex flex-col gap-8 items-center px-4 relative text-center w-[604px] max-w-full">
     <div data-reveal class="flex flex-col gap-4 items-center text-background w-full">
       <p class="font-heading font-medium text-[144px] max-lg:text-[104px] max-md:text-[72px] leading-[1.1] tracking-[-0.025em] w-full">404</p>
-      <p class="font-body font-normal text-body-lg w-full">The page you are looking for doesn&rsquo;t exist or has been moved.</p>
+      <p class="font-body font-normal text-body-lg w-full">{message}</p>
     </div>
     <div data-reveal style="--reveal-delay: 150ms">
-      <Button href="/" label="Back to homepage" variant="primary" padding="px-5 py-3" />
+      <Button href={Astro.currentLocale === 'is' ? '/is/' : '/'} label={buttonLabel} variant="primary" padding="px-5 py-3" />
     </div>
   </div>
 </div>

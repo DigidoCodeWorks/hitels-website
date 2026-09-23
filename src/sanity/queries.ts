@@ -26,7 +26,7 @@ export const testimonialsQuery = defineQuery(
 )
 
 export const postsQuery = defineQuery(
-  `*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+  `*[_type == "post" && defined(slug.current) && language == $language] | order(publishedAt desc){
     title,
     "slug": slug.current,
     category,
@@ -35,13 +35,13 @@ export const postsQuery = defineQuery(
   }`
 )
 
-export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`)
+export const postSlugsQuery = defineQuery(`*[_type == "post" && defined(slug.current) && language == $language]{ "slug": slug.current }`)
 
 // Explicit projection (not a bare whole-document fetch) so typegen's
 // --enforce-required-fields narrows title/slug/body etc. to non-null —
 // a raw `[0]` with no {...} keeps everything optional regardless of that
 // flag, since it falls back to the generic "any post document" shape.
-export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug][0]{
+export const postBySlugQuery = defineQuery(`*[_type == "post" && slug.current == $slug && language == $language][0]{
   title,
   imageUrl,
   imageAlt,

@@ -1,0 +1,99 @@
+---
+import { sanityClient } from 'sanity:client';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import Pricing from '../shared/Pricing.astro';
+import AddOns from './AddOns.astro';
+import ComparisonTable from './ComparisonTable.astro';
+import Footer from '../shared/Footer.astro';
+import { pageBySlugQuery, pricingPlansQuery, siteSettingsQuery } from '../../sanity/queries';
+import type { PageBySlugQueryResult } from '../../../sanity.types';
+import { breadcrumbSchema } from '../../lib/schema';
+
+// Shared by both src/pages/pricing.astro (English) and
+// src/pages/is/pricing.astro (Icelandic) — same extraction pattern as
+// src/components/home/HomePage.astro.
+type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
+
+const language = Astro.currentLocale ?? 'en';
+
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'pricing', language });
+
+if (!page) {
+  throw new Error(`Missing "page" document with slug "pricing" and language "${language}" in Sanity — run scripts/seed-pricing-page.mjs.`);
+}
+
+const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'simpleHeroSection' }> => s._type === 'simpleHeroSection');
+if (!heroSection) {
+  throw new Error('Pricing page document has no simpleHeroSection — Hero requires one.');
+}
+
+const comparisonSection = page.sections.find((s): s is Extract<Section, { _type: 'comparisonTableSection' }> => s._type === 'comparisonTableSection');
+
+const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'Pricing — Hitels';
+const seoDescription =
+  page.seo?.description ??
+  siteSettings?.defaultSeoDescription ??
+  "Explore Hitels' flexible pricing plans, designed for hotels of all sizes. Boost direct bookings and online presence with our scalable solutions. Choose your perfect plan today.";
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+
+// Product schema for each plan card — nothing on the site previously
+// described what's actually being sold in structured data. pricingPlans'
+// `price`/`priceSuffix` fields are free-text display strings (e.g. "1,8%",
+// "/ direct booking"), not machine-parseable numbers, so they're carried as
+// Offer.priceSpecification.description rather than forced into a strict
+// numeric Offer.price — safer than risking invalid/wrong structured data if
+// that formatting ever changes (a flat monthly fee and a booking-percentage
+// fee can't both be represented as a single valid schema.org price anyway).
+const pricingPlans = await sanityClient.fetch(pricingPlansQuery, { language });
+const productSchemas = (pricingPlans?.plans ?? []).map((plan) => ({
+	'@context': 'https://schema.org',
+	'@type': 'Product',
+	name: plan.title,
+	description: plan.description,
+	brand: { '@type': 'Organization', name: siteSettings?.organizationName ?? 'Hitels' },
+	offers: {
+		'@type': 'Offer',
+		url: new URL('/pricing/', Astro.site).toString(),
+		priceSpecification: {
+			'@type': 'UnitPriceSpecification',
+			description: [plan.price, plan.priceSuffix].filter(Boolean).join(' '),
+		},
+	},
+}));
+
+const breadcrumbs = breadcrumbSchema([
+	{ name: 'Home', url: new URL('/', Astro.site).toString() },
+	{ name: 'Pricing', url: new URL(Astro.url.pathname, Astro.site).toString() },
+]);
+
+const hreflangAlternates = [
+  { lang: 'en', href: '/pricing' },
+  { lang: 'is', href: '/is/pricing' },
+];
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+	<Fragment slot="head">
+		{productSchemas.map((schema) => (
+			<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+		))}
+		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
+	</Fragment>
+	<header>
+		<Hero headline={heroSection.headline} subheading={heroSection.subheading} />
+	</header>
+	<main>
+		<Pricing showHeading={false} showDetailsLink={false} />
+		<AddOns />
+		{comparisonSection && (
+			<ComparisonTable
+				plans={comparisonSection.plans}
+				rows={comparisonSection.rows.map((row) => ({ label: row.label, isGroupHeader: row.isGroupHeader, values: row.values }))}
+			/>
+		)}
+	</main>
+	<Footer />
+</BaseLayout>
