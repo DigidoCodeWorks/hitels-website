@@ -15,7 +15,7 @@ import { breadcrumbSchema } from '../lib/schema';
 // pages, not specific to this one.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-hotels-website' });
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-hotels-website', language: Astro.currentLocale ?? 'en' });
 
 if (!page) {
   throw new Error('Missing "page" document with slug "custom-hotels-website" in Sanity — run scripts/seed-custom-website-page.mjs.');

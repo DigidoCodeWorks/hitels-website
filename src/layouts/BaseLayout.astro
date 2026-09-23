@@ -18,6 +18,8 @@ interface Props {
   ogImage?: string;
   ogType?: 'website' | 'article';
   noindex?: boolean;
+  lang?: string;
+  hreflangAlternates?: { lang: string; href: string }[];
 }
 
 // Site-wide singleton (see src/sanity/schemaTypes/siteSettings.ts) — sources
@@ -34,6 +36,8 @@ const {
   ogImage = siteSettings?.defaultOgImage ?? asset('images/home/hero/mockup-desktop.webp'),
   ogType = 'website',
   noindex = false,
+  lang = 'en',
+  hreflangAlternates,
 } = Astro.props;
 
 const siteName = siteSettings?.siteName ?? 'Hitels';
@@ -49,7 +53,7 @@ const organizationSchema = {
 };
 ---
 
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
@@ -61,6 +65,10 @@ const organizationSchema = {
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
+		{hreflangAlternates?.map(({ lang: altLang, href }) => (
+			<link rel="alternate" hreflang={altLang} href={new URL(href, Astro.site)} />
+		))}
+		{hreflangAlternates && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
 
 		<meta property="og:type" content={ogType} />
 		<meta property="og:site_name" content={siteName} />

@@ -24,6 +24,7 @@ const homePage = {
   _type: 'page',
   title: 'Home',
   slug: { current: 'home' },
+  language: 'en',
   sections: [
     {
       _key: 'hero',

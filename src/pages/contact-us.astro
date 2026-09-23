@@ -14,7 +14,7 @@ import { breadcrumbSchema } from '../lib/schema';
 // stays fixed, same reasoning as every other converted page.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'contact-us' });
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'contact-us', language: Astro.currentLocale ?? 'en' });
 
 if (!page) {
   throw new Error('Missing "page" document with slug "contact-us" in Sanity — run scripts/seed-contact-us-page.mjs.');

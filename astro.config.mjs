@@ -20,6 +20,16 @@ const SITE_URL = env.PUBLIC_SITE_URL || 'https://simple-website-16a.pages.dev';
 export default defineConfig({
   site: SITE_URL,
 
+  // English stays unprefixed at "/" (prefixDefaultLocale: false); Icelandic
+  // lives under "/is/". Astro.currentLocale resolves from the route path at
+  // build time for every component in the render tree — no middleware or
+  // manual detection needed, since this is a fully static build.
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'is'],
+    routing: { prefixDefaultLocale: false },
+  },
+
   integrations: [
     react(),
     sanity({
@@ -35,6 +45,10 @@ export default defineConfig({
     }),
     sitemap({
       filter: (page) => !page.includes('/studio'),
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', is: 'is' },
+      },
     }),
   ],
 
