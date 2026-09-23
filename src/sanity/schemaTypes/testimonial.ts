@@ -1,11 +1,12 @@
 import { defineField, defineType } from 'sanity'
-import { imageUrlField, altTextField } from '../fields'
+import { imageUrlField, altTextField, languageField } from '../fields'
 
 export default defineType({
   name: 'testimonial',
   title: 'Testimonial',
   type: 'document',
   fields: [
+    languageField(),
     defineField({
       name: 'name',
       title: 'Name',

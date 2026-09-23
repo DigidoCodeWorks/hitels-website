@@ -5,7 +5,7 @@ import { testimonialsQuery } from '../../sanity/queries';
 import IconCarouselArrowLeft from '../icons/IconCarouselArrowLeft.astro';
 import IconCarouselArrowRight from '../icons/IconCarouselArrowRight.astro';
 
-const rows = await sanityClient.fetch(testimonialsQuery);
+const rows = await sanityClient.fetch(testimonialsQuery, { language: Astro.currentLocale ?? 'en' });
 
 const testimonials = rows.map((t) => ({
   photo: t.imageUrl ?? asset('images/home/testimonial/photo.webp'),
