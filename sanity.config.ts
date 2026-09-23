@@ -17,6 +17,12 @@ import { schemaTypes } from './src/sanity/schemaTypes'
 // collection Home just happens to be the first member of — so a dedicated
 // Home shortcut sitting next to a "Pages" list that already shows Home one
 // click away was pure redundancy, not a real navigation win.
+//
+// "Pages" splits into one sub-list per language (rather than one flat list
+// of every `page` doc) now that the i18n pilot means English and Icelandic
+// documents share the same slugs and titles-in-different-languages — a flat
+// list made them hard to tell apart at a glance beyond the preview
+// subtitle. Add a new entry here whenever a new locale is added.
 const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
@@ -24,7 +30,20 @@ const structure: StructureResolver = (S) =>
       S.listItem()
         .id('pages')
         .title('Pages')
-        .child(S.documentTypeList('page').title('Pages')),
+        .child(
+          S.list()
+            .title('Pages')
+            .items([
+              S.listItem()
+                .id('pages-en')
+                .title('English')
+                .child(S.documentTypeList('page').title('English Pages').filter('_type == "page" && language == "en"')),
+              S.listItem()
+                .id('pages-is')
+                .title('Icelandic')
+                .child(S.documentTypeList('page').title('Icelandic Pages').filter('_type == "page" && language == "is"')),
+            ])
+        ),
       S.listItem()
         .id('pricingPlans')
         .title('Pricing Plans')
