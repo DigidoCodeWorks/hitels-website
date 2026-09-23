@@ -4,10 +4,12 @@ import Navigation from '../components/Navigation';
 import PostGrid from '../components/blog/PostGrid.astro';
 import Footer from '../components/shared/Footer.astro';
 import { breadcrumbSchema } from '../lib/schema';
+import { getStrings } from '../i18n/strings';
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-	{ name: 'Home', url: new URL('/', Astro.site).toString() },
-	{ name: 'Blog', url: new URL(Astro.url.pathname, Astro.site).toString() },
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.blog, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 ---
 
@@ -19,7 +21,7 @@ const breadcrumbs = breadcrumbSchema([
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
-		<Navigation client:load variant="light" />
+		<Navigation client:load variant="light" lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
 	</header>
 	<main>
 		<PostGrid />

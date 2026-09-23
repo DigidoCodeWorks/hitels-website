@@ -95,7 +95,7 @@ const CARDS = pricingPlans.plans;
   {showDetailsLink && <ArrowLink href="/pricing" label="View pricing details" />}
 </section>
 
-<PricingSignupModal client:load />
+<PricingSignupModal client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
 
 <script>
   // Card CTAs (see the buttons above) no longer navigate via ctaHref — they

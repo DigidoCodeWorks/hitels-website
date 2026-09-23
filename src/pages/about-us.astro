@@ -11,6 +11,7 @@ import Footer from '../components/shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
 import type { PageBySlugQueryResult } from '../../sanity.types';
 import { breadcrumbSchema } from '../lib/schema';
+import { getStrings } from '../i18n/strings';
 
 // Fifth page converted to the Sanity page-builder pattern. Reuses
 // productHeroSection (this page's Hero has the same headline/subheading/
@@ -44,9 +45,10 @@ const seoDescription =
   'Hitels is a specialized digital agency and software provider on a mission to help hoteliers take back control of their revenue, their online presence, and their guest relationships.';
 const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-	{ name: 'Home', url: new URL('/', Astro.site).toString() },
-	{ name: 'About Us', url: new URL(Astro.url.pathname, Astro.site).toString() },
+	{ name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+	{ name: t.breadcrumbs.aboutUs, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 ---
 

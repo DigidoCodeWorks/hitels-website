@@ -63,7 +63,7 @@ const {
     </div>
   </div>
 
-  <Navigation client:load />
+  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
 
   <HeroStories />
 

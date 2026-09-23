@@ -8,6 +8,7 @@ import RelatedPosts from '../../components/blog-detail/RelatedPosts.astro';
 import Footer from '../../components/shared/Footer.astro';
 import { postSlugsQuery, postBySlugQuery } from '../../sanity/queries';
 import { breadcrumbSchema } from '../../lib/schema';
+import { getStrings } from '../../i18n/strings';
 
 export async function getStaticPaths() {
   const posts = await sanityClient.fetch(postSlugsQuery);
@@ -33,9 +34,10 @@ const articleSchema = {
   author: { '@type': 'Organization', name: 'Hitels' },
 };
 
+const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
-  { name: 'Home', url: new URL('/', Astro.site).toString() },
-  { name: 'Blog', url: new URL('/discover/', Astro.site).toString() },
+  { name: t.breadcrumbs.home, url: new URL(Astro.currentLocale === 'is' ? '/is/' : '/', Astro.site).toString() },
+  { name: t.breadcrumbs.blog, url: new URL(Astro.currentLocale === 'is' ? '/is/discover/' : '/discover/', Astro.site).toString() },
   { name: post.title, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 ---

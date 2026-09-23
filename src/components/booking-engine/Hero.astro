@@ -31,7 +31,7 @@ const {
   </div>
   <div aria-hidden class="absolute bg-gradient-to-b from-transparent to-background to-75% left-0 right-0 bottom-0 top-[800px] max-lg:top-[650px] max-md:top-[620px] pointer-events-none"></div>
 
-  <Navigation client:load />
+  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
 
   <div class="flex flex-col gap-8 items-center px-[100px] max-lg:px-10 max-md:px-4 pt-[110px] max-lg:pt-20 max-md:pt-14 relative text-center w-[820px] max-w-full">
     <div data-reveal class="flex flex-col gap-4 items-center text-background w-full">
