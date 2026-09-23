@@ -15,10 +15,10 @@ import { breadcrumbSchema } from '../lib/schema';
 // pages, not specific to this one.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
-const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-website' });
+const page = await sanityClient.fetch(pageBySlugQuery, { slug: 'custom-hotels-website' });
 
 if (!page) {
-  throw new Error('Missing "page" document with slug "custom-website" in Sanity — run scripts/seed-custom-website-page.mjs.');
+  throw new Error('Missing "page" document with slug "custom-hotels-website" in Sanity — run scripts/seed-custom-website-page.mjs.');
 }
 
 const heroSection = page.sections.find((s): s is Extract<Section, { _type: 'productHeroSection' }> => s._type === 'productHeroSection');

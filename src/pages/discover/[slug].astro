@@ -19,7 +19,7 @@ const { slug } = Astro.params;
 const post = await sanityClient.fetch(postBySlugQuery, { slug });
 
 if (!post) {
-  return Astro.redirect('/blog');
+  return Astro.redirect('/discover');
 }
 
 const articleSchema = {
@@ -35,7 +35,7 @@ const articleSchema = {
 
 const breadcrumbs = breadcrumbSchema([
   { name: 'Home', url: new URL('/', Astro.site).toString() },
-  { name: 'Blog', url: new URL('/blog/', Astro.site).toString() },
+  { name: 'Blog', url: new URL('/discover/', Astro.site).toString() },
   { name: post.title, url: new URL(Astro.url.pathname, Astro.site).toString() },
 ]);
 ---

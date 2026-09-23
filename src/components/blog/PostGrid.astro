@@ -10,7 +10,7 @@ const posts = await sanityClient.fetch(postsQuery);
 
   <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
     {posts.map((post, i) => (
-      <a href={`/blog/${post.slug}`} data-reveal style={`--reveal-delay: ${(i % 3) * 100}ms`} class="flex flex-col gap-8 items-start w-full">
+      <a href={`/discover/${post.slug}`} data-reveal style={`--reveal-delay: ${(i % 3) * 100}ms`} class="flex flex-col gap-8 items-start w-full">
         <div class="bg-light-gray h-[260px] rounded-2xl shrink-0 w-full overflow-hidden">
           {post.imageUrl && <img src={post.imageUrl} alt={post.imageAlt ?? ''} loading="lazy" class="w-full h-full object-cover" />}
         </div>

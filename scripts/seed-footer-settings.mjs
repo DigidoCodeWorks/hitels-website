@@ -38,13 +38,13 @@ const footerSettings = {
   mailingListHref: '',
   productLinks: [
     { _key: 'booking-engine', label: 'Booking Engine', href: '/booking-engine' },
-    { _key: 'custom-website', label: 'Custom Website', href: '/custom-website' },
+    { _key: 'custom-website', label: 'Custom Website', href: '/custom-hotels-website' },
     { _key: 'pricing', label: 'Pricing', href: '/pricing' },
   ],
   companyLinks: [
     { _key: 'about-us', label: 'About us', href: '/about-us' },
     { _key: 'contact-us', label: 'Contact us', href: '/contact-us' },
-    { _key: 'resources', label: 'Resources', href: '/blog' },
+    { _key: 'resources', label: 'Resources', href: '/discover' },
   ],
   copyrightText: '© 2024 Hitels. All rights reserved.',
 };
