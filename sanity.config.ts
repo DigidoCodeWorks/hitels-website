@@ -2,7 +2,13 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import type { StructureBuilder, StructureResolver } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
+import { documentInternationalization } from '@sanity/document-internationalization'
 import { schemaTypes } from './src/sanity/schemaTypes'
+
+// Every localized document type — must match the list of types that
+// actually carry the `language` field via src/sanity/fields.ts's
+// languageField() factory.
+const LOCALIZED_TYPES = ['page', 'post', 'faq', 'testimonial', 'story', 'storiesClosingCard', 'pricingPlans', 'siteSettings', 'footerSettings', 'addOns']
 
 // Every localized collection (English/Icelandic documents distinguished by
 // a `language` field, sharing slugs/titles-in-different-languages) gets the
@@ -99,7 +105,32 @@ export default defineConfig({
   projectId,
   dataset,
 
-  plugins: [structureTool({ structure }), visionTool()],
+  plugins: [
+    structureTool({ structure }),
+    visionTool(),
+    // Adds a "Translations" switcher to the document editor toolbar (jump
+    // between a document and its English/Icelandic sibling) and a document
+    // badge showing which language you're viewing. Links documents via a
+    // separate translation.metadata document rather than replacing our
+    // existing `language`-field + fixed-"-is"-id convention — every query
+    // in src/sanity/queries.ts keeps working unchanged. Pre-existing
+    // document pairs are linked by scripts/create-translation-metadata.mjs
+    // (the plugin only auto-links pairs it creates itself going forward).
+    documentInternationalization({
+      supportedLanguages: [
+        { id: 'en', title: 'English' },
+        { id: 'is', title: 'Icelandic' },
+      ],
+      schemaTypes: LOCALIZED_TYPES,
+      languageField: 'language',
+      // We already have every existing en/is pair as separate documents
+      // (built by this project's own seed scripts, not by this plugin) —
+      // this lets an editor open "Manage translations" on an existing
+      // document and link it to its sibling by hand, instead of the
+      // plugin only offering to *create* a brand new translated document.
+      allowCreateMetaDoc: true,
+    }),
+  ],
 
   schema: {
     types: schemaTypes,
