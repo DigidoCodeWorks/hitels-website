@@ -10,7 +10,7 @@ const STEPS = [
 ];
 ---
 
-<div class="absolute inset-0 size-full flex items-center bg-light-gray px-10 max-md:px-6" data-funnel-chart>
+<div class="absolute inset-0 size-full flex items-center bg-light-gray px-10 py-4 max-md:px-6 max-md:py-3" data-funnel-chart>
   <div class="flex flex-col w-full max-w-[420px] mx-auto">
     {STEPS.map((step, i) => (
       <>
@@ -24,8 +24,8 @@ const STEPS = [
           <div class="flex items-stretch self-stretch w-6 justify-center shrink-0">
             {i < STEPS.length - 1 && <div class="w-px bg-border h-full"></div>}
           </div>
-          <div class="flex-1 flex flex-col gap-2 pt-2 pb-6 min-w-0">
-            <div class="relative h-8 rounded bg-background overflow-hidden">
+          <div class="flex-1 flex flex-col gap-2 max-md:gap-1 pt-2 max-md:pt-1 pb-6 max-md:pb-1 min-w-0">
+            <div class="relative h-8 max-md:h-5 rounded bg-background overflow-hidden">
               <div
                 class="funnel-fill absolute inset-y-0 left-0 bg-brand flex items-center justify-end pr-2"
                 data-funnel-fill
@@ -37,14 +37,20 @@ const STEPS = [
                 </span>
               </div>
             </div>
-            <div class="flex items-center justify-between gap-2 max-md:flex-col max-md:items-start max-md:gap-0.5 font-body text-body-sm whitespace-nowrap max-md:whitespace-normal">
+            {/* "completed step"/"off" drop at mobile widths -- the full phrase
+                doesn't fit this row's nowrap layout at mobile, and shortening
+                the copy keeps it on one line instead of taking a height hit
+                from wrapping (this box's mobile height is fixed, so a taller
+                wrapped row just gets clipped by the parent's overflow-hidden
+                instead). */}
+            <div class="flex items-center justify-between gap-2 font-body text-body-sm whitespace-nowrap">
               <div class="flex gap-2 items-start">
                 <p class="font-medium text-navy">
                   <span class="funnel-count" data-funnel-count data-target={step.persons}>0</span> persons
                 </p>
-                <p class="font-normal text-gray">({step.percent}%) completed step</p>
+                <p class="font-normal text-gray">({step.percent}%) <span class="max-md:hidden">completed step</span></p>
               </div>
-              <p class="font-normal text-gray">{step.dropped}% dropped off</p>
+              <p class="font-normal text-gray">{step.dropped}% dropped<span class="max-md:hidden"> off</span></p>
             </div>
           </div>
         </div>

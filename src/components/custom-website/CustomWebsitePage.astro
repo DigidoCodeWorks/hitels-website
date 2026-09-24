@@ -110,6 +110,14 @@ const hreflangAlternates = [
 				);
 			}
 
+			// feature-visual-storytelling.webp's "Offers: Midweek Escape" promo
+			// card sits low in the source photo — object-cover's default center
+			// crop pushes it out of frame in the mobile box's shorter aspect
+			// ratio, leaving mostly blank space above it.
+			if (feature._key === 'experience') {
+				return <FeatureSection {...props} imageObjectPosition="bottom" />;
+			}
+
 			return <FeatureSection {...props} />;
 		})}
 		<Pricing />
