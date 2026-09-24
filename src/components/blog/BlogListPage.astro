@@ -21,6 +21,7 @@ const hreflangAlternates = [
   { lang: 'en', href: '/discover' },
   { lang: 'is', href: '/is/fraedsla' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout
@@ -33,7 +34,7 @@ const hreflangAlternates = [
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
-		<Navigation client:load variant="light" lang={language === 'is' ? 'is' : 'en'} />
+		<Navigation client:load variant="light" lang={language === 'is' ? 'is' : 'en'} altHref={altHref} />
 	</header>
 	<main>
 		<PostGrid />

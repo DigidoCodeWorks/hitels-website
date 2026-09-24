@@ -53,6 +53,7 @@ const hreflangAlternates = [
   { lang: 'en', href: '/cookie-policy' },
   { lang: 'is', href: '/is/vefkokustefna' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout
@@ -65,7 +66,7 @@ const hreflangAlternates = [
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
-		<Hero title={title} lastUpdated={lastUpdated} />
+		<Hero title={title} lastUpdated={lastUpdated} altHref={altHref} />
 	</header>
 	<main>
 		<PolicyContent intro={intro} policies={policies} contactHeading={contactHeading} contactIntro={contactIntro} />

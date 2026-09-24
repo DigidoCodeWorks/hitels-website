@@ -85,12 +85,43 @@ function CtaPill({
 type NavigationProps = {
   variant?: 'dark' | 'light';
   lang?: Locale;
+  /** This same page's URL in the other language — e.g. on /custom-hotels-website,
+   * the Icelandic sibling's actual slug (/is/sersnidinn-vefur), not just a
+   * locale-prefix toggle, since /is/ slugs are independently translated words,
+   * not shared paths. Every page that renders <Navigation> already computes
+   * this for its hreflang alternate tags (see BaseLayout's hreflangAlternates
+   * prop) — pass that same value through. Falls back to the other language's
+   * homepage when a page doesn't have (or need) a real alternate, e.g. 404. */
+  altHref?: string;
 };
 
-export default function Navigation({ variant = 'dark', lang = 'en' }: NavigationProps) {
+function LangSwitcher({ lang, altHref, isLight }: { lang: Locale; altHref: string; isLight: boolean }) {
+  const activeClass = isLight ? 'text-navy' : 'text-background';
+  const inactiveClass = isLight ? 'text-navy/50 hover:text-navy' : 'text-background/60 hover:text-background';
+  const dividerClass = isLight ? 'text-navy/30' : 'text-background/30';
+
+  return (
+    <div className="flex items-center gap-1.5 font-body font-medium text-body-sm">
+      {lang === 'en' ? (
+        <span aria-current="page" className={activeClass}>EN</span>
+      ) : (
+        <a href={altHref} className={`transition-colors duration-300 ${inactiveClass}`}>EN</a>
+      )}
+      <span aria-hidden="true" className={dividerClass}>/</span>
+      {lang === 'is' ? (
+        <span aria-current="page" className={activeClass}>IS</span>
+      ) : (
+        <a href={altHref} className={`transition-colors duration-300 ${inactiveClass}`}>IS</a>
+      )}
+    </div>
+  );
+}
+
+export default function Navigation({ variant = 'dark', lang = 'en', altHref }: NavigationProps) {
   const t = getStrings(lang);
   const homeHref = lang === 'is' ? '/is/' : '/';
   const contactHref = lang === 'is' ? '/is/hafdu-samband' : '/contact-us';
+  const langSwitcherHref = altHref ?? (lang === 'is' ? '/' : '/is/');
   const [isOpen, setIsOpen] = useState(false);
   const [navHeight, setNavHeight] = useState(0);
   // Tracks whether the page has been scrolled past its hero section (marked with
@@ -171,6 +202,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
                 </a>
               ))}
             </div>
+            <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={isLight} />
             {/* Book a demo stays visible on tablet (only true mobile, <768px, drops it) — confirmed against the Tablet Home frame, which keeps this button next to the hamburger */}
             <CtaPill
               href={contactHref}
@@ -239,6 +271,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
           </div>
 
           <div className="flex flex-col gap-10 items-start w-full">
+            <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={true} />
             <div className="font-heading text-h6 text-navy flex flex-col gap-5 w-full">
               <a href="mailto:hi@hitels.is">hi@hitels.is</a>
               <a href="tel:+3545478001">+354 5478001</a>

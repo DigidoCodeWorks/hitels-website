@@ -12,6 +12,7 @@ interface Props {
   primaryButtonHref?: string;
   secondaryButtonLabel?: string;
   secondaryButtonHref?: string;
+  altHref?: string;
 }
 
 const {
@@ -22,6 +23,7 @@ const {
   primaryButtonHref = '/contact-us',
   secondaryButtonLabel = 'Contact us',
   secondaryButtonHref = '/contact-us',
+  altHref,
 } = Astro.props;
 ---
 
@@ -63,7 +65,7 @@ const {
     </div>
   </div>
 
-  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
+  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} altHref={altHref} />
 
   <HeroStories />
 

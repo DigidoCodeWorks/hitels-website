@@ -60,6 +60,7 @@ const hreflangAlternates = [
   { lang: 'en', href: `/discover/${enSlug}` },
   { lang: 'is', href: `/is/fraedsla/${isSlug}` },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout
@@ -80,6 +81,7 @@ const hreflangAlternates = [
 			imageUrl={post.imageUrl ?? undefined}
 			imageAlt={post.imageAlt ?? undefined}
 			backLabel={language === 'is' ? 'Til baka' : 'Back'}
+			altHref={altHref}
 		/>
 	</header>
 	<main>
