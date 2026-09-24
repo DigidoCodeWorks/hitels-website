@@ -14,7 +14,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/about-us.astro (English, "/about-us") and
-// src/pages/is/about-us.astro (Icelandic, "/is/about-us") — same
+// src/pages/is/um-okkur.astro (Icelandic, "/is/um-okkur") — same
 // extraction pattern as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -53,7 +53,7 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/about-us' },
-  { lang: 'is', href: '/is/about-us' },
+  { lang: 'is', href: '/is/um-okkur' },
 ];
 ---
 

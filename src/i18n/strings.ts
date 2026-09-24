@@ -8,7 +8,7 @@
 // DRAFT TRANSLATION: the `is` values were machine-drafted by Claude as
 // part of the i18n rollout, not reviewed by a native Icelandic speaker yet.
 //
-// Nav/footer hrefs are locale-prefixed here (e.g. "/is/pricing") since,
+// Nav/footer hrefs are locale-prefixed here (e.g. "/is/verdskra") since,
 // unlike labels, an English-page href on an Icelandic page is a silent bug
 // (no build error, only discoverable by clicking) — see the rollout plan's
 // constraint about this.
@@ -260,12 +260,12 @@ export const strings: Record<Locale, Strings> = {
   is: {
     nav: {
       links: [
-        { label: 'Bókunarvél', href: '/is/booking-engine', badge: 'Nýtt' },
-        { label: 'Sérsniðinn vefur', href: '/is/custom-hotels-website' },
-        { label: 'Verðskrá', href: '/is/pricing' },
-        { label: 'Um okkur', href: '/is/about-us' },
-        { label: 'Fræðsla', href: '/is/discover' },
-        { label: 'Hafðu samband', href: '/is/contact-us' },
+        { label: 'Bókunarvél', href: '/is/bokunarvel', badge: 'Nýtt' },
+        { label: 'Sérsniðinn vefur', href: '/is/sersnidinn-vefur' },
+        { label: 'Verðskrá', href: '/is/verdskra' },
+        { label: 'Um okkur', href: '/is/um-okkur' },
+        { label: 'Fræðsla', href: '/is/fraedsla' },
+        { label: 'Hafðu samband', href: '/is/hafdu-samband' },
       ],
       bookADemo: 'Bóka kynningu',
       openMenu: 'Opna valmynd',
@@ -276,9 +276,9 @@ export const strings: Record<Locale, Strings> = {
       product: 'Vörur',
       company: 'Fyrirtæki',
       cookieSettingsLabel: 'Vefkökustillingar',
-      cookieSettingsHref: '/is/cookie-policy',
+      cookieSettingsHref: '/is/vefkokustefna',
       privacyPolicyLabel: 'Persónuverndarstefna',
-      privacyPolicyHref: '/is/privacy-policy',
+      privacyPolicyHref: '/is/personuverndarstefna',
       instagram: 'Instagram',
       facebook: 'Facebook',
       linkedin: 'LinkedIn',

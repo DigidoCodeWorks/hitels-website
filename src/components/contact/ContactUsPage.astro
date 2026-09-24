@@ -10,7 +10,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/contact-us.astro (English) and
-// src/pages/is/contact-us.astro (Icelandic) — same extraction pattern as
+// src/pages/is/hafdu-samband.astro (Icelandic) — same extraction pattern as
 // src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -44,7 +44,7 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/contact-us' },
-  { lang: 'is', href: '/is/contact-us' },
+  { lang: 'is', href: '/is/hafdu-samband' },
 ];
 ---
 

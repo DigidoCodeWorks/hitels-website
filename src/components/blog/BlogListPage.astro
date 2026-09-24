@@ -7,7 +7,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/discover.astro (English) and
-// src/pages/is/discover.astro (Icelandic) — same extraction pattern as
+// src/pages/is/fraedsla.astro (Icelandic) — same extraction pattern as
 // src/components/home/HomePage.astro.
 const language = Astro.currentLocale ?? 'en';
 
@@ -19,7 +19,7 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/discover' },
-  { lang: 'is', href: '/is/discover' },
+  { lang: 'is', href: '/is/fraedsla' },
 ];
 ---
 

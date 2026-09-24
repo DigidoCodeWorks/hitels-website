@@ -62,7 +62,7 @@ const introducingHitelsIs = {
   slug: { current: 'introducing-hitels' },
   title: 'Segðu hæ við Hitels: Draumasamstarfsaðili hótelsins þíns fyrir jákvæðar breytingar!',
   category: 'Hitels',
-  externalLink: '/is/discover',
+  externalLink: '/is/fraedsla',
   imageUrl: r2('cms/blog/introducing-hitels.png'),
   imageAlt: 'Segðu hæ við nýja hótelsamstarfsaðilann þinn',
   publishedAt: '2024-04-16T00:00:00.000Z',

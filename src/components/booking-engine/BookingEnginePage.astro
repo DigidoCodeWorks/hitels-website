@@ -15,7 +15,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/booking-engine.astro (English) and
-// src/pages/is/booking-engine.astro (Icelandic) — same extraction pattern
+// src/pages/is/bokunarvel.astro (Icelandic) — same extraction pattern
 // as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -69,7 +69,7 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/booking-engine' },
-  { lang: 'is', href: '/is/booking-engine' },
+  { lang: 'is', href: '/is/bokunarvel' },
 ];
 ---
 
