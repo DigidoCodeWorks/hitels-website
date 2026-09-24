@@ -237,8 +237,8 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
 
           <div className="flex flex-col gap-10 items-start w-full">
             <div className="font-heading text-h6 text-navy flex flex-col gap-5 w-full">
-              <p>hi@hitels.is</p>
-              <p>+354 5478001</p>
+              <a href="mailto:hi@hitels.is">hi@hitels.is</a>
+              <a href="tel:+3545478001">+354 5478001</a>
             </div>
             <CtaPill
               href={contactHref}
