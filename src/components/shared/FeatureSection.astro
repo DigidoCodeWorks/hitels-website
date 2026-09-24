@@ -53,10 +53,14 @@ const domImageFirst = variant === 'custom-website' ? true : imageFirst;
 const sectionClass = variant === 'custom-website' && !imageFirst ? `${styles.section} flex-row-reverse` : styles.section;
 ---
 
+{/* Some features' media is a bespoke interactive component (a before/after
+    slider, an animated chart, etc.) rather than a plain static photo — the
+    default slot, when provided by the caller, replaces the <img> entirely
+    while this component still owns the surrounding layout/reveal chrome. */}
 <section class={sectionClass}>
   {domImageFirst && (
     <div data-reveal="fade" class={`${styles.imageWrapper} ${imageBg}`}>
-      <img loading="lazy" src={image} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />
+      {Astro.slots.has('default') ? <slot /> : <img loading="lazy" src={image} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />}
     </div>
   )}
   <div data-reveal style="--reveal-delay: 120ms" class={styles.content}>
@@ -67,7 +71,7 @@ const sectionClass = variant === 'custom-website' && !imageFirst ? `${styles.sec
   </div>
   {!domImageFirst && (
     <div data-reveal="fade" style="--reveal-delay: 120ms" class={`${styles.imageWrapper} ${imageBg}`}>
-      <img loading="lazy" src={image} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />
+      {Astro.slots.has('default') ? <slot /> : <img loading="lazy" src={image} alt={imageAlt} class="absolute inset-0 w-full h-full object-cover" />}
     </div>
   )}
 </section>
