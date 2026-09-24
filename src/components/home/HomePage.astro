@@ -62,9 +62,10 @@ const hreflangAlternates = [
   { lang: 'en', href: '/' },
   { lang: 'is', href: '/is/' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates} noindex={language === 'is'}>
 	<header>
 		<Hero
 			headline={heroSection.headline}
@@ -74,6 +75,7 @@ const hreflangAlternates = [
 			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
 			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
 			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+			altHref={altHref}
 		/>
 	</header>
 	<main>

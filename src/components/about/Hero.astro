@@ -12,6 +12,7 @@ interface Props {
   secondaryButtonHref?: string;
   imageUrl: string;
   imageAlt?: string;
+  altHref?: string;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   secondaryButtonHref = '/contact-us',
   imageUrl,
   imageAlt = '',
+  altHref,
 } = Astro.props;
 ---
 
@@ -32,7 +34,7 @@ const {
     <img src={asset('images/booking-engine/hero/decorative-blob.svg')} alt="" class="h-full w-full block object-fill" />
   </div>
 
-  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
+  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} altHref={altHref} />
 
   <div class="flex gap-16 items-center justify-between px-[100px] max-lg:flex-col max-lg:gap-12 max-lg:px-10 max-md:px-4 py-[90px] max-lg:py-16 max-md:py-12 relative w-full max-w-[1440px]">
     <div class="flex flex-col gap-8 items-start relative w-[604px] max-w-full">

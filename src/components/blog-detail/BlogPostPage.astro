@@ -11,7 +11,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/discover/[slug].astro (English) and
-// src/pages/is/discover/[slug].astro (Icelandic) — same extraction pattern
+// src/pages/is/fraedsla/[slug].astro (Icelandic) — same extraction pattern
 // as src/components/home/HomePage.astro, but only for the part that runs
 // per-page (Astro.currentLocale isn't available inside getStaticPaths(),
 // so each locale's page file keeps its own literal-language
@@ -22,7 +22,7 @@ const { slug } = Astro.params;
 const post = await sanityClient.fetch(postBySlugQuery, { slug, language });
 
 if (!post) {
-  return Astro.redirect(language === 'is' ? '/is/discover' : '/discover');
+  return Astro.redirect(language === 'is' ? '/is/fraedsla' : '/discover');
 }
 
 const articleSchema = {
@@ -36,7 +36,7 @@ const articleSchema = {
   author: { '@type': 'Organization', name: 'Hitels' },
 };
 
-const discoverBase = language === 'is' ? '/is/discover' : '/discover';
+const discoverBase = language === 'is' ? '/is/fraedsla' : '/discover';
 
 const t = getStrings(Astro.currentLocale);
 const breadcrumbs = breadcrumbSchema([
@@ -58,8 +58,9 @@ const isSlug = language === 'is' ? slug : (sibling?.slug ?? slug);
 
 const hreflangAlternates = [
   { lang: 'en', href: `/discover/${enSlug}` },
-  { lang: 'is', href: `/is/discover/${isSlug}` },
+  { lang: 'is', href: `/is/fraedsla/${isSlug}` },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout
@@ -69,6 +70,7 @@ const hreflangAlternates = [
 	ogType="article"
 	lang={language}
 	hreflangAlternates={hreflangAlternates}
+	noindex={language === 'is'}
 >
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
@@ -80,6 +82,7 @@ const hreflangAlternates = [
 			imageUrl={post.imageUrl ?? undefined}
 			imageAlt={post.imageAlt ?? undefined}
 			backLabel={language === 'is' ? 'Til baka' : 'Back'}
+			altHref={altHref}
 		/>
 	</header>
 	<main>

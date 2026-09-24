@@ -14,7 +14,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/about-us.astro (English, "/about-us") and
-// src/pages/is/about-us.astro (Icelandic, "/is/about-us") — same
+// src/pages/is/um-okkur.astro (Icelandic, "/is/um-okkur") — same
 // extraction pattern as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -53,11 +53,12 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/about-us' },
-  { lang: 'is', href: '/is/about-us' },
+  { lang: 'is', href: '/is/um-okkur' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates} noindex={language === 'is'}>
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
@@ -71,6 +72,7 @@ const hreflangAlternates = [
 			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
 			imageUrl={heroSection.imageUrl}
 			imageAlt={heroSection.imageAlt ?? undefined}
+			altHref={altHref}
 		/>
 	</header>
 	<main>

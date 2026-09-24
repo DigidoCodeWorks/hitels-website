@@ -3,6 +3,8 @@ import { sanityClient } from 'sanity:client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from './Hero.astro';
 import FeatureSection from '../shared/FeatureSection.astro';
+import TypewriterHeadings from './TypewriterHeadings.astro';
+import ChatFeedAnimation from './ChatFeedAnimation.astro';
 import Pricing from '../shared/Pricing.astro';
 import Footer from '../shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
@@ -11,7 +13,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/custom-hotels-website.astro (English) and
-// src/pages/is/custom-hotels-website.astro (Icelandic) — same extraction
+// src/pages/is/sersnidinn-vefur.astro (Icelandic) — same extraction
 // pattern as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -60,11 +62,12 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/custom-hotels-website' },
-  { lang: 'is', href: '/is/custom-hotels-website' },
+  { lang: 'is', href: '/is/sersnidinn-vefur' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates} noindex={language === 'is'}>
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
@@ -77,21 +80,48 @@ const hreflangAlternates = [
 			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
 			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
 			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+			altHref={altHref}
 		/>
 	</header>
 	<main>
-		{featuresSection?.features.map((feature) => (
-			<FeatureSection
-				label={feature.label}
-				heading={feature.heading}
-				description={feature.description}
-				image={feature.imageUrl}
-				imageAlt={feature.imageAlt ?? ''}
-				imageFirst={feature.imageFirst}
-				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
-				variant="custom-website"
-			/>
-		))}
+		{featuresSection?.features.map((feature) => {
+			const props = {
+				label: feature.label,
+				heading: feature.heading,
+				description: feature.description,
+				image: feature.imageUrl,
+				imageAlt: feature.imageAlt ?? '',
+				imageFirst: feature.imageFirst,
+				imageBg: feature.imageHasLightBackground ? 'bg-light-gray' : undefined,
+				variant: 'custom-website' as const,
+			};
+
+			if (feature._key === 'design') {
+				return (
+					<FeatureSection {...props}>
+						<TypewriterHeadings />
+					</FeatureSection>
+				);
+			}
+
+			if (feature._key === 'partnership') {
+				return (
+					<FeatureSection {...props}>
+						<ChatFeedAnimation />
+					</FeatureSection>
+				);
+			}
+
+			// feature-visual-storytelling.webp's "Offers: Midweek Escape" promo
+			// card sits low in the source photo — object-cover's default center
+			// crop pushes it out of frame in the mobile box's shorter aspect
+			// ratio, leaving mostly blank space above it.
+			if (feature._key === 'experience') {
+				return <FeatureSection {...props} imageObjectPosition="bottom" />;
+			}
+
+			return <FeatureSection {...props} />;
+		})}
 		<Pricing />
 	</main>
 	<Footer />

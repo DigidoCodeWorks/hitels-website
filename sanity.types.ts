@@ -162,77 +162,38 @@ export type HeroSection = {
   secondaryButtonHref?: string;
 };
 
-export type StoriesClosingCard = {
+export type Redirect = {
   _id: string;
-  _type: "storiesClosingCard";
+  _type: "redirect";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  language: "en" | "is";
-  heading: string;
-  backgroundImageUrl?: string;
-  backgroundImageAlt?: string;
-  features?: Array<{
-    iconUrl?: string;
-    text?: string;
-    _type: "feature";
+  source: string;
+  destination: string;
+  permanent: boolean;
+};
+
+export type TranslationMetadata = {
+  _id: string;
+  _type: "translation.metadata";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  translations?: InternationalizedArrayReference;
+  schemaTypes?: Array<string>;
+};
+
+export type InternationalizedArrayReference = Array<
+  {
     _key: string;
-  }>;
-  buttonText?: string;
-  buttonLink?: string;
-};
+  } & InternationalizedArrayReferenceValue
+>;
 
-export type Story = {
-  _id: string;
-  _type: "story";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  projectName: string;
-  slug: Slug;
-  language: "en" | "is";
-  order?: number;
-  storyTitle?: string;
-  description?: string;
-  backgroundImageUrl?: string;
-  backgroundImageAlt?: string;
-  websitePreviewUrl?: string;
-  websitePreviewAlt?: string;
-  buttonText?: string;
-  buttonLink?: string;
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
-};
-
-export type Testimonial = {
-  _id: string;
-  _type: "testimonial";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  language: "en" | "is";
-  name: string;
-  role?: string;
-  quote: string;
-  imageUrl?: string;
-  imageAlt?: string;
-  order?: number;
-};
-
-export type Faq = {
-  _id: string;
-  _type: "faq";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  language: "en" | "is";
-  question: string;
-  answer: string;
-  order?: number;
+export type PageReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "page";
 };
 
 export type PostReference = {
@@ -242,46 +203,76 @@ export type PostReference = {
   [internalGroqTypeReferenceTo]?: "post";
 };
 
-export type Post = {
-  _id: string;
-  _type: "post";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  slug: Slug;
-  language: "en" | "is";
-  imageUrl?: string;
-  imageAlt?: string;
-  publishedAt?: string;
-  category?: string;
-  externalLink?: string;
-  shortDescription?: string;
-  body?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  metaTitle?: string;
-  metaDescription?: string;
-  relatedPosts?: Array<
-    {
-      _key: string;
-    } & PostReference
-  >;
+export type FaqReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "faq";
+};
+
+export type TestimonialReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "testimonial";
+};
+
+export type StoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "story";
+};
+
+export type StoriesClosingCardReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "storiesClosingCard";
+};
+
+export type PricingPlansReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "pricingPlans";
+};
+
+export type SiteSettingsReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "siteSettings";
+};
+
+export type FooterSettingsReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "footerSettings";
+};
+
+export type AddOnsReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "addOns";
+};
+
+export type InternationalizedArrayReferenceValue = {
+  _type: "internationalizedArrayReferenceValue";
+  value?:
+    | PageReference
+    | PostReference
+    | FaqReference
+    | TestimonialReference
+    | StoryReference
+    | StoriesClosingCardReference
+    | PricingPlansReference
+    | SiteSettingsReference
+    | FooterSettingsReference
+    | AddOnsReference;
+  language: string;
 };
 
 export type AddOns = {
@@ -300,17 +291,6 @@ export type AddOns = {
     _type: "addon";
     _key: string;
   }>;
-};
-
-export type Redirect = {
-  _id: string;
-  _type: "redirect";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  source: string;
-  destination: string;
-  permanent: boolean;
 };
 
 export type FooterSettings = {
@@ -384,6 +364,122 @@ export type PricingPlans = {
     _type: "plan";
     _key: string;
   }>;
+};
+
+export type StoriesClosingCard = {
+  _id: string;
+  _type: "storiesClosingCard";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  language: "en" | "is";
+  heading: string;
+  backgroundImageUrl?: string;
+  backgroundImageAlt?: string;
+  features?: Array<{
+    iconUrl?: string;
+    text?: string;
+    _type: "feature";
+    _key: string;
+  }>;
+  buttonText?: string;
+  buttonLink?: string;
+};
+
+export type Story = {
+  _id: string;
+  _type: "story";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  projectName: string;
+  slug: Slug;
+  language: "en" | "is";
+  order?: number;
+  storyTitle?: string;
+  description?: string;
+  backgroundImageUrl?: string;
+  backgroundImageAlt?: string;
+  logoUrl?: string;
+  websitePreviewUrl?: string;
+  websitePreviewAlt?: string;
+  buttonText?: string;
+  buttonLink?: string;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
+};
+
+export type Testimonial = {
+  _id: string;
+  _type: "testimonial";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  language: "en" | "is";
+  name: string;
+  role?: string;
+  quote: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  order?: number;
+};
+
+export type Faq = {
+  _id: string;
+  _type: "faq";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  language: "en" | "is";
+  question: string;
+  answer: string;
+  order?: number;
+};
+
+export type Post = {
+  _id: string;
+  _type: "post";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  language: "en" | "is";
+  imageUrl?: string;
+  imageAlt?: string;
+  publishedAt?: string;
+  category?: string;
+  externalLink?: string;
+  shortDescription?: string;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  metaTitle?: string;
+  metaDescription?: string;
+  relatedPosts?: Array<
+    {
+      _key: string;
+    } & PostReference
+  >;
 };
 
 export type Page = {
@@ -574,18 +670,30 @@ export type AllSanitySchemaTypes =
   | SimpleHeroSection
   | ProductHeroSection
   | HeroSection
+  | Redirect
+  | TranslationMetadata
+  | InternationalizedArrayReference
+  | PageReference
+  | PostReference
+  | FaqReference
+  | TestimonialReference
+  | StoryReference
+  | StoriesClosingCardReference
+  | PricingPlansReference
+  | SiteSettingsReference
+  | FooterSettingsReference
+  | AddOnsReference
+  | InternationalizedArrayReferenceValue
+  | AddOns
+  | FooterSettings
+  | SiteSettings
+  | PricingPlans
   | StoriesClosingCard
   | Story
   | Slug
   | Testimonial
   | Faq
-  | PostReference
   | Post
-  | AddOns
-  | Redirect
-  | FooterSettings
-  | SiteSettings
-  | PricingPlans
   | Page
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -600,13 +708,14 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/queries.ts
 // Variable: storiesQuery
-// Query: *[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }
+// Query: *[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, logoUrl, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }
 export type StoriesQueryResult = Array<{
   projectName: string;
   storyTitle: string | null;
   description: string | null;
   backgroundImageUrl: string | null;
   backgroundImageAlt: string | null;
+  logoUrl: string | null;
   websitePreviewUrl: string | null;
   websitePreviewAlt: string | null;
   buttonText: string | null;
@@ -956,7 +1065,7 @@ export type FooterSettingsQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }': StoriesQueryResult;
+    '*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, logoUrl, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }': StoriesQueryResult;
     '*[_type == "storiesClosingCard" && language == $language][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }': StoriesClosingCardQueryResult;
     '*[_type == "faq" && language == $language] | order(order asc){ question, answer }': FaqsQueryResult;
     '*[_type == "testimonial" && language == $language] | order(order asc){ name, role, quote, imageUrl, imageAlt }': TestimonialsQueryResult;

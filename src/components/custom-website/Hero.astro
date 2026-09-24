@@ -10,6 +10,7 @@ interface Props {
   primaryButtonHref?: string;
   secondaryButtonLabel?: string;
   secondaryButtonHref?: string;
+  altHref?: string;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   primaryButtonHref = '/contact-us',
   secondaryButtonLabel = 'View pricing',
   secondaryButtonHref = '#pricing',
+  altHref,
 } = Astro.props;
 ---
 
@@ -30,13 +32,13 @@ const {
     ></div>
   </div>
 
-  <div aria-hidden class="absolute h-[86.32vh] left-[-323px] top-[366px] w-[146.46vw] pointer-events-none">
+  <div aria-hidden class="absolute h-[110vh] left-[-323px] top-[450px] w-[146.46vw] pointer-events-none">
     <div class="absolute inset-[-22.4%_-8.25%]">
       <img src={asset('images/booking-engine/hero/decorative-blob.svg')} alt="" class="block max-w-none w-full h-full" />
     </div>
   </div>
 
-  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} />
+  <Navigation client:load lang={Astro.currentLocale === 'is' ? 'is' : 'en'} altHref={altHref} />
 
   <div class="flex flex-col gap-8 items-center px-[100px] max-lg:px-10 max-md:px-4 relative w-full max-w-[1032px] text-center">
     <div data-reveal class="flex flex-col gap-4 items-center text-background w-full">
@@ -53,10 +55,12 @@ const {
 
   <div data-reveal="fade" style="--reveal-delay: 250ms" class="relative w-full max-w-[1440px] px-[100px] max-lg:px-10 max-md:px-4 pb-[100px] max-lg:pb-16 max-md:pb-10">
     {/* Matches the Figma "Decorative Background": a solid rectangle starting
-        halfway down the image, not the whole section. The gaps baked into the
-        collage asset (opaque, no alpha) are colored to match the flat #654aff
-        the hero gradient holds below its 50% stop, so this rectangle's hard
-        edge only becomes visible once the image itself goes opaque again.
+        halfway down the image, not the whole section. The collage asset's own
+        gutters between tiles are transparent, colored to match whatever sits
+        behind them at that vertical position — #654aff in the top half (the
+        hero gradient), #FBFBFF in the bottom half (this rectangle) — so this
+        rectangle's edge stays invisible as long as its own top half stays
+        purple-filled and the split lines up with this element's top-1/2.
         Full-bleed (w-screen, recentered) so it still reaches the viewport
         edges above max-w-[1440px] instead of leaving purple gutters on large
         desktop; the Hero's own overflow-clip trims any sub-pixel excess. */}

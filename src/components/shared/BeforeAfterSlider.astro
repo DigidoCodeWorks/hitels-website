@@ -1,0 +1,93 @@
+---
+// Draggable before/after image comparison — used in place of a plain static
+// image via FeatureSection's default-slot override (see FeatureSection.astro).
+// Both images are absolutely stacked at the same size; the "after" image is
+// revealed only up to --baf-pos via clip-path (simpler than the more common
+// "shrink a wrapper's width" technique, which requires the inner image to
+// know the *unclipped* container width to avoid shrinking with it).
+interface Props {
+  beforeSrc: string;
+  beforeAlt: string;
+  afterSrc: string;
+  afterAlt: string;
+}
+
+const { beforeSrc, beforeAlt, afterSrc, afterAlt } = Astro.props;
+---
+
+<div class="baf-root absolute inset-0 size-full select-none touch-none" data-baf-root style="--baf-pos: 55%">
+  <img src={beforeSrc} alt={beforeAlt} loading="lazy" class="absolute inset-0 size-full object-cover pointer-events-none" />
+  <img
+    src={afterSrc}
+    alt={afterAlt}
+    loading="lazy"
+    class="baf-after absolute inset-0 size-full object-cover pointer-events-none"
+    data-baf-after
+  />
+  <div class="baf-line absolute inset-y-0 w-0.5 bg-background/80" data-baf-line>
+    <button
+      type="button"
+      aria-label="Drag to compare before and after"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center size-10 rounded-full bg-background shadow-lg cursor-ew-resize"
+      data-baf-handle
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M5.5 4L2 8L5.5 12" stroke="#130C3C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M10.5 4L14 8L10.5 12" stroke="#130C3C" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .baf-after {
+    clip-path: inset(0 calc(100% - var(--baf-pos)) 0 0);
+  }
+
+  .baf-line {
+    left: var(--baf-pos);
+    transform: translateX(-50%);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-baf-root]').forEach((root) => {
+    const handle = root.querySelector<HTMLElement>('[data-baf-handle]');
+    if (!handle) return;
+
+    function setPosFromClientX(clientX: number) {
+      const rect = root.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+      root.style.setProperty('--baf-pos', `${pct}%`);
+    }
+
+    let dragging = false;
+
+    handle.addEventListener('pointerdown', (event) => {
+      dragging = true;
+      handle.setPointerCapture(event.pointerId);
+      setPosFromClientX(event.clientX);
+    });
+
+    handle.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      setPosFromClientX(event.clientX);
+    });
+
+    const stopDragging = (event: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      handle.releasePointerCapture(event.pointerId);
+    };
+
+    handle.addEventListener('pointerup', stopDragging);
+    handle.addEventListener('pointercancel', stopDragging);
+
+    // Clicking anywhere in the image (not just dragging the handle) also
+    // moves the slider there, same affordance as most before/after widgets.
+    root.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('[data-baf-handle]')) return;
+      setPosFromClientX((event as MouseEvent).clientX);
+    });
+  });
+</script>

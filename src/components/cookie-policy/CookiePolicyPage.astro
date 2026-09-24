@@ -6,7 +6,7 @@ import Footer from '../shared/Footer.astro';
 import { breadcrumbSchema } from '../../lib/schema';
 
 // Shared by both src/pages/cookie-policy.astro (English) and
-// src/pages/is/cookie-policy.astro (Icelandic) — same extraction pattern
+// src/pages/is/vefkokustefna.astro (Icelandic) — same extraction pattern
 // as src/components/home/HomePage.astro. Not Sanity-driven (same as
 // before) — Icelandic copy is passed in as props from the "is" page file,
 // DRAFT TRANSLATION needing native-speaker (and, for legal text
@@ -51,8 +51,9 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/cookie-policy' },
-  { lang: 'is', href: '/is/cookie-policy' },
+  { lang: 'is', href: '/is/vefkokustefna' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout
@@ -60,12 +61,13 @@ const hreflangAlternates = [
 	description={description}
 	lang={language}
 	hreflangAlternates={hreflangAlternates}
+	noindex={language === 'is'}
 >
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
-		<Hero title={title} lastUpdated={lastUpdated} />
+		<Hero title={title} lastUpdated={lastUpdated} altHref={altHref} />
 	</header>
 	<main>
 		<PolicyContent intro={intro} policies={policies} contactHeading={contactHeading} contactIntro={contactIntro} />

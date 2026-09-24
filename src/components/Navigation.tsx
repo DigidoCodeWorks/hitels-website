@@ -82,15 +82,55 @@ function CtaPill({
 // 'dark' (default) is for the gradient/dark hero backgrounds every existing
 // page uses. 'light' is for pages like Blog Detail where the nav sits
 // directly on the plain page background (bg-background) instead of a hero.
+// Icelandic content is machine-drafted and hasn't had a native-speaker
+// review pass yet — hiding the switcher avoids steering visitors from the
+// (reviewed) English site into it while that's pending. The routes
+// themselves stay up (direct links, bookmarks) but get noindex'd and
+// dropped from the sitemap in the meantime; see BaseLayout's noindex prop
+// and astro.config.mjs's sitemap filter. Flip this back to true once
+// Icelandic copy has been reviewed.
+const SHOW_LANG_SWITCHER = false;
+
 type NavigationProps = {
   variant?: 'dark' | 'light';
   lang?: Locale;
+  /** This same page's URL in the other language — e.g. on /custom-hotels-website,
+   * the Icelandic sibling's actual slug (/is/sersnidinn-vefur), not just a
+   * locale-prefix toggle, since /is/ slugs are independently translated words,
+   * not shared paths. Every page that renders <Navigation> already computes
+   * this for its hreflang alternate tags (see BaseLayout's hreflangAlternates
+   * prop) — pass that same value through. Falls back to the other language's
+   * homepage when a page doesn't have (or need) a real alternate, e.g. 404. */
+  altHref?: string;
 };
 
-export default function Navigation({ variant = 'dark', lang = 'en' }: NavigationProps) {
+function LangSwitcher({ lang, altHref, isLight }: { lang: Locale; altHref: string; isLight: boolean }) {
+  const activeClass = isLight ? 'text-navy' : 'text-background';
+  const inactiveClass = isLight ? 'text-navy/50 hover:text-navy' : 'text-background/60 hover:text-background';
+  const dividerClass = isLight ? 'text-navy/30' : 'text-background/30';
+
+  return (
+    <div className="flex items-center gap-1.5 font-body font-medium text-body-sm">
+      {lang === 'en' ? (
+        <span aria-current="page" className={activeClass}>EN</span>
+      ) : (
+        <a href={altHref} className={`transition-colors duration-300 ${inactiveClass}`}>EN</a>
+      )}
+      <span aria-hidden="true" className={dividerClass}>/</span>
+      {lang === 'is' ? (
+        <span aria-current="page" className={activeClass}>IS</span>
+      ) : (
+        <a href={altHref} className={`transition-colors duration-300 ${inactiveClass}`}>IS</a>
+      )}
+    </div>
+  );
+}
+
+export default function Navigation({ variant = 'dark', lang = 'en', altHref }: NavigationProps) {
   const t = getStrings(lang);
   const homeHref = lang === 'is' ? '/is/' : '/';
-  const contactHref = lang === 'is' ? '/is/contact-us' : '/contact-us';
+  const contactHref = lang === 'is' ? '/is/hafdu-samband' : '/contact-us';
+  const langSwitcherHref = altHref ?? (lang === 'is' ? '/' : '/is/');
   const [isOpen, setIsOpen] = useState(false);
   const [navHeight, setNavHeight] = useState(0);
   // Tracks whether the page has been scrolled past its hero section (marked with
@@ -129,11 +169,14 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
     if (variant !== 'dark') return;
     const heroEl = navRef.current?.closest('[data-hero]');
     if (!heroEl) return;
-    // rootMargin pulls the observation line down by the nav's own height, so the
-    // switch fires exactly when the hero has fully scrolled out from under the nav.
+    // rootMargin pulls the observation line down by the nav's own height plus
+    // an extra buffer (30% of viewport height), so the switch fires once the
+    // hero is mostly scrolled past rather than needing it to fully clear the
+    // nav first (full-height heroes made that previously feel too delayed).
+    const buffer = window.innerHeight * 0.3;
     const observer = new IntersectionObserver(
       ([entry]) => setScrolledPastHero(!entry.isIntersecting),
-      { rootMargin: `-${navHeight}px 0px 0px 0px`, threshold: 0 }
+      { rootMargin: `-${navHeight + buffer}px 0px 0px 0px`, threshold: 0 }
     );
     observer.observe(heroEl);
     return () => observer.disconnect();
@@ -168,6 +211,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
                 </a>
               ))}
             </div>
+            {SHOW_LANG_SWITCHER && <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={isLight} />}
             {/* Book a demo stays visible on tablet (only true mobile, <768px, drops it) — confirmed against the Tablet Home frame, which keeps this button next to the hamburger */}
             <CtaPill
               href={contactHref}
@@ -182,7 +226,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
             />
             <button
               type="button"
-              className="lg:hidden block relative shrink-0 size-8"
+              className="lg:hidden block relative shrink-0 size-8 cursor-pointer"
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
               aria-label={t.nav.openMenu}
@@ -196,7 +240,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
 
       <div
         id="mobile-menu"
-        className={`lg:hidden fixed inset-0 z-50 bg-background transition-transform duration-300 ease-in-out ${
+        className={`lg:hidden fixed inset-0 z-[60] bg-background transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
         }`}
       >
@@ -206,7 +250,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
           </a>
           <button
             type="button"
-            className="relative shrink-0 size-8"
+            className="relative shrink-0 size-8 cursor-pointer"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={t.nav.closeMenu}
@@ -222,7 +266,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
               <a
                 key={link.label}
                 href={link.href}
-                className="font-heading text-h3 text-navy w-full flex gap-3 items-center"
+                className="font-heading text-h3 max-md:text-h5 text-navy w-full flex gap-3 items-center"
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
@@ -236,9 +280,10 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
           </div>
 
           <div className="flex flex-col gap-10 items-start w-full">
+            {SHOW_LANG_SWITCHER && <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={true} />}
             <div className="font-heading text-h6 text-navy flex flex-col gap-5 w-full">
-              <p>hi@hitels.is</p>
-              <p>+354 5478001</p>
+              <a href="mailto:hi@hitels.is">hi@hitels.is</a>
+              <a href="tel:+3545478001">+354 5478001</a>
             </div>
             <CtaPill
               href={contactHref}

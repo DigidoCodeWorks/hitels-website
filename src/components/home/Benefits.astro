@@ -7,14 +7,14 @@ const t = getStrings(Astro.currentLocale);
 
 <section class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
   <div data-reveal class="flex flex-col gap-4 items-center text-center w-[792px] max-w-full">
-    <h2 class="font-heading text-h3 text-navy w-full">{t.sections.benefitsHeading}</h2>
+    <h2 class="font-heading text-h3 max-md:text-h5 text-navy w-full">{t.sections.benefitsHeading}</h2>
     <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsBody}</p>
   </div>
 
   <div class="flex gap-8 items-stretch max-md:flex-col w-full">
     <div data-reveal class="bg-light-gray flex flex-1 flex-col gap-6 items-start p-8 rounded-2xl overflow-hidden">
       <div class="flex flex-col gap-4 items-start w-full">
-        <h3 class="font-heading text-h5 text-navy w-full">{t.sections.benefitsUxTitle}</h3>
+        <h3 class="font-heading text-h5 max-md:text-h6 text-navy w-full">{t.sections.benefitsUxTitle}</h3>
         <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsUxBody}</p>
       </div>
       <div class="h-[251px] w-full relative rounded-xl overflow-hidden">
@@ -24,7 +24,7 @@ const t = getStrings(Astro.currentLocale);
 
     <div data-reveal style="--reveal-delay: 120ms" class="bg-light-gray flex flex-1 flex-col gap-6 items-start justify-center p-8 rounded-2xl overflow-hidden">
       <div class="flex flex-col gap-4 items-start w-full">
-        <h3 class="font-heading text-h5 text-navy w-full">{t.sections.benefitsSeoTitle}</h3>
+        <h3 class="font-heading text-h5 max-md:text-h6 text-navy w-full">{t.sections.benefitsSeoTitle}</h3>
         <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsSeoBody}</p>
       </div>
       <div class="h-[251px] w-full relative" data-chart-reveal>
@@ -68,7 +68,7 @@ const t = getStrings(Astro.currentLocale);
 
     <div data-reveal style="--reveal-delay: 240ms" class="bg-light-gray flex flex-1 flex-col gap-6 items-start justify-center p-8 rounded-2xl overflow-hidden">
       <div class="flex flex-col gap-4 items-start w-full">
-        <h3 class="font-heading text-h5 text-navy w-full">{t.sections.benefitsDataTitle}</h3>
+        <h3 class="font-heading text-h5 max-md:text-h6 text-navy w-full">{t.sections.benefitsDataTitle}</h3>
         <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.benefitsDataBody}</p>
       </div>
       <div class="h-[251px] w-full relative overflow-hidden" aria-hidden="true" data-cursor-parallax>

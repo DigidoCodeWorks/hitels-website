@@ -1,0 +1,98 @@
+---
+// Illustrative typography-scale specimen ("this is what your brand's custom
+// heading styles could look like") — fixed, non-editable content, same
+// reasoning as other illustrative graphics on the site. Types out each
+// heading level in sequence, then resets and loops.
+// Desktop sizes are wide enough that "Lorem ipsum" overflows and gets
+// ellipsis-truncated on a mobile-width row, so H1-H3 (the widest) get a
+// smaller max-md size too — independent of the max-md row-height budget
+// below, which is a vertical-fit concern, not a horizontal one.
+const LEVELS = [
+  { tag: 'H1', size: 'text-[45.9px] leading-[1.1] tracking-[-1.15px] max-md:text-[30px] max-md:tracking-[-0.75px]' },
+  { tag: 'H2', size: 'text-[39.4px] leading-[1.1] tracking-[-0.98px] max-md:text-[26px] max-md:tracking-[-0.65px]' },
+  { tag: 'H3', size: 'text-[32.8px] leading-[1.2] tracking-[-0.82px] max-md:text-[22px] max-md:tracking-[-0.55px]' },
+  { tag: 'H4', size: 'text-[26.2px] leading-[1.2] tracking-[-0.66px] opacity-30' },
+  { tag: 'H5', size: 'text-[19.7px] leading-[1.4] tracking-[-0.49px]' },
+  { tag: 'H6', size: 'text-[16.4px] leading-[1.4] tracking-[-0.41px]' },
+];
+
+const SAMPLE_TEXT = 'Lorem ipsum';
+---
+
+<div class="absolute inset-0 size-full flex flex-col gap-6 items-start bg-light-gray px-10 py-8 max-md:px-5 max-md:py-6 overflow-hidden" data-typewriter-root>
+  <p class="font-heading text-h5 text-navy">Heading</p>
+  <div class="border-t border-border w-full"></div>
+  <div class="flex flex-col gap-5 max-md:gap-3 w-full min-w-0">
+    {LEVELS.map((level) => (
+      <div class="flex gap-6 max-md:gap-3 items-center w-full min-w-0">
+        <p class="font-body font-medium text-body-sm text-brand w-8 shrink-0">{level.tag}</p>
+        <p class={`font-heading text-navy truncate ${level.size}`}>
+          <span data-typewriter-text data-full-text={SAMPLE_TEXT}>&nbsp;</span><span class="typewriter-cursor" data-typewriter-cursor>|</span>
+        </p>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .typewriter-cursor {
+    animation: typewriter-blink 0.9s step-end infinite;
+  }
+
+  @keyframes typewriter-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .typewriter-cursor {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-typewriter-root]').forEach((root) => {
+    const lines = Array.from(root.querySelectorAll<HTMLElement>('[data-typewriter-text]'));
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      lines.forEach((line) => {
+        line.textContent = line.dataset.fullText ?? '';
+      });
+      return;
+    }
+
+    const TYPE_MS = 70;
+    const HOLD_MS = 900;
+    const RESET_PAUSE_MS = 1400;
+
+    async function typeLine(line: HTMLElement) {
+      const full = line.dataset.fullText ?? '';
+      line.textContent = ' ';
+      for (let i = 1; i <= full.length; i++) {
+        line.textContent = full.slice(0, i);
+        await new Promise((resolve) => setTimeout(resolve, TYPE_MS));
+      }
+    }
+
+    async function loop() {
+      // Runs indefinitely; the page itself is torn down on navigation, so
+      // there's no explicit teardown for this interval-free async loop.
+      for (;;) {
+        for (const line of lines) {
+          await typeLine(line);
+          await new Promise((resolve) => setTimeout(resolve, HOLD_MS));
+        }
+        await new Promise((resolve) => setTimeout(resolve, RESET_PAUSE_MS));
+        lines.forEach((line) => {
+          line.textContent = ' ';
+        });
+        await new Promise((resolve) => setTimeout(resolve, 400));
+      }
+    }
+
+    loop();
+  });
+</script>

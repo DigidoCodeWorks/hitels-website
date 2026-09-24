@@ -30,8 +30,8 @@ function resolveLink(link?: string | null): string | undefined {
 }
 
 type Slide =
-  | { kind: 'intro'; name: string; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; heading: string; description?: string | null; buttonText?: string | null; buttonLink?: string }
-  | { kind: 'case-study'; name: string; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; websitePreviewUrl?: string | null; websitePreviewAlt?: string | null; description?: string | null; buttonText?: string | null; buttonLink?: string }
+  | { kind: 'intro'; name: string; logoUrl?: string | null; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; heading: string; description?: string | null; buttonText?: string | null; buttonLink?: string }
+  | { kind: 'case-study'; name: string; logoUrl?: string | null; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; websitePreviewUrl?: string | null; websitePreviewAlt?: string | null; description?: string | null; buttonText?: string | null; buttonLink?: string }
   | { kind: 'closing'; name: string; backgroundImageUrl?: string | null; backgroundImageAlt?: string | null; heading: string; features: { iconUrl?: string; text?: string }[]; buttonText?: string | null; buttonLink?: string };
 
 const slides: Slide[] = stories.map((story) =>
@@ -39,6 +39,7 @@ const slides: Slide[] = stories.map((story) =>
     ? {
         kind: 'intro',
         name: story.projectName,
+        logoUrl: story.logoUrl,
         backgroundImageUrl: story.backgroundImageUrl,
         backgroundImageAlt: story.backgroundImageAlt,
         heading: story.storyTitle,
@@ -49,6 +50,7 @@ const slides: Slide[] = stories.map((story) =>
     : {
         kind: 'case-study',
         name: story.projectName,
+        logoUrl: story.logoUrl,
         backgroundImageUrl: story.backgroundImageUrl,
         backgroundImageAlt: story.backgroundImageAlt,
         websitePreviewUrl: story.websitePreviewUrl,
@@ -77,21 +79,25 @@ const STORY_DURATION_MS = 6000;
 
 {slides.length > 0 && (
   <div class="hidden max-md:block relative w-full" data-hero-stories data-duration={STORY_DURATION_MS}>
-    <div class="story-tray flex gap-3 items-start w-full overflow-x-auto px-4 py-2" data-story-tray>
+    <div class="story-tray flex gap-3 items-start w-full overflow-x-auto px-4 pt-4 pb-2" data-story-tray>
       {slides.map((slide, i) => (
         <button
           type="button"
           data-open-story={i}
-          class="flex flex-col shrink-0 w-[104px] h-[120px] rounded-lg overflow-hidden relative text-left"
+          class="flex flex-col shrink-0 w-[104px] h-[120px] rounded-lg overflow-hidden relative text-left cursor-pointer"
         >
           {slide.backgroundImageUrl && (
             <img src={slide.backgroundImageUrl} alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
           )}
           <div class="absolute inset-x-0 top-0 h-9 bg-gradient-to-b from-black/40 to-transparent"></div>
           <div class="relative flex gap-2 items-center p-2">
-            <div class="flex items-center justify-center shrink-0 size-5 rounded-full bg-[#130c3c]">
-              <img loading="lazy" src={asset('images/home/stories/story-badge.svg')} alt="" class="h-2 w-2.5" />
-            </div>
+            {'logoUrl' in slide && slide.logoUrl ? (
+              <img loading="lazy" src={slide.logoUrl} alt="" class="shrink-0 size-5 rounded-full" />
+            ) : (
+              <div class="flex items-center justify-center shrink-0 size-5 rounded-full bg-[#130c3c]">
+                <img loading="lazy" src={asset('images/home/stories/story-badge.svg')} alt="" class="h-2 w-2.5" />
+              </div>
+            )}
             <p class="flex-1 min-w-0 font-body font-medium text-[12px] text-background truncate">{slide.name}</p>
           </div>
         </button>
@@ -142,12 +148,16 @@ const STORY_DURATION_MS = 6000;
           {/* Header */}
           <div class="absolute top-[37px] inset-x-4 flex items-center justify-between">
             <div class="flex flex-1 min-w-0 gap-2 items-center">
-              <div class="flex items-center justify-center shrink-0 size-8 rounded-full bg-[#130c3c]">
-                <img loading="lazy" src={asset('images/home/stories/story-badge.svg')} alt="" class="h-3 w-4" />
-              </div>
+              {'logoUrl' in slide && slide.logoUrl ? (
+                <img loading="lazy" src={slide.logoUrl} alt="" class="shrink-0 size-8 rounded-full" />
+              ) : (
+                <div class="flex items-center justify-center shrink-0 size-8 rounded-full bg-[#130c3c]">
+                  <img loading="lazy" src={asset('images/home/stories/story-badge.svg')} alt="" class="h-3 w-4" />
+                </div>
+              )}
               <p class="flex-1 min-w-0 font-body font-medium text-body-md text-background truncate">{slide.name}</p>
             </div>
-            <button type="button" data-story-close aria-label="Close" class="shrink-0 size-8">
+            <button type="button" data-story-close aria-label="Close" class="shrink-0 size-8 cursor-pointer">
               <img loading="lazy" src={asset('images/home/stories/close-x.svg')} alt="" class="size-8" />
             </button>
           </div>
@@ -270,6 +280,7 @@ const STORY_DURATION_MS = 6000;
     if (!tray || !viewer) return;
 
     const panels = Array.from(viewer.querySelectorAll<HTMLElement>('[data-story-panel]'));
+    const helpWidget = document.querySelector<HTMLElement>('[data-help-widget]');
     const duration = Number(root.dataset.duration) || 6000;
     let current = 0;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -306,6 +317,10 @@ const STORY_DURATION_MS = 6000;
     function open(index: number) {
       viewer!.hidden = false;
       document.body.style.overflow = 'hidden';
+      // The help widget shares the story viewer's z-50 and renders later in
+      // the DOM, so it would otherwise float on top of the fullscreen story
+      // view — hide it for the duration.
+      helpWidget?.classList.add('hidden');
       show(index);
     }
 
@@ -313,6 +328,7 @@ const STORY_DURATION_MS = 6000;
       clearTimer();
       viewer!.hidden = true;
       document.body.style.overflow = '';
+      helpWidget?.classList.remove('hidden');
     }
 
     tray.querySelectorAll<HTMLButtonElement>('[data-open-story]').forEach((button) => {

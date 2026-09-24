@@ -31,7 +31,7 @@ const LOOP = [...TEAM, ...TEAM, ...TEAM];
 <section class="flex flex-col gap-[72px] max-lg:gap-10 max-md:gap-8 items-start py-[100px] max-lg:py-10 max-md:py-10 relative w-full bg-background">
   <div class="w-full max-w-[1440px] mx-auto px-[100px] max-lg:px-10 max-md:px-4">
     <div data-reveal class="flex flex-col gap-8 items-center text-center px-[211px] max-lg:px-0 relative w-full">
-      <h2 class="font-heading text-h3 text-navy w-full">{headline}</h2>
+      <h2 class="font-heading text-h3 max-md:text-h5 text-navy w-full">{headline}</h2>
       <p class="font-body font-normal text-body-md text-gray w-full">
         {body}
       </p>
@@ -67,10 +67,10 @@ const LOOP = [...TEAM, ...TEAM, ...TEAM];
 
   <div class="w-full max-w-[1440px] mx-auto px-[100px] max-lg:px-10 max-md:px-4">
     <div class="flex gap-2.5 items-center">
-      <button type="button" aria-label="Scroll team members left" data-direction="-1" class="bg-light-gray hover:bg-border transition-colors duration-300 flex items-center justify-center rounded-full p-3.5 size-12">
+      <button type="button" aria-label="Scroll team members left" data-direction="-1" class="bg-light-gray hover:bg-border transition-colors duration-300 flex items-center justify-center rounded-full p-3.5 size-12 cursor-pointer">
         <img src={asset('images/home/testimonial/arrow-left.svg')} alt="" loading="lazy" class="size-5" />
       </button>
-      <button type="button" aria-label="Scroll team members right" data-direction="1" class="bg-light-gray hover:bg-border transition-colors duration-300 flex items-center justify-center rounded-full p-3.5 size-12">
+      <button type="button" aria-label="Scroll team members right" data-direction="1" class="bg-light-gray hover:bg-border transition-colors duration-300 flex items-center justify-center rounded-full p-3.5 size-12 cursor-pointer">
         <img src={asset('images/home/testimonial/arrow-right.svg')} alt="" loading="lazy" class="size-5" />
       </button>
     </div>

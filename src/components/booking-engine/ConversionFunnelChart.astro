@@ -1,0 +1,122 @@
+---
+// Illustrative example checkout funnel — fixed, non-editable content (same
+// reasoning as Home's Benefits.astro chart), not real Hitels analytics data.
+// Bar-fill + counting-number reveal reuses Benefits.astro's animateCount
+// pattern (IntersectalObserver-triggered, respects prefers-reduced-motion).
+const STEPS = [
+  { label: 'Website visit', persons: 10000, percent: 100, dropped: 0 },
+  { label: 'Room selected', persons: 5000, percent: 50, dropped: 50 },
+  { label: 'Payment success', persons: 2500, percent: 25, dropped: 75 },
+];
+---
+
+<div class="absolute inset-0 size-full flex items-center bg-light-gray px-10 py-4 max-md:px-6 max-md:py-3" data-funnel-chart>
+  <div class="flex flex-col w-full max-w-[420px] mx-auto">
+    {STEPS.map((step, i) => (
+      <>
+        <div class="flex gap-4 items-center">
+          <div class="flex items-center justify-center size-6 rounded-full border border-border shrink-0">
+            <p class="font-body font-medium text-body-sm text-navy">{i + 1}</p>
+          </div>
+          <p class="font-body font-medium text-body-sm text-navy whitespace-nowrap">{step.label}</p>
+        </div>
+        <div class="flex gap-4 items-end w-full">
+          <div class="flex items-stretch self-stretch w-6 justify-center shrink-0">
+            {i < STEPS.length - 1 && <div class="w-px bg-border h-full"></div>}
+          </div>
+          <div class="flex-1 flex flex-col gap-2 max-md:gap-1 pt-2 max-md:pt-1 pb-6 max-md:pb-1 min-w-0">
+            <div class="relative h-8 max-md:h-5 rounded bg-background overflow-hidden">
+              <div
+                class="funnel-fill absolute inset-y-0 left-0 bg-brand flex items-center justify-end pr-2"
+                data-funnel-fill
+                data-target={step.percent}
+                style="width: 0%"
+              >
+                <span class="funnel-fill-label font-body font-medium text-body-sm text-navy whitespace-nowrap opacity-0" data-funnel-fill-label>
+                  {step.percent}%
+                </span>
+              </div>
+            </div>
+            {/* "completed step"/"off" drop at mobile widths -- the full phrase
+                doesn't fit this row's nowrap layout at mobile, and shortening
+                the copy keeps it on one line instead of taking a height hit
+                from wrapping (this box's mobile height is fixed, so a taller
+                wrapped row just gets clipped by the parent's overflow-hidden
+                instead). */}
+            <div class="flex items-center justify-between gap-2 font-body text-body-sm whitespace-nowrap">
+              <div class="flex gap-2 items-start">
+                <p class="font-medium text-navy">
+                  <span class="funnel-count" data-funnel-count data-target={step.persons}>0</span> persons
+                </p>
+                <p class="font-normal text-gray">({step.percent}%) <span class="max-md:hidden">completed step</span></p>
+              </div>
+              <p class="font-normal text-gray">{step.dropped}% dropped<span class="max-md:hidden"> off</span></p>
+            </div>
+          </div>
+        </div>
+      </>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-funnel-chart]').forEach((chart) => {
+    const fills = Array.from(chart.querySelectorAll<HTMLElement>('[data-funnel-fill]'));
+    const counts = Array.from(chart.querySelectorAll<HTMLElement>('[data-funnel-count]'));
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setFinalState() {
+      fills.forEach((fill) => {
+        const target = parseFloat(fill.dataset.target ?? '0');
+        fill.style.width = `${target}%`;
+        const label = fill.querySelector<HTMLElement>('[data-funnel-fill-label]');
+        if (label && target < 100) label.style.opacity = '1';
+      });
+      counts.forEach((count) => {
+        count.textContent = (parseFloat(count.dataset.target ?? '0')).toLocaleString('en-US');
+      });
+    }
+
+    if (prefersReducedMotion) {
+      setFinalState();
+      return;
+    }
+
+    function animate(duration = 1200) {
+      const start = performance.now();
+
+      function tick(now: number) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        fills.forEach((fill) => {
+          const target = parseFloat(fill.dataset.target ?? '0');
+          fill.style.width = `${target * eased}%`;
+          const label = fill.querySelector<HTMLElement>('[data-funnel-fill-label]');
+          if (label && target < 100) label.style.opacity = progress > 0.6 ? '1' : '0';
+        });
+        counts.forEach((count) => {
+          const target = parseFloat(count.dataset.target ?? '0');
+          count.textContent = Math.round(target * eased).toLocaleString('en-US');
+        });
+
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animate();
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(chart);
+  });
+</script>

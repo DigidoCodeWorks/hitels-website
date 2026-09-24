@@ -66,8 +66,14 @@ export default defineType({
     }),
     defineField({ name: 'phoneLabel', title: 'Phone display text', type: 'string', validation: (rule) => rule.required() }),
     linkField('phoneHref', 'Phone link', { description: 'e.g. "tel:+3545478001", or "#" as a placeholder until it\'s set.' }),
-    defineField({ name: 'mailingListLabel', title: 'Mailing list link text', type: 'string', validation: (rule) => rule.required() }),
-    linkField('mailingListHref', 'Mailing list link', { description: 'Sign-up form URL, or "#" as a placeholder until it\'s set.' }),
+    // Field name kept as "mailingList" (its original Framer-import name) to
+    // avoid a data migration, but it's actually rendered next to the phone
+    // number with an envelope icon and used as the contact email link — not
+    // a newsletter sign-up form, which never got built. Title/description
+    // reflect that real usage so Studio doesn't mislead editors the way it
+    // misled a first read of this component.
+    defineField({ name: 'mailingListLabel', title: 'Email link text', type: 'string', validation: (rule) => rule.required() }),
+    linkField('mailingListHref', 'Email link', { description: 'e.g. "mailto:hi@hitels.is", or "#" as a placeholder until it\'s set.' }),
 
     defineField({
       name: 'productLinks',

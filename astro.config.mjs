@@ -44,11 +44,13 @@ export default defineConfig({
       studioBasePath: '/studio',
     }),
     sitemap({
-      filter: (page) => !page.includes('/studio'),
-      i18n: {
-        defaultLocale: 'en',
-        locales: { en: 'en', is: 'is' },
-      },
+      // Icelandic content is machine-drafted and not yet reviewed by a
+      // native speaker (see BaseLayout's noindex prop, set per-page for
+      // every /is/ route in the meantime) — keeping those URLs out of the
+      // sitemap too, since a sitemap is a "please index this" signal that
+      // would otherwise contradict noindex. Drop this filter clause (and
+      // reinstate the i18n option below) once Icelandic copy is reviewed.
+      filter: (page) => !page.includes('/studio') && !new URL(page).pathname.startsWith('/is/'),
     }),
   ],
 
@@ -63,6 +65,7 @@ export default defineConfig({
       R2_PUBLIC_URL: envField.string({ context: 'client', access: 'public' }),
       PUBLIC_CONTACT_FORM_ENDPOINT: envField.string({ context: 'client', access: 'public', default: '' }),
       PUBLIC_CF_BEACON_TOKEN: envField.string({ context: 'client', access: 'public', default: '' }),
+      PUBLIC_GTM_ID: envField.string({ context: 'client', access: 'public', default: '' }),
     }
   }
 });

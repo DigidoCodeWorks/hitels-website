@@ -3,6 +3,10 @@ import { sanityClient } from 'sanity:client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from './Hero.astro';
 import FeatureSection from '../shared/FeatureSection.astro';
+import BeforeAfterSlider from '../shared/BeforeAfterSlider.astro';
+import AddOnCardSwitcher from './AddOnCardSwitcher.astro';
+import ConversionFunnelChart from './ConversionFunnelChart.astro';
+import SecureFoundationConnector from './SecureFoundationConnector.astro';
 import Pricing from '../shared/Pricing.astro';
 import Footer from '../shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
@@ -11,7 +15,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/booking-engine.astro (English) and
-// src/pages/is/booking-engine.astro (Icelandic) — same extraction pattern
+// src/pages/is/bokunarvel.astro (Icelandic) — same extraction pattern
 // as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -65,11 +69,12 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/booking-engine' },
-  { lang: 'is', href: '/is/booking-engine' },
+  { lang: 'is', href: '/is/bokunarvel' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates} noindex={language === 'is'}>
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
@@ -82,6 +87,7 @@ const hreflangAlternates = [
 			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
 			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
 			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+			altHref={altHref}
 		/>
 	</header>
 	<main>
@@ -95,7 +101,19 @@ const hreflangAlternates = [
 				imageFirst={feature.imageFirst}
 				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
 				variant="booking-engine"
-			/>
+			>
+				{feature._key === 'design' && (
+					<BeforeAfterSlider
+						beforeSrc="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/brand-integration-before.webp"
+						beforeAlt="Generic, unbranded booking widget"
+						afterSrc="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/brand-integration-after.webp"
+						afterAlt="Booking widget matched to a hotel's own brand"
+					/>
+				)}
+				{feature._key === 'revenue' && <AddOnCardSwitcher />}
+				{feature._key === 'analytics' && <ConversionFunnelChart />}
+				{feature._key === 'security' && <SecureFoundationConnector />}
+			</FeatureSection>
 		))}
 		<Pricing />
 	</main>

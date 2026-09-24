@@ -12,7 +12,7 @@ import { defineQuery } from 'groq'
 // sanity.types.ts before the new/changed shape is available to import.
 
 export const storiesQuery = defineQuery(
-  `*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
+  `*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, logoUrl, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }`
 )
 
 export const storiesClosingCardQuery = defineQuery(

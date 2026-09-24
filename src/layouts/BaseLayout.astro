@@ -12,6 +12,10 @@ import HelpWidget from '../components/shared/HelpWidget.astro';
 // add site → copy the token).
 const CF_BEACON_TOKEN = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 
+// Google Tag Manager — same empty-by-default reasoning as CF_BEACON_TOKEN
+// above: local/preview builds shouldn't fire real tags/conversions.
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
+
 interface Props {
   title: string;
   description: string;
@@ -68,7 +72,16 @@ const organizationSchema = {
 		{hreflangAlternates?.map(({ lang: altLang, href }) => (
 			<link rel="alternate" hreflang={altLang} href={new URL(href, Astro.site)} />
 		))}
-		{hreflangAlternates && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
+		{/* x-default points at this page's own English version (site default
+		    locale), not always the homepage — every page has an English
+		    sibling, so this should never fall back to "/". */}
+		{hreflangAlternates && (
+			<link
+				rel="alternate"
+				hreflang="x-default"
+				href={new URL(hreflangAlternates.find((a) => a.lang === 'en')?.href ?? '/', Astro.site)}
+			/>
+		)}
 
 		<meta property="og:type" content={ogType} />
 		<meta property="og:site_name" content={siteName} />
@@ -93,9 +106,34 @@ const organizationSchema = {
 			/>
 		)}
 
+		{GTM_ID && (
+			<script is:inline define:vars={{ GTM_ID }}>
+				(function (w, d, s, l, i) {
+					w[l] = w[l] || [];
+					w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+					const f = d.getElementsByTagName(s)[0],
+						j = d.createElement(s),
+						dl = l != 'dataLayer' ? '&l=' + l : '';
+					j.async = true;
+					j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+					f.parentNode.insertBefore(j, f);
+				})(window, document, 'script', 'dataLayer', GTM_ID);
+			</script>
+		)}
+
 		<slot name="head" />
 	</head>
 	<body class="bg-background">
+		{GTM_ID && (
+			<noscript>
+				<iframe
+					src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+					height="0"
+					width="0"
+					style="display:none;visibility:hidden"
+				></iframe>
+			</noscript>
+		)}
 		<slot />
 		<HelpWidget />
 		<script>

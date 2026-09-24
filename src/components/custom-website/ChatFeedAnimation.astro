@@ -1,0 +1,158 @@
+---
+// Illustrative Slack conversation ("what working with us feels like") —
+// fixed, non-editable content, same reasoning as other illustrative graphics
+// on the site. Reuses Salome's real team photo (already used in
+// shared/HelpWidget.astro) for the one message with a photo avatar, instead
+// of a generic stock photo, for brand consistency. Messages animate in one
+// at a time, then the feed resets and loops.
+import { asset } from '../../lib/cdn';
+
+const MESSAGES = [
+  {
+    name: 'You',
+    time: '9:28 AM',
+    text: 'Good morning! We are opening the new restaurant next month. Can we add a page for it?',
+    avatar: { kind: 'initial' as const, letter: 'Y' },
+    reactions: [
+      { emoji: '👀', count: 1 },
+      { emoji: '✅', count: 1 },
+    ],
+    reply: { text: '1 reply', time: '1 hour ago' },
+  },
+  {
+    name: 'Salome',
+    time: '14:13 PM',
+    text: "Hey team! 👋 We've completed the new restaurant page design. Looking forward to your feedback! ✨",
+    avatar: { kind: 'photo' as const, url: asset('images/help-widget/avatars/salome.webp') },
+    reactions: [
+      { emoji: '😍', count: 5 },
+      { emoji: '👏', count: 2 },
+    ],
+    reply: null,
+  },
+];
+---
+
+<div class="absolute inset-0 size-full flex flex-col gap-5 max-md:gap-2 items-start bg-light-gray px-10 py-10 max-md:px-5 max-md:py-4 overflow-hidden" data-chat-feed>
+  <p class="font-heading text-h6 text-navy">#hitels-website</p>
+  <div class="flex flex-col gap-8 max-md:gap-2 w-full">
+    {MESSAGES.map((message, i) => (
+      <div class="chat-message flex gap-2 items-start w-full opacity-0 translate-y-3" data-chat-message data-index={i}>
+        <div class="size-10 max-md:size-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-gradient-to-b from-[#33258c] via-[#654aff] to-[#eae8ff]">
+          {message.avatar.kind === 'photo' ? (
+            <img src={message.avatar.url} alt={message.name} loading="lazy" class="size-full object-cover" />
+          ) : (
+            <p class="font-heading text-white text-body-lg">{message.avatar.letter}</p>
+          )}
+        </div>
+        <div class="flex flex-col gap-3 max-md:gap-1.5 items-start flex-1 min-w-0">
+          <div class="flex flex-col gap-1 items-start w-full">
+            <div class="flex gap-1.5 items-end">
+              <p class="font-heading text-body-sm text-navy">{message.name}</p>
+              <p class="font-body font-normal text-body-sm text-gray">{message.time}</p>
+            </div>
+            <p class="font-body font-normal text-body-md max-md:text-body-sm text-navy">{message.text}</p>
+          </div>
+          <div class="chat-reactions flex gap-1 items-start opacity-0" data-chat-reactions>
+            {message.reactions.map((reaction) => (
+              <div class="flex gap-1.5 h-[26px] items-center justify-center rounded-full bg-[#e1e1ec] px-2">
+                <p class="text-body-md">{reaction.emoji}</p>
+                <p class="font-body text-body-sm text-navy">{reaction.count}</p>
+              </div>
+            ))}
+            <div class="flex items-center justify-center size-[26px] rounded-full bg-[#e1e1ec]">
+              <p class="font-body text-body-sm text-navy">+</p>
+            </div>
+          </div>
+          {message.reply && (
+            <div class="flex gap-2 items-center">
+              <div class="size-[26px] rounded-md overflow-hidden shrink-0 bg-gradient-to-b from-[#33258c] via-[#654aff] to-[#eae8ff]"></div>
+              <p class="font-body font-medium text-body-sm text-brand">{message.reply.text}</p>
+              <p class="font-body font-normal text-body-sm text-gray">{message.reply.time}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .chat-message {
+    transition:
+      opacity 0.5s ease-out,
+      transform 0.5s ease-out;
+  }
+
+  .chat-message.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .chat-reactions {
+    transition: opacity 0.4s ease-out;
+  }
+
+  .chat-reactions.is-visible {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chat-message,
+    .chat-reactions {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-chat-feed]').forEach((feed) => {
+    const messages = Array.from(feed.querySelectorAll<HTMLElement>('[data-chat-message]'));
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function showFinalState() {
+      messages.forEach((message) => {
+        message.classList.add('is-visible');
+        message.querySelector('[data-chat-reactions]')?.classList.add('is-visible');
+      });
+    }
+
+    if (prefersReducedMotion) {
+      showFinalState();
+      return;
+    }
+
+    function reset() {
+      messages.forEach((message) => {
+        message.classList.remove('is-visible');
+        message.querySelector('[data-chat-reactions]')?.classList.remove('is-visible');
+      });
+    }
+
+    async function play() {
+      for (;;) {
+        reset();
+        for (const message of messages) {
+          await new Promise((resolve) => setTimeout(resolve, 700));
+          message.classList.add('is-visible');
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          message.querySelector('[data-chat-reactions]')?.classList.add('is-visible');
+        }
+        await new Promise((resolve) => setTimeout(resolve, 2600));
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            play();
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(feed);
+  });
+</script>
