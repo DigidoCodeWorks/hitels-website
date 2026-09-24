@@ -82,7 +82,7 @@ const STORY_DURATION_MS = 6000;
         <button
           type="button"
           data-open-story={i}
-          class="flex flex-col shrink-0 w-[104px] h-[120px] rounded-lg overflow-hidden relative text-left"
+          class="flex flex-col shrink-0 w-[104px] h-[120px] rounded-lg overflow-hidden relative text-left cursor-pointer"
         >
           {slide.backgroundImageUrl && (
             <img src={slide.backgroundImageUrl} alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
@@ -147,7 +147,7 @@ const STORY_DURATION_MS = 6000;
               </div>
               <p class="flex-1 min-w-0 font-body font-medium text-body-md text-background truncate">{slide.name}</p>
             </div>
-            <button type="button" data-story-close aria-label="Close" class="shrink-0 size-8">
+            <button type="button" data-story-close aria-label="Close" class="shrink-0 size-8 cursor-pointer">
               <img loading="lazy" src={asset('images/home/stories/close-x.svg')} alt="" class="size-8" />
             </button>
           </div>
