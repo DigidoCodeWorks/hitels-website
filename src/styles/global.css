@@ -135,3 +135,15 @@
     transition: none;
   }
 }
+
+/*
+ * CookieHub's floating cookie-settings icon (injected by their consent
+ * script, not something this codebase renders) overlaps other fixed-position
+ * UI on small screens -- hidden below the same width CookieHub's own docs
+ * recommend for this override.
+ */
+@media screen and (width <= 810px) {
+  .ch2-icon.ch2-visible {
+    display: none !important;
+  }
+}
