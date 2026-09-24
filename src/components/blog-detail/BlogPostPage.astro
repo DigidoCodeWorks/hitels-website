@@ -70,6 +70,7 @@ const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 	ogType="article"
 	lang={language}
 	hreflangAlternates={hreflangAlternates}
+	noindex={language === 'is'}
 >
 	<Fragment slot="head">
 		<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} is:inline />
