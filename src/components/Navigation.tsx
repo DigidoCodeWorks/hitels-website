@@ -182,7 +182,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
             />
             <button
               type="button"
-              className="lg:hidden block relative shrink-0 size-8"
+              className="lg:hidden block relative shrink-0 size-8 cursor-pointer"
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
               aria-label={t.nav.openMenu}
@@ -206,7 +206,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
           </a>
           <button
             type="button"
-            className="relative shrink-0 size-8"
+            className="relative shrink-0 size-8 cursor-pointer"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={t.nav.closeMenu}
