@@ -400,6 +400,7 @@ export type Story = {
   description?: string;
   backgroundImageUrl?: string;
   backgroundImageAlt?: string;
+  logoUrl?: string;
   websitePreviewUrl?: string;
   websitePreviewAlt?: string;
   buttonText?: string;
@@ -707,13 +708,14 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/queries.ts
 // Variable: storiesQuery
-// Query: *[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }
+// Query: *[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, logoUrl, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }
 export type StoriesQueryResult = Array<{
   projectName: string;
   storyTitle: string | null;
   description: string | null;
   backgroundImageUrl: string | null;
   backgroundImageAlt: string | null;
+  logoUrl: string | null;
   websitePreviewUrl: string | null;
   websitePreviewAlt: string | null;
   buttonText: string | null;
@@ -1063,7 +1065,7 @@ export type FooterSettingsQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }': StoriesQueryResult;
+    '*[_type == "story" && language == $language] | order(order asc){ projectName, storyTitle, description, backgroundImageUrl, backgroundImageAlt, logoUrl, websitePreviewUrl, websitePreviewAlt, buttonText, buttonLink }': StoriesQueryResult;
     '*[_type == "storiesClosingCard" && language == $language][0]{ heading, backgroundImageUrl, backgroundImageAlt, features, buttonText, buttonLink }': StoriesClosingCardQueryResult;
     '*[_type == "faq" && language == $language] | order(order asc){ question, answer }': FaqsQueryResult;
     '*[_type == "testimonial" && language == $language] | order(order asc){ name, role, quote, imageUrl, imageAlt }': TestimonialsQueryResult;

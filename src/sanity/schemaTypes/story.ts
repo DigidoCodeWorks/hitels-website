@@ -38,6 +38,11 @@ export default defineType({
     }),
     imageUrlField('backgroundImageUrl', 'Background image URL', { required: false }),
     altTextField('backgroundImageAlt', 'Background image alt text'),
+    // The small circle badge shown next to the story's name in the mobile
+    // story tray/viewer header (HeroStories.astro) — falls back to the
+    // generic "hi." badge when unset, so this is optional rather than
+    // required.
+    imageUrlField('logoUrl', 'Logo URL (story tray badge)', { required: false }),
     imageUrlField('websitePreviewUrl', 'Website preview image URL', { required: false }),
     altTextField('websitePreviewAlt', 'Website preview image alt text'),
     defineField({
