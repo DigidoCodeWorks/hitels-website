@@ -19,7 +19,7 @@ const { showHeading = true, showDetailsLink = true } = Astro.props;
 
 const language = Astro.currentLocale ?? 'en';
 const t = getStrings(language);
-const pricingHref = language === 'is' ? '/is/pricing' : '/pricing';
+const pricingHref = language === 'is' ? '/is/verdskra' : '/pricing';
 
 // Site-wide singleton (see src/sanity/schemaTypes/pricingPlans.ts) — the same
 // 3 cards shown on every page that renders this component, edited in one

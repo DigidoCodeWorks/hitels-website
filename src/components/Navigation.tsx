@@ -90,7 +90,7 @@ type NavigationProps = {
 export default function Navigation({ variant = 'dark', lang = 'en' }: NavigationProps) {
   const t = getStrings(lang);
   const homeHref = lang === 'is' ? '/is/' : '/';
-  const contactHref = lang === 'is' ? '/is/contact-us' : '/contact-us';
+  const contactHref = lang === 'is' ? '/is/hafdu-samband' : '/contact-us';
   const [isOpen, setIsOpen] = useState(false);
   const [navHeight, setNavHeight] = useState(0);
   // Tracks whether the page has been scrolled past its hero section (marked with

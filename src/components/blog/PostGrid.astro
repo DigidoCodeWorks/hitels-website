@@ -11,11 +11,11 @@ const language = Astro.currentLocale ?? 'en';
 const { heading = getStrings(language).sections.blogHeading } = Astro.props;
 
 const posts = await sanityClient.fetch(postsQuery, { language });
-const discoverBase = language === 'is' ? '/is/discover' : '/discover';
+const discoverBase = language === 'is' ? '/is/fraedsla' : '/discover';
 ---
 
 <section class="flex flex-col items-center gap-20 max-lg:gap-14 max-md:gap-10 px-[100px] max-lg:px-10 max-md:px-4 py-20 max-lg:py-14 max-md:py-10 relative w-full max-w-[1440px] mx-auto bg-background">
-  <h1 data-reveal class="font-heading text-h1 text-navy text-center w-full max-w-[816px]">{heading}</h1>
+  <h1 data-reveal class="font-heading text-h1 max-md:text-h3 text-navy text-center w-full max-w-[816px]">{heading}</h1>
 
   <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
     {posts.map((post, i) => (

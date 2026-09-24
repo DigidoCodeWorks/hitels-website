@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { posts, heading = 'Related articles' } = Astro.props;
-const discoverBase = Astro.currentLocale === 'is' ? '/is/discover' : '/discover';
+const discoverBase = Astro.currentLocale === 'is' ? '/is/fraedsla' : '/discover';
 ---
 
 {posts.length > 0 && (

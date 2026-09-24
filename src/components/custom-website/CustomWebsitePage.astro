@@ -13,7 +13,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { getStrings } from '../../i18n/strings';
 
 // Shared by both src/pages/custom-hotels-website.astro (English) and
-// src/pages/is/custom-hotels-website.astro (Icelandic) — same extraction
+// src/pages/is/sersnidinn-vefur.astro (Icelandic) — same extraction
 // pattern as src/components/home/HomePage.astro.
 type Section = NonNullable<PageBySlugQueryResult>['sections'][number];
 
@@ -62,7 +62,7 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/custom-hotels-website' },
-  { lang: 'is', href: '/is/custom-hotels-website' },
+  { lang: 'is', href: '/is/sersnidinn-vefur' },
 ];
 ---
 

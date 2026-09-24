@@ -6,7 +6,7 @@ import Footer from '../shared/Footer.astro';
 import { breadcrumbSchema } from '../../lib/schema';
 
 // Shared by both src/pages/privacy-policy.astro (English) and
-// src/pages/is/privacy-policy.astro (Icelandic) — same extraction pattern
+// src/pages/is/personuverndarstefna.astro (Icelandic) — same extraction pattern
 // as src/components/home/HomePage.astro. Not Sanity-driven (same as
 // before) — Icelandic copy is passed in as props from the "is" page file,
 // DRAFT TRANSLATION needing native-speaker (and, for legal text
@@ -51,7 +51,7 @@ const breadcrumbs = breadcrumbSchema([
 
 const hreflangAlternates = [
   { lang: 'en', href: '/privacy-policy' },
-  { lang: 'is', href: '/is/privacy-policy' },
+  { lang: 'is', href: '/is/personuverndarstefna' },
 ];
 ---
 
