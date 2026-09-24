@@ -64,6 +64,7 @@ const hreflangAlternates = [
   { lang: 'en', href: '/custom-hotels-website' },
   { lang: 'is', href: '/is/sersnidinn-vefur' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
@@ -79,6 +80,7 @@ const hreflangAlternates = [
 			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
 			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
 			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+			altHref={altHref}
 		/>
 	</header>
 	<main>

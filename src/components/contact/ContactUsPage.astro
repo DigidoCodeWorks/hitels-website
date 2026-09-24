@@ -46,6 +46,7 @@ const hreflangAlternates = [
   { lang: 'en', href: '/contact-us' },
   { lang: 'is', href: '/is/hafdu-samband' },
 ];
+const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates}>
@@ -53,7 +54,7 @@ const hreflangAlternates = [
 		<script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} is:inline />
 	</Fragment>
 	<header>
-		<Hero headline={heroSection.headline} subheading={heroSection.subheading} />
+		<Hero headline={heroSection.headline} subheading={heroSection.subheading} altHref={altHref} />
 	</header>
 	<main>
 		<ContactForm client:load lang={language === 'is' ? 'is' : 'en'} />
