@@ -129,11 +129,14 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
     if (variant !== 'dark') return;
     const heroEl = navRef.current?.closest('[data-hero]');
     if (!heroEl) return;
-    // rootMargin pulls the observation line down by the nav's own height, so the
-    // switch fires exactly when the hero has fully scrolled out from under the nav.
+    // rootMargin pulls the observation line down by the nav's own height plus
+    // an extra buffer (30% of viewport height), so the switch fires once the
+    // hero is mostly scrolled past rather than needing it to fully clear the
+    // nav first (full-height heroes made that previously feel too delayed).
+    const buffer = window.innerHeight * 0.3;
     const observer = new IntersectionObserver(
       ([entry]) => setScrolledPastHero(!entry.isIntersecting),
-      { rootMargin: `-${navHeight}px 0px 0px 0px`, threshold: 0 }
+      { rootMargin: `-${navHeight + buffer}px 0px 0px 0px`, threshold: 0 }
     );
     observer.observe(heroEl);
     return () => observer.disconnect();
