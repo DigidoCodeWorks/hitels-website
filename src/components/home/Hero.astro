@@ -111,10 +111,18 @@ const {
         </picture>
       </div>
       <div class="absolute h-[292px] w-[152px] left-[497px] top-[306px] max-lg:h-[210px] max-lg:w-[100px] max-lg:left-[362px] max-lg:top-[241px] max-md:h-[160px] max-md:w-[96px] max-md:left-[269px] max-md:top-[159px] overflow-hidden pointer-events-none">
+        {/* mockup-phone.webp is a pre-cropped screenshot of the phone mockup's
+            own small Figma frame (already showing the correct bezel, not the
+            full uncropped device) — plain object-cover fills this wrapper
+            directly. Previously used the same oversized-image + percentage-
+            offset trick as the desktop mockup below, tuned for a different,
+            differently-shaped source image; swapping in a new source without
+            matching percentages is what caused the mis-cropped/distorted
+            render this replaced. */}
         <img
           src={asset('images/home/hero/mockup-phone.webp')}
           alt="Hitels booking engine shown on mobile"
-          class="absolute h-[123.48%] left-[-100.82%] max-w-none top-[-11.81%] w-[316.28%] max-lg:h-[129.56%] max-lg:left-[-130.61%] max-lg:top-[-17.32%] max-lg:w-[362.77%] max-md:h-[123.29%] max-md:left-[-87.46%] max-md:top-[-11.64%] max-md:w-[274.91%]"
+          class="absolute inset-0 w-full h-full object-cover"
         />
       </div>
     </div>
