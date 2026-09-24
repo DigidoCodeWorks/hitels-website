@@ -68,7 +68,16 @@ const organizationSchema = {
 		{hreflangAlternates?.map(({ lang: altLang, href }) => (
 			<link rel="alternate" hreflang={altLang} href={new URL(href, Astro.site)} />
 		))}
-		{hreflangAlternates && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
+		{/* x-default points at this page's own English version (site default
+		    locale), not always the homepage — every page has an English
+		    sibling, so this should never fall back to "/". */}
+		{hreflangAlternates && (
+			<link
+				rel="alternate"
+				hreflang="x-default"
+				href={new URL(hreflangAlternates.find((a) => a.lang === 'en')?.href ?? '/', Astro.site)}
+			/>
+		)}
 
 		<meta property="og:type" content={ogType} />
 		<meta property="og:site_name" content={siteName} />
