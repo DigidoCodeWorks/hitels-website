@@ -3,6 +3,10 @@ import { sanityClient } from 'sanity:client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from './Hero.astro';
 import FeatureSection from '../shared/FeatureSection.astro';
+import BeforeAfterSlider from '../shared/BeforeAfterSlider.astro';
+import AddOnCardSwitcher from './AddOnCardSwitcher.astro';
+import ConversionFunnelChart from './ConversionFunnelChart.astro';
+import SecureFoundationConnector from './SecureFoundationConnector.astro';
 import Pricing from '../shared/Pricing.astro';
 import Footer from '../shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
@@ -95,7 +99,19 @@ const hreflangAlternates = [
 				imageFirst={feature.imageFirst}
 				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
 				variant="booking-engine"
-			/>
+			>
+				{feature._key === 'design' && (
+					<BeforeAfterSlider
+						beforeSrc="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/brand-integration-before.webp"
+						beforeAlt="Generic, unbranded booking widget"
+						afterSrc="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/brand-integration-after.webp"
+						afterAlt="Booking widget matched to a hotel's own brand"
+					/>
+				)}
+				{feature._key === 'revenue' && <AddOnCardSwitcher />}
+				{feature._key === 'analytics' && <ConversionFunnelChart />}
+				{feature._key === 'security' && <SecureFoundationConnector />}
+			</FeatureSection>
 		))}
 		<Pricing />
 	</main>
