@@ -61,7 +61,7 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
 
   <div class="flex flex-col gap-10 items-center px-[212px] max-lg:px-0 relative w-full max-w-[1016px]">
     <div class="flex flex-col gap-6 items-center text-center text-background w-full">
-      <h2 data-reveal class="font-heading text-h2 w-full">{footer.ctaHeadline}</h2>
+      <h2 data-reveal class="font-heading text-h2 max-md:text-h4 w-full">{footer.ctaHeadline}</h2>
       <p data-reveal style="--reveal-delay: 100ms" class="font-body font-normal text-body-lg w-full">
         {footer.ctaBody}
       </p>

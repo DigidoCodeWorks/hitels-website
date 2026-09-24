@@ -27,7 +27,7 @@ const discoverBase = Astro.currentLocale === 'is' ? '/is/fraedsla' : '/discover'
         capture the page, leaving the section painted at opacity:0 despite
         being correct in the DOM — confirmed as the actual cause of a CI
         screenshot-diff failure on this component, not a rendering bug. */}
-    <h2 class="font-heading text-h3 text-navy text-center w-full">{heading}</h2>
+    <h2 class="font-heading text-h3 max-md:text-h5 text-navy text-center w-full">{heading}</h2>
     <div class="grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 gap-x-10 gap-y-10 max-md:gap-y-6 w-full max-w-[1240px]">
       {posts.map((post) => (
         <a href={`${discoverBase}/${post.slug}`} class="flex flex-col gap-6 items-start w-full">

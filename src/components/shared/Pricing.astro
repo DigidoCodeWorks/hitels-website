@@ -36,7 +36,7 @@ const CARDS = pricingPlans.plans;
 <section id="pricing" class="flex flex-col gap-16 max-lg:gap-14 max-md:gap-8 items-center px-[100px] py-[112px] max-lg:px-10 max-lg:py-14 max-md:px-4 max-md:py-16 relative w-full max-w-[1440px] mx-auto bg-background">
   {showHeading && (
     <div data-reveal class="flex flex-col gap-4 items-center text-center w-[792px] max-w-full">
-      <h2 class="font-heading text-h3 text-navy w-full">{t.sections.pricingHeading}</h2>
+      <h2 class="font-heading text-h3 max-md:text-h5 text-navy w-full">{t.sections.pricingHeading}</h2>
       <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.pricingBody}</p>
     </div>
   )}
@@ -55,7 +55,7 @@ const CARDS = pricingPlans.plans;
         <div class="flex flex-col gap-10 items-start w-full">
           <div class="flex flex-col gap-4 items-start w-full">
             <div class="flex items-start justify-between w-full">
-              <h3 class="font-heading text-h5 whitespace-nowrap">{card.title}</h3>
+              <h3 class="font-heading text-h5 max-md:text-h6 whitespace-nowrap">{card.title}</h3>
               <div class="flex items-center shrink-0">
                 {(card.iconUrls ?? []).map((icon) => (
                   <div class={`flex items-center justify-center rounded-full size-8 p-2 ${card.theme === 'dark' ? 'bg-light-gray border-2 border-[#1e1261] -mr-2 last:mr-0' : 'bg-navy'}`}>
