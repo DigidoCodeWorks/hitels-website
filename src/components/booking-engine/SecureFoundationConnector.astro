@@ -1,0 +1,70 @@
+---
+// Illustrative "connected systems" diagram (Hitels <-> secure checkout <->
+// booking platform) — fixed, non-editable content, same reasoning as other
+// illustrative graphics on the site (e.g. About Us's WhatIsHitels booking
+// recap card). A small dot loops along each dashed connector to suggest
+// data flowing between the three points.
+const HI_LOGO = 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/security-hi-logo.svg';
+const LOCK_ICON = 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/security-lock.svg';
+const C_ICON = 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/security-c-icon.svg';
+---
+
+<div class="absolute inset-0 size-full flex items-center justify-center bg-light-gray">
+  <div class="flex items-center">
+    <div class="size-24 max-md:size-16 rounded-2xl bg-background flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+      <img src={HI_LOGO} alt="Hitels" class="size-full" />
+    </div>
+    <div class="connector relative w-16 max-md:w-10 h-6 shrink-0">
+      <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-dashed border-border"></div>
+      <div class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 size-2 bg-brand border border-background"></div>
+      <div class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 size-2 bg-brand border border-background"></div>
+      <div class="connector-dot absolute top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-brand"></div>
+    </div>
+    <div class="size-24 max-md:size-16 rounded-2xl bg-background flex items-center justify-center shrink-0 shadow-sm">
+      <img src={LOCK_ICON} alt="Secure checkout" class="size-10 max-md:size-7" />
+    </div>
+    <div class="connector connector-delayed relative w-16 max-md:w-10 h-6 shrink-0">
+      <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-dashed border-border"></div>
+      <div class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 size-2 bg-brand border border-background"></div>
+      <div class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 size-2 bg-brand border border-background"></div>
+      <div class="connector-dot absolute top-1/2 -translate-y-1/2 size-1.5 rounded-full bg-brand"></div>
+    </div>
+    <div class="size-24 max-md:size-16 rounded-2xl bg-background flex items-center justify-center shrink-0 shadow-sm">
+      <img src={C_ICON} alt="Booking platform" class="h-10 max-md:h-7 w-auto" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .connector-dot {
+    animation: travel-dot 2.2s ease-in-out infinite;
+  }
+
+  .connector-delayed .connector-dot {
+    animation-delay: 1.1s;
+  }
+
+  @keyframes travel-dot {
+    0% {
+      left: 0%;
+      opacity: 0;
+    }
+    12% {
+      opacity: 1;
+    }
+    88% {
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .connector-dot {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>
