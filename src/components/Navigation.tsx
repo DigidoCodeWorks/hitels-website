@@ -199,7 +199,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
 
       <div
         id="mobile-menu"
-        className={`lg:hidden fixed inset-0 z-50 bg-background transition-transform duration-300 ease-in-out ${
+        className={`lg:hidden fixed inset-0 z-[60] bg-background transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
         }`}
       >
@@ -225,7 +225,7 @@ export default function Navigation({ variant = 'dark', lang = 'en' }: Navigation
               <a
                 key={link.label}
                 href={link.href}
-                className="font-heading text-h3 text-navy w-full flex gap-3 items-center"
+                className="font-heading text-h3 max-md:text-h5 text-navy w-full flex gap-3 items-center"
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
