@@ -77,7 +77,7 @@ const {
 
 		{policies.map((policy) => (
 			<div class="flex flex-col gap-4 items-start w-full">
-				<h2 class="font-heading text-h5 text-navy w-full">{policy.title}</h2>
+				<h2 class="font-heading text-h5 max-md:text-h6 text-navy w-full">{policy.title}</h2>
 				{policy.list ? (
 					<div class="flex flex-col gap-2 w-full">
 						<p class="font-body font-normal text-body-md text-gray w-full">{policy.intro}</p>
@@ -94,7 +94,7 @@ const {
 		))}
 
 		<div class="flex flex-col gap-4 items-start w-full">
-			<h2 class="font-heading text-h5 text-navy w-full">{contactHeading}</h2>
+			<h2 class="font-heading text-h5 max-md:text-h6 text-navy w-full">{contactHeading}</h2>
 			<p class="font-body font-normal text-body-md text-gray w-full">
 				{contactIntro}{' '}
 				<a href="mailto:birgir@revera.is" class="text-brand hover:underline">birgir@revera.is</a>

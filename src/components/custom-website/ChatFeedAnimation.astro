@@ -33,25 +33,25 @@ const MESSAGES = [
 ];
 ---
 
-<div class="absolute inset-0 size-full flex flex-col gap-5 items-start bg-light-gray px-10 py-10 max-md:px-5 max-md:py-6 overflow-hidden" data-chat-feed>
+<div class="absolute inset-0 size-full flex flex-col gap-5 max-md:gap-2 items-start bg-light-gray px-10 py-10 max-md:px-5 max-md:py-4 overflow-hidden" data-chat-feed>
   <p class="font-heading text-h6 text-navy">#hitels-website</p>
-  <div class="flex flex-col gap-8 w-full">
+  <div class="flex flex-col gap-8 max-md:gap-2 w-full">
     {MESSAGES.map((message, i) => (
       <div class="chat-message flex gap-2 items-start w-full opacity-0 translate-y-3" data-chat-message data-index={i}>
-        <div class="size-10 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-gradient-to-b from-[#33258c] via-[#654aff] to-[#eae8ff]">
+        <div class="size-10 max-md:size-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center bg-gradient-to-b from-[#33258c] via-[#654aff] to-[#eae8ff]">
           {message.avatar.kind === 'photo' ? (
             <img src={message.avatar.url} alt={message.name} loading="lazy" class="size-full object-cover" />
           ) : (
             <p class="font-heading text-white text-body-lg">{message.avatar.letter}</p>
           )}
         </div>
-        <div class="flex flex-col gap-3 items-start flex-1 min-w-0">
+        <div class="flex flex-col gap-3 max-md:gap-1.5 items-start flex-1 min-w-0">
           <div class="flex flex-col gap-1 items-start w-full">
             <div class="flex gap-1.5 items-end">
               <p class="font-heading text-body-sm text-navy">{message.name}</p>
               <p class="font-body font-normal text-body-sm text-gray">{message.time}</p>
             </div>
-            <p class="font-body font-normal text-body-md text-navy">{message.text}</p>
+            <p class="font-body font-normal text-body-md max-md:text-body-sm text-navy">{message.text}</p>
           </div>
           <div class="chat-reactions flex gap-1 items-start opacity-0" data-chat-reactions>
             {message.reactions.map((reaction) => (

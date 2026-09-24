@@ -18,7 +18,7 @@ const addons = addOnsDoc?.addons ?? [];
 
 <section class="hidden max-md:flex flex-col gap-8 items-center px-4 py-16 relative w-full max-w-[1440px] mx-auto bg-background">
   <div data-reveal class="flex flex-col gap-4 items-center text-center w-full">
-    <h2 class="font-heading text-h3 text-navy w-full">{t.sections.addOnsHeading}</h2>
+    <h2 class="font-heading text-h3 max-md:text-h5 text-navy w-full">{t.sections.addOnsHeading}</h2>
     <p class="font-body font-normal text-body-md text-gray w-full">{t.sections.addOnsBody}</p>
   </div>
 
@@ -28,7 +28,7 @@ const addons = addOnsDoc?.addons ?? [];
         <div class="flex flex-col gap-6 items-start w-full">
           <div class="flex flex-col gap-4 items-start w-full">
             <div class="flex items-start justify-between w-full">
-              <h3 class="font-heading text-h5 text-navy whitespace-nowrap">{addon.title}</h3>
+              <h3 class="font-heading text-h5 max-md:text-h6 text-navy whitespace-nowrap">{addon.title}</h3>
               <div class="flex items-center justify-center rounded-full size-8 bg-navy shrink-0">
                 <img loading="lazy" src={addon.iconUrl} alt="" class="size-5" />
               </div>
