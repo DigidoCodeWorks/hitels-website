@@ -3,6 +3,8 @@ import { sanityClient } from 'sanity:client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from './Hero.astro';
 import FeatureSection from '../shared/FeatureSection.astro';
+import TypewriterHeadings from './TypewriterHeadings.astro';
+import ChatFeedAnimation from './ChatFeedAnimation.astro';
 import Pricing from '../shared/Pricing.astro';
 import Footer from '../shared/Footer.astro';
 import { pageBySlugQuery, siteSettingsQuery } from '../../sanity/queries';
@@ -80,18 +82,36 @@ const hreflangAlternates = [
 		/>
 	</header>
 	<main>
-		{featuresSection?.features.map((feature) => (
-			<FeatureSection
-				label={feature.label}
-				heading={feature.heading}
-				description={feature.description}
-				image={feature.imageUrl}
-				imageAlt={feature.imageAlt ?? ''}
-				imageFirst={feature.imageFirst}
-				imageBg={feature.imageHasLightBackground ? 'bg-light-gray' : undefined}
-				variant="custom-website"
-			/>
-		))}
+		{featuresSection?.features.map((feature) => {
+			const props = {
+				label: feature.label,
+				heading: feature.heading,
+				description: feature.description,
+				image: feature.imageUrl,
+				imageAlt: feature.imageAlt ?? '',
+				imageFirst: feature.imageFirst,
+				imageBg: feature.imageHasLightBackground ? 'bg-light-gray' : undefined,
+				variant: 'custom-website' as const,
+			};
+
+			if (feature._key === 'design') {
+				return (
+					<FeatureSection {...props}>
+						<TypewriterHeadings />
+					</FeatureSection>
+				);
+			}
+
+			if (feature._key === 'partnership') {
+				return (
+					<FeatureSection {...props}>
+						<ChatFeedAnimation />
+					</FeatureSection>
+				);
+			}
+
+			return <FeatureSection {...props} />;
+		})}
 		<Pricing />
 	</main>
 	<Footer />
