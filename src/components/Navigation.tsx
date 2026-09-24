@@ -82,6 +82,15 @@ function CtaPill({
 // 'dark' (default) is for the gradient/dark hero backgrounds every existing
 // page uses. 'light' is for pages like Blog Detail where the nav sits
 // directly on the plain page background (bg-background) instead of a hero.
+// Icelandic content is machine-drafted and hasn't had a native-speaker
+// review pass yet — hiding the switcher avoids steering visitors from the
+// (reviewed) English site into it while that's pending. The routes
+// themselves stay up (direct links, bookmarks) but get noindex'd and
+// dropped from the sitemap in the meantime; see BaseLayout's noindex prop
+// and astro.config.mjs's sitemap filter. Flip this back to true once
+// Icelandic copy has been reviewed.
+const SHOW_LANG_SWITCHER = false;
+
 type NavigationProps = {
   variant?: 'dark' | 'light';
   lang?: Locale;
@@ -202,7 +211,7 @@ export default function Navigation({ variant = 'dark', lang = 'en', altHref }: N
                 </a>
               ))}
             </div>
-            <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={isLight} />
+            {SHOW_LANG_SWITCHER && <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={isLight} />}
             {/* Book a demo stays visible on tablet (only true mobile, <768px, drops it) — confirmed against the Tablet Home frame, which keeps this button next to the hamburger */}
             <CtaPill
               href={contactHref}
@@ -271,7 +280,7 @@ export default function Navigation({ variant = 'dark', lang = 'en', altHref }: N
           </div>
 
           <div className="flex flex-col gap-10 items-start w-full">
-            <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={true} />
+            {SHOW_LANG_SWITCHER && <LangSwitcher lang={lang} altHref={langSwitcherHref} isLight={true} />}
             <div className="font-heading text-h6 text-navy flex flex-col gap-5 w-full">
               <a href="mailto:hi@hitels.is">hi@hitels.is</a>
               <a href="tel:+3545478001">+354 5478001</a>
