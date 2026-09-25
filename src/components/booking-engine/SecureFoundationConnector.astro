@@ -1,12 +1,14 @@
 ---
+import { asset } from '../../lib/cdn';
+
 // Illustrative "connected systems" diagram (Hitels <-> secure checkout <->
 // booking platform) — fixed, non-editable content, same reasoning as other
 // illustrative graphics on the site (e.g. About Us's WhatIsHitels booking
 // recap card). A small dot loops along each dashed connector to suggest
 // data flowing between the three points.
-const HI_LOGO = 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/security-hi-logo.svg';
-const LOCK_ICON = 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/security-lock.svg';
-const C_ICON = 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/security-c-icon.svg';
+const HI_LOGO = asset('images/booking-engine/features/security-hi-logo.svg');
+const LOCK_ICON = asset('images/booking-engine/features/security-lock.svg');
+const C_ICON = asset('images/booking-engine/features/security-c-icon.svg');
 ---
 
 <div class="absolute inset-0 size-full flex items-center justify-center bg-light-gray">
