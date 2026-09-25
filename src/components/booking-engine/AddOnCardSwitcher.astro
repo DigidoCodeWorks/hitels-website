@@ -1,13 +1,15 @@
 ---
+import { asset } from '../../lib/cdn';
+
 // Illustrative example of a guest-facing add-on picker inside someone else's
 // booking flow — fixed, non-editable content (a guest-facing hotel example,
 // not a real Hitels product), same reasoning as Home's Benefits.astro/
 // PartnerLogos.astro staying out of the page builder. Auto-cycles which card
 // sits on top of the stack, matching the Figma "switching card" spec.
 const ADDONS = [
-  { title: 'Spa access', price: '5.500 kr.', imageUrl: 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/addon-spa.webp' },
-  { title: 'Massage', price: '17.990 kr.', imageUrl: 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/addon-massage.webp' },
-  { title: 'Champagne bottle', price: '15.000 kr.', imageUrl: 'https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/booking-engine/features/addon-champagne.webp' },
+  { title: 'Spa access', price: '5.500 kr.', imageUrl: asset('images/booking-engine/features/addon-spa.webp') },
+  { title: 'Massage', price: '17.990 kr.', imageUrl: asset('images/booking-engine/features/addon-massage.webp') },
+  { title: 'Champagne bottle', price: '15.000 kr.', imageUrl: asset('images/booking-engine/features/addon-champagne.webp') },
 ];
 ---
 

@@ -1,5 +1,6 @@
 ---
 import PartnerLogosTrack from './PartnerLogosTrack.astro';
+import { asset } from '../../lib/cdn';
 import { getStrings } from '../../i18n/strings';
 // "Trusted by 19 partners" logo ticker — an infinite auto-scrolling marquee
 // (the Figma layer is literally named "Logo Ticker"). Renders the logo set
@@ -31,7 +32,7 @@ const t = getStrings(Astro.currentLocale);
     <div class="absolute left-1/2 -translate-x-1/2 top-0 h-[92px] flex items-center gap-[6.909px] px-20 z-10">
       <div class="absolute left-0 top-1/2 -translate-y-1/2 h-[45px] w-[223px] bg-gradient-to-r from-white/0 via-white to-white/0"></div>
       <div class="relative h-16 w-[62.857px] shrink-0">
-        <img src="https://pub-cc3bba3bab304bebb22958edffa16e9c.r2.dev/images/home/hero/framer-badge-icon.svg" alt={t.sections.partnerLogosBadgeAlt} loading="lazy" class="h-16 w-[62.857px]" />
+        <img src={asset('images/home/hero/framer-badge-icon.svg')} alt={t.sections.partnerLogosBadgeAlt} loading="lazy" class="h-16 w-[62.857px]" />
       </div>
     </div>
   </div>
