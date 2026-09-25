@@ -32,15 +32,16 @@ const siteSettings = await sanityClient.fetch(siteSettingsQuery, { language });
         copy_of_hitels_20_gradient_light.mp4 (inverted direction: light top ->
         deep purple bottom, matching this section's look vs. Hero's dark-to-light). */}
     <video
-      autoplay
       muted
       loop
       playsinline
+      preload="none"
       poster={asset('images/home/footer/footer-gradient-video-poster.webp')}
       class="absolute inset-0 w-full h-full object-cover"
+      data-lazy-video
     >
-      <source src={asset('images/home/footer/footer-gradient-video.webm')} type="video/webm" />
-      <source src={asset('images/home/footer/footer-gradient-video.mp4')} type="video/mp4" />
+      <source data-src={asset('images/home/footer/footer-gradient-video.webm')} type="video/webm" />
+      <source data-src={asset('images/home/footer/footer-gradient-video.mp4')} type="video/mp4" />
     </video>
     <div
       class="hidden max-lg:block absolute inset-0 mix-blend-overlay opacity-0 bg-top-left"

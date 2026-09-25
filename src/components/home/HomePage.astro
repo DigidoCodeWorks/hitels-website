@@ -1,6 +1,7 @@
 ---
 import { sanityClient } from 'sanity:client';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { asset } from '../../lib/cdn';
 import Hero from './Hero.astro';
 import PartnerLogos from './PartnerLogos.astro';
 import ProductOfferings from './ProductOfferings.astro';
@@ -66,6 +67,19 @@ const altHref = hreflangAlternates.find((a) => a.lang !== language)?.href;
 ---
 
 <BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage} lang={language} hreflangAlternates={hreflangAlternates} noindex={language === 'is'}>
+	<Fragment slot="head">
+		{/* Hero's <video poster> is the LCP element (PageSpeed confirmed, 2026-09-25),
+		    but posters get fetched at low priority by default — this preload hint is
+		    what actually gets it fetched immediately instead of behind everything
+		    else on the page. Path must stay in sync with Hero.astro's own poster. */}
+		<link
+			rel="preload"
+			as="image"
+			type="image/webp"
+			href={asset('images/home/hero/hero-gradient-video-poster.webp')}
+			fetchpriority="high"
+		/>
+	</Fragment>
 	<header>
 		<Hero
 			headline={heroSection.headline}
