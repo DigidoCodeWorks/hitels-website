@@ -52,22 +52,24 @@ function isVideoUrl(url: string) {
             // browser doesn't fetch it twice (autoplay videos load eagerly
             // regardless of which breakpoint-hidden copy is visible).
             <video
-              src={offering.desktopImageUrl}
-              autoplay
+              data-src={offering.desktopImageUrl}
               muted
               loop
               playsinline
+              preload="none"
+              data-lazy-video
               class="absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
             />
           ) : (
             <>
               {isVideoUrl(offering.desktopImageUrl) ? (
                 <video
-                  src={offering.desktopImageUrl}
-                  autoplay
+                  data-src={offering.desktopImageUrl}
                   muted
                   loop
                   playsinline
+                  preload="none"
+                  data-lazy-video
                   class="block max-md:hidden absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
                 />
               ) : (
@@ -80,11 +82,12 @@ function isVideoUrl(url: string) {
               )}
               {isVideoUrl(offering.mobileImageUrl) ? (
                 <video
-                  src={offering.mobileImageUrl}
-                  autoplay
+                  data-src={offering.mobileImageUrl}
                   muted
                   loop
                   playsinline
+                  preload="none"
+                  data-lazy-video
                   class="hidden max-md:block absolute inset-0 max-w-none object-cover pointer-events-none size-full transition-transform duration-300 ease-out group-hover:scale-105"
                 />
               ) : (

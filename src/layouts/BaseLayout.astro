@@ -163,5 +163,43 @@ const organizationSchema = {
 				revealEls.forEach((el) => el.classList.add('is-revealed'));
 			}
 		</script>
+		<script>
+			// Below-the-fold background videos (Footer, ProductOfferings) mark
+			// themselves [data-lazy-video] and hold their real source(s) in
+			// data-src instead of src/source[src], so preload="none" actually
+			// keeps the browser from fetching them until they're about to be
+			// visible — otherwise they compete for bandwidth with the Hero video
+			// that's the page's actual LCP element on load (PageSpeed audit,
+			// 2026-09-25: these were 1.9MB+686KB+201KB of eager network weight).
+			const lazyVideos = document.querySelectorAll<HTMLVideoElement>('[data-lazy-video]');
+
+			function loadLazyVideo(video: HTMLVideoElement) {
+				if (video.dataset.src) {
+					video.src = video.dataset.src;
+				}
+				video.querySelectorAll<HTMLSourceElement>('source[data-src]').forEach((source) => {
+					source.src = source.dataset.src!;
+				});
+				video.load();
+				video.play().catch(() => {});
+			}
+
+			if (lazyVideos.length && 'IntersectionObserver' in window) {
+				const videoObserver = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								loadLazyVideo(entry.target as HTMLVideoElement);
+								videoObserver.unobserve(entry.target);
+							}
+						});
+					},
+					{ rootMargin: '200px 0px' }
+				);
+				lazyVideos.forEach((video) => videoObserver.observe(video));
+			} else {
+				lazyVideos.forEach((video) => loadLazyVideo(video));
+			}
+		</script>
 	</body>
 </html>
