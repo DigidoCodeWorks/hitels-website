@@ -12,8 +12,14 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Baseline security headers, safe for every route including /studio.
+# Baseline security headers for every route (/studio relaxes framing below).
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Frame-Options: DENY
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# The sanity.io dashboard opens the Studio in an iframe, which DENY blocks.
+# Drop it for /studio only and allow just that origin to frame it.
+/studio/*
+  ! X-Frame-Options
+  Content-Security-Policy: frame-ancestors 'self' https://www.sanity.io
